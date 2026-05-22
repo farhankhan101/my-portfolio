@@ -44,6 +44,32 @@ export default function AdminExperience() {
     fetchExperiences()
   }, [])
 
+  const handleReorder = async (newOrderedList: Experience[]) => {
+    setExperiences(newOrderedList)
+    const orders = newOrderedList.map((item, idx) => ({
+      id: item.id,
+      sortOrder: idx,
+    }))
+
+    try {
+      const res = await fetch('/api/admin/reorder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'experience',
+          orders,
+        }),
+      })
+      if (!res.ok) {
+        alert('Failed to save reordered list.')
+        fetchExperiences()
+      }
+    } catch (error) {
+      console.error('Error saving reordered experience list:', error)
+      fetchExperiences()
+    }
+  }
+
   const handleEditClick = (exp: Experience) => {
     setEditingExperience(exp)
     setView('FORM')
@@ -208,6 +234,7 @@ export default function AdminExperience() {
           searchPlaceholder="Search experiences by company..."
           loading={loading}
           emptyMessage="No experience entries found."
+          onReorder={handleReorder}
         />
       ) : (
         <ExperienceForm

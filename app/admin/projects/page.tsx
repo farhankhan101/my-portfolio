@@ -47,6 +47,32 @@ export default function AdminProjects() {
     fetchProjects()
   }, [])
 
+  const handleReorder = async (newOrderedList: Project[]) => {
+    setProjects(newOrderedList)
+    const orders = newOrderedList.map((item, idx) => ({
+      id: item.id,
+      sortOrder: idx,
+    }))
+
+    try {
+      const res = await fetch('/api/admin/reorder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'project',
+          orders,
+        }),
+      })
+      if (!res.ok) {
+        alert('Failed to save reordered projects list.')
+        fetchProjects()
+      }
+    } catch (error) {
+      console.error('Error saving reordered projects list:', error)
+      fetchProjects()
+    }
+  }
+
   const handleEditClick = (project: Project) => {
     // Fetch full project details (with description, challenges, solutions, metrics)
     // Actually the initial GET retrieves all fields because we are doing select * in DB,
@@ -221,6 +247,7 @@ export default function AdminProjects() {
           searchPlaceholder="Search projects by title..."
           loading={loading}
           emptyMessage="No showcase projects found."
+          onReorder={handleReorder}
         />
       ) : (
         <ProjectForm

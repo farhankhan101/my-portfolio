@@ -2,7 +2,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { Plus, Edit2, Trash2, Loader2, Sparkles } from 'lucide-react'
+import { Plus, Edit2, Trash2, Loader2, Sparkles, GripVertical, ChevronUp, ChevronDown } from 'lucide-react'
 
 interface Skill {
   id: string
@@ -19,6 +19,8 @@ export default function AdminSkills() {
   const [skills, setSkills] = useState<Skill[]>([])
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState<string>('Frontend')
+  const [draggedSkillId, setDraggedSkillId] = useState<string | null>(null)
+  const [dragOverSkillId, setDragOverSkillId] = useState<string | null>(null)
 
   // Form State
   const [editingId, setEditingId] = useState<string | null>(null)
@@ -28,6 +30,109 @@ export default function AdminSkills() {
   const [proficiency, setProficiency] = useState(85)
   const [sortOrder, setSortOrder] = useState(0)
   const [formLoading, setFormLoading] = useState(false)
+
+  const handleDragStart = (e: React.DragEvent, id: string) => {
+    setDraggedSkillId(id)
+    e.dataTransfer.setData('text/plain', id)
+    e.dataTransfer.effectAllowed = 'move'
+  }
+
+  const handleDragOver = (e: React.DragEvent, id: string) => {
+    e.preventDefault()
+    if (draggedSkillId === null || draggedSkillId === id) return
+    setDragOverSkillId(id)
+  }
+
+  const handleDragEnd = () => {
+    setDraggedSkillId(null)
+    setDragOverSkillId(null)
+  }
+
+  const handleDrop = async (e: React.DragEvent, targetId: string) => {
+    e.preventDefault()
+    if (draggedSkillId === null || draggedSkillId === targetId) return
+
+    const currentCategorySkills = skills.filter((s) => s.category === activeTab)
+    const otherCategorySkills = skills.filter((s) => s.category !== activeTab)
+
+    const draggedIdx = currentCategorySkills.findIndex((s) => s.id === draggedSkillId)
+    const targetIdx = currentCategorySkills.findIndex((s) => s.id === targetId)
+
+    if (draggedIdx === -1 || targetIdx === -1) return
+
+    const updatedCategorySkills = [...currentCategorySkills]
+    const [movedSkill] = updatedCategorySkills.splice(draggedIdx, 1)
+    updatedCategorySkills.splice(targetIdx, 0, movedSkill)
+
+    await saveNewSkillOrder(updatedCategorySkills, otherCategorySkills)
+  }
+
+  const handleMoveSkillUp = async (id: string) => {
+    const currentCategorySkills = skills.filter((s) => s.category === activeTab)
+    const otherCategorySkills = skills.filter((s) => s.category !== activeTab)
+
+    const idx = currentCategorySkills.findIndex((s) => s.id === id)
+    if (idx <= 0) return
+
+    const updatedCategorySkills = [...currentCategorySkills]
+    const temp = updatedCategorySkills[idx]
+    updatedCategorySkills[idx] = updatedCategorySkills[idx - 1]
+    updatedCategorySkills[idx - 1] = temp
+
+    await saveNewSkillOrder(updatedCategorySkills, otherCategorySkills)
+  }
+
+  const handleMoveSkillDown = async (id: string) => {
+    const currentCategorySkills = skills.filter((s) => s.category === activeTab)
+    const otherCategorySkills = skills.filter((s) => s.category !== activeTab)
+
+    const idx = currentCategorySkills.findIndex((s) => s.id === id)
+    if (idx === -1 || idx === currentCategorySkills.length - 1) return
+
+    const updatedCategorySkills = [...currentCategorySkills]
+    const temp = updatedCategorySkills[idx]
+    updatedCategorySkills[idx] = updatedCategorySkills[idx + 1]
+    updatedCategorySkills[idx + 1] = temp
+
+    await saveNewSkillOrder(updatedCategorySkills, otherCategorySkills)
+  }
+
+  const saveNewSkillOrder = async (updatedCategorySkills: Skill[], otherCategorySkills: Skill[]) => {
+    const reorderedCategory = updatedCategorySkills.map((s, index) => ({
+      ...s,
+      sortOrder: index,
+    }))
+
+    const newFullList = [...otherCategorySkills, ...reorderedCategory]
+    setSkills(newFullList)
+
+    const orders = reorderedCategory.map((item) => ({
+      id: item.id,
+      sortOrder: item.sortOrder,
+    }))
+
+    try {
+      const res = await fetch('/api/admin/reorder', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          type: 'skill',
+          orders,
+        }),
+      })
+
+      if (!res.ok) {
+        alert('Failed to save reordered skills.')
+        fetchSkills()
+      }
+    } catch (error) {
+      console.error('Error saving reordered skills:', error)
+      fetchSkills()
+    } finally {
+      setDraggedSkillId(null)
+      setDragOverSkillId(null)
+    }
+  }
 
   const fetchSkills = async () => {
     setLoading(true)
@@ -264,31 +369,73 @@ export default function AdminSkills() {
               </div>
             ) : (
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {filteredSkills.map((skill) => (
+                {filteredSkills.map((skill, idx) => (
                   <div
                     key={skill.id}
-                    className="p-4 bg-secondary/30 border border-border hover:border-sky-500/30 rounded-xl space-y-3 flex flex-col justify-between group transition-all shadow-sm hover:shadow-md"
+                    draggable
+                    onDragStart={(e) => handleDragStart(e, skill.id)}
+                    onDragOver={(e) => handleDragOver(e, skill.id)}
+                    onDrop={(e) => handleDrop(e, skill.id)}
+                    onDragEnd={handleDragEnd}
+                    className={`p-4 bg-secondary/30 border border-border hover:border-sky-500/30 rounded-xl space-y-3 flex flex-col justify-between group transition-all shadow-sm hover:shadow-md ${
+                      draggedSkillId === skill.id ? 'opacity-40 bg-secondary/50' : ''
+                    } ${
+                      dragOverSkillId === skill.id ? 'bg-sky-500/10 border-t-2 border-sky-550' : ''
+                    }`}
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-2">
+                        {/* Drag Handle */}
+                        <div
+                          draggable
+                          className="p-1 text-muted-foreground/30 hover:text-sky-500 cursor-grab active:cursor-grabbing transition-colors"
+                          title="Drag to reorder"
+                        >
+                          <GripVertical size={12} />
+                        </div>
                         <i className={`devicon-${skill.iconSlug}-plain text-lg text-muted-foreground`} />
                         <span className="text-sm font-bold text-foreground">{skill.name}</span>
                       </div>
-                      <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                      <div className="flex items-center gap-1">
+                        {/* Up/Down Buttons */}
                         <button
-                          onClick={() => handleEdit(skill)}
-                          className="p-1 text-muted-foreground hover:text-sky-600 dark:hover:text-sky-400 rounded transition-colors cursor-pointer"
-                          title="Edit"
+                          type="button"
+                          onClick={() => handleMoveSkillUp(skill.id)}
+                          disabled={idx === 0}
+                          className="p-1 text-muted-foreground/60 hover:text-sky-500 hover:bg-secondary disabled:opacity-20 rounded cursor-pointer disabled:cursor-not-allowed transition-all"
+                          title="Move Left/Up"
                         >
-                          <Edit2 size={12} />
+                          <ChevronUp size={12} />
                         </button>
                         <button
-                          onClick={() => handleDelete(skill.id)}
-                          className="p-1 text-muted-foreground hover:text-red-500 rounded transition-colors cursor-pointer"
-                          title="Delete"
+                          type="button"
+                          onClick={() => handleMoveSkillDown(skill.id)}
+                          disabled={idx === filteredSkills.length - 1}
+                          className="p-1 text-muted-foreground/60 hover:text-sky-500 hover:bg-secondary disabled:opacity-20 rounded cursor-pointer disabled:cursor-not-allowed transition-all"
+                          title="Move Right/Down"
                         >
-                          <Trash2 size={12} />
+                          <ChevronDown size={12} />
                         </button>
+
+                        <span className="h-3 w-px bg-border/60 mx-1" />
+
+                        {/* Edit/Delete Actions */}
+                        <div className="flex gap-1.5 opacity-0 group-hover:opacity-100 transition-opacity">
+                          <button
+                            onClick={() => handleEdit(skill)}
+                            className="p-1 text-muted-foreground hover:text-sky-600 dark:hover:text-sky-400 rounded transition-colors cursor-pointer"
+                            title="Edit"
+                          >
+                            <Edit2 size={12} />
+                          </button>
+                          <button
+                            onClick={() => handleDelete(skill.id)}
+                            className="p-1 text-muted-foreground hover:text-red-500 rounded transition-colors cursor-pointer"
+                            title="Delete"
+                          >
+                            <Trash2 size={12} />
+                          </button>
+                        </div>
                       </div>
                     </div>
 
