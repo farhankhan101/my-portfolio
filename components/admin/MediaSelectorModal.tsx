@@ -70,6 +70,32 @@ export default function MediaSelectorModal({ isOpen, onClose, onSelect }: MediaS
     }
   }, [isOpen])
 
+  // Listen for paste event to upload image from clipboard
+  useEffect(() => {
+    const handlePaste = async (e: ClipboardEvent) => {
+      if (!isOpen) return
+      
+      const items = e.clipboardData?.items
+      if (!items) return
+
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const file = items[i].getAsFile()
+          if (file) {
+            e.preventDefault()
+            await uploadFile(file)
+            break
+          }
+        }
+      }
+    }
+
+    window.addEventListener('paste', handlePaste)
+    return () => {
+      window.removeEventListener('paste', handlePaste)
+    }
+  }, [isOpen])
+
   const uploadFile = async (file: File) => {
     if (!file.type.startsWith('image/')) {
       setError('Please upload an image file.')
@@ -130,7 +156,7 @@ export default function MediaSelectorModal({ isOpen, onClose, onSelect }: MediaS
         <div className="px-6 py-4 border-b border-border flex items-center justify-between">
           <div>
             <h3 className="text-base font-bold text-foreground">Image Media Selector</h3>
-            <p className="text-xs text-muted-foreground">Choose an existing media file or upload a new one.</p>
+            <p className="text-xs text-muted-foreground">Choose an existing media file, upload one, or paste directly with Ctrl+V.</p>
           </div>
           <button
             type="button"
