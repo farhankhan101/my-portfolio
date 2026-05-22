@@ -27,7 +27,11 @@ export async function POST(req: NextRequest) {
     return NextResponse.json(asset, { status: 201 })
   } catch (error: any) {
     console.error('❌ POST admin/media error:', error)
-    return NextResponse.json({ error: 'Failed to upload media file' }, { status: 500 })
+    return NextResponse.json({ 
+      error: 'Failed to upload media file',
+      details: error.message || String(error),
+      stack: error.stack
+    }, { status: 500 })
   }
 }
 
