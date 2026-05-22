@@ -1,0 +1,181 @@
+// prisma/schema.prisma
+
+generator client {
+  provider        = "prisma-client-js"
+  previewFeatures = ["postgresqlExtensions"]
+}
+
+datasource db {
+  provider   = "postgresql"
+  url        = env("DATABASE_URL")
+  extensions = [pgvector(map: "vector")]
+}
+
+// ─── AUTH ─────────────────────────────────────────────────────────────────
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  password  String   // bcrypt hashed
+  name      String
+  role      Role     @default(ADMIN)
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  SUPER_ADMIN
+}
+
+// ─── ABOUT ────────────────────────────────────────────────────────────────
+
+model About {
+  id           String   @id @default(cuid())
+  headline     String   // "Senior Full Stack Developer"
+  tagline      String   // Short punch line under name
+  bio          String   @db.Text  // Rich HTML from Tiptap
+  bioShort     String   // 2-3 sentence version for chat/meta
+  avatarUrl    String
+  resumeUrl    String?
+  availableFor String[] // ["Freelance", "Full-time", "Consulting"]
+  location     String
+  updatedAt    DateTime @updatedAt
+}
+
+// ─── PROJECTS / CASE STUDIES ──────────────────────────────────────────────
+
+model Project {
+  id           String        @id @default(cuid())
+  slug         String        @unique
+  title        String
+  tagline      String        // One-liner for cards
+  description  String        @db.Text  // Rich HTML (Tiptap)
+  coverImage   String
+  images       String[]      // Gallery
+  techStack    String[]      // ["Next.js", "Django", "PostgreSQL"]
+  category     String        // "Web App" | "SaaS" | "Mobile" | "API"
+  client       String?
+  duration     String?       // "3 months"
+  role         String?       // "Lead Frontend Developer"
+  liveUrl      String?
+  githubUrl    String?
+  featured     Boolean       @default(false)
+  status       ProjectStatus @default(PUBLISHED)
+  sortOrder    Int           @default(0)
+  challenge    String?       @db.Text  // Case study sections
+  solution     String?       @db.Text
+  results      String?       @db.Text
+  metrics      Json?         // [{ label: "Uptime", value: "99.9%" }]
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+}
+
+enum ProjectStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+// ─── WORK EXPERIENCE ──────────────────────────────────────────────────────
+
+model Experience {
+  id           String   @id @default(cuid())
+  company      String
+  companyUrl   String?
+  logoUrl      String?
+  role         String
+  type         String   // "Full-time" | "Freelance" | "Contract"
+  location     String
+  startDate    DateTime
+  endDate      DateTime?  // null = current
+  description  String   @db.Text  // Rich HTML bullet points
+  achievements String[] // Key wins (used in chatbot context)
+  techStack    String[]
+  sortOrder    Int      @default(0)
+}
+
+// ─── SKILLS ───────────────────────────────────────────────────────────────
+
+model Skill {
+  id         String @id @default(cuid())
+  name       String
+  category   String // "Frontend" | "Backend" | "DevOps" | "Tools"
+  iconSlug   String // devicons slug e.g. "react", "django"
+  proficiency Int   @default(90) // 0-100
+  sortOrder  Int    @default(0)
+}
+
+// ─── CONTACT MESSAGES ─────────────────────────────────────────────────────
+
+model ContactMessage {
+  id        String        @id @default(cuid())
+  name      String
+  email     String
+  subject   String
+  message   String        @db.Text
+  status    MessageStatus @default(UNREAD)
+  createdAt DateTime      @default(now())
+}
+
+enum MessageStatus {
+  UNREAD
+  READ
+  REPLIED
+  ARCHIVED
+}
+
+// ─── CHATBOT RAG ──────────────────────────────────────────────────────────
+
+// Admin manually trains the bot by adding Q&A pairs + free-form knowledge
+model ChatKnowledge {
+  id         String                       @id @default(cuid())
+  type       KnowledgeType
+  question   String?                      // For QA type
+  answer     String                       @db.Text
+  topic      String?                      // e.g. "projects", "experience"
+  embedding  Unsupported("vector(768)")?  // text-embedding-004
+  createdAt  DateTime                     @default(now())
+  updatedAt  DateTime                     @updatedAt
+}
+
+enum KnowledgeType {
+  QA          // Admin-trained question-answer pair
+  BIO         // About me content chunk
+  PROJECT     // Auto-synced from Project model
+  EXPERIENCE  // Auto-synced from Experience model
+  SKILL       // Skills summary chunk
+  CUSTOM      // Free-form knowledge admin adds
+}
+
+// ─── BLOG (optional) ──────────────────────────────────────────────────────
+
+model BlogPost {
+  id          String     @id @default(cuid())
+  slug        String     @unique
+  title       String
+  excerpt     String
+  content     String     @db.Text
+  coverImage  String?
+  tags        String[]
+  status      PostStatus @default(DRAFT)
+  publishedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+}
+
+enum PostStatus {
+  DRAFT
+  PUBLISHED
+}
+
+// ─── SITE CONFIG ──────────────────────────────────────────────────────────
+
+model SiteConfig {
+  id              String @id @default("singleton")
+  seoTitle        String
+  seoDescription  String
+  ogImageUrl      String?
+  socialLinks     Json   // { github, linkedin, twitter, whatsapp }
+  contactEmail    String
+  footerText      String
+}
