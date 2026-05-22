@@ -76,6 +76,10 @@ export async function uploadAsset(
   }
 
   // Local storage fallback
+  if (process.env.VERCEL || process.env.NOW_BUILDER) {
+    throw new Error('Local file uploads are not supported on Vercel serverless environment. Please configure your Cloudinary environment variables (CLOUDINARY_CLOUD_NAME, CLOUDINARY_API_KEY, CLOUDINARY_API_SECRET) in your Vercel project settings.')
+  }
+
   const filePath = path.join(LOCAL_UPLOAD_DIR, newFileName)
   await fs.promises.writeFile(filePath, fileBuffer)
   
