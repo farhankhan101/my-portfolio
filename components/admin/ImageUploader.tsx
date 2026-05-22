@@ -1,7 +1,7 @@
 // components/admin/ImageUploader.tsx
 'use client'
 
-import { useState, useRef, DragEvent, ChangeEvent } from 'react'
+import { useState, useRef, DragEvent, ChangeEvent, useEffect } from 'react'
 import Image from 'next/image'
 import { Upload, X, Loader2 } from 'lucide-react'
 import MediaSelectorModal from './MediaSelectorModal'
@@ -15,10 +15,45 @@ interface ImageUploaderProps {
 export default function ImageUploader({ value, onChange, label = 'Upload Image' }: ImageUploaderProps) {
   const [isOpen, setIsOpen] = useState(false)
   const [isDragging, setIsDragging] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
   
   const fileInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => {
+    const handleGlobalPaste = async (e: ClipboardEvent) => {
+      // Do not paste if the cursor is inside a text input/textarea
+      const activeEl = document.activeElement
+      const isTyping = activeEl && (
+        activeEl.tagName === 'INPUT' || 
+        activeEl.tagName === 'TEXTAREA' || 
+        activeEl.hasAttribute('contenteditable')
+      )
+      
+      if (isTyping) return
+      if (!isHovered || isLoading) return
+
+      const items = e.clipboardData?.items
+      if (!items) return
+
+      for (let i = 0; i < items.length; i++) {
+        if (items[i].type.indexOf('image') !== -1) {
+          const file = items[i].getAsFile()
+          if (file) {
+            e.preventDefault()
+            await uploadFile(file)
+            break
+          }
+        }
+      }
+    }
+
+    window.addEventListener('paste', handleGlobalPaste)
+    return () => {
+      window.removeEventListener('paste', handleGlobalPaste)
+    }
+  }, [isHovered, isLoading])
 
   const uploadFile = async (file: File) => {
     if (!file.type.startsWith('image/')) {
@@ -85,7 +120,11 @@ export default function ImageUploader({ value, onChange, label = 'Upload Image' 
   }
 
   return (
-    <div className="space-y-2">
+    <div 
+      className="space-y-2"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
+    >
       {label && <label className="block text-xs font-semibold text-muted-foreground uppercase tracking-wider">{label}</label>}
 
       {value ? (
@@ -148,9 +187,9 @@ export default function ImageUploader({ value, onChange, label = 'Upload Image' 
               </div>
               <div>
                 <p className="text-sm font-medium text-foreground">
-                  <span className="text-sky-500 dark:text-sky-400 hover:underline">Click to select image</span> or drag here
+                  <span className="text-sky-500 dark:text-sky-400 hover:underline">Click to select image</span>, drag here, or paste (Ctrl+V)
                 </p>
-                <p className="text-xs text-muted-foreground/60 mt-1">Select from library or upload from device</p>
+                <p className="text-xs text-muted-foreground/60 mt-1">Select from library, drag & drop, or hover and paste</p>
               </div>
             </div>
           )}
