@@ -35,9 +35,14 @@ export interface UploadedAsset {
 /**
  * Uploads a base64 encoded string or file buffer to Cloudinary (or local storage fallback)
  */
-export async function uploadAsset(fileBuffer: Buffer, fileName: string, mimeType: string): Promise<UploadedAsset> {
-  const fileExtension = path.extname(fileName) || `.${mimeType.split('/')[1]}`
-  const sanitizedBaseName = path.basename(fileName, fileExtension).replace(/[^a-zA-Z0-9]/g, '_')
+export async function uploadAsset(
+  fileBuffer: Buffer, 
+  fileName: string | null | undefined, 
+  mimeType: string
+): Promise<UploadedAsset> {
+  const safeFileName = fileName || 'pasted_image.png'
+  const fileExtension = path.extname(safeFileName) || `.${mimeType ? mimeType.split('/')[1] : 'png'}`
+  const sanitizedBaseName = path.basename(safeFileName, fileExtension).replace(/[^a-zA-Z0-9]/g, '_') || 'uploaded_image'
   const newFileName = `${sanitizedBaseName}_${Date.now()}${fileExtension}`
 
   if (isCloudinaryConfigured) {
