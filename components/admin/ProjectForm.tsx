@@ -7,6 +7,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { projectSchema } from '@/lib/validations'
 import { z } from 'zod'
 import ImageUploader from './ImageUploader'
+import MultiImageUploader from './MultiImageUploader'
 import RichTextEditor from './RichTextEditor'
 import { Plus, Trash, Loader2, X } from 'lucide-react'
 
@@ -140,6 +141,16 @@ export default function ProjectForm({ initialValues, onSubmit, onCancel }: Proje
             label="Cover Image"
           />
           {errors.coverImage && <p className="text-xs text-red-400 font-medium">{errors.coverImage.message}</p>}
+        </div>
+
+        {/* Gallery Showcase Images */}
+        <div className="col-span-1 md:col-span-2 space-y-1.5">
+          <MultiImageUploader
+            value={watch('images') || []}
+            onChange={(urls) => setValue('images', urls, { shouldValidate: true })}
+            label="Showcase Images Gallery"
+          />
+          {errors.images && <p className="text-xs text-red-400 font-medium">{errors.images.message}</p>}
         </div>
 
         {/* Tech Stack Input */}

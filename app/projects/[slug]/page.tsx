@@ -3,6 +3,7 @@ import { db } from '@/lib/db'
 import { notFound } from 'next/navigation'
 import Image from 'next/image'
 import Link from 'next/link'
+import ShowcaseGallery from '@/components/public/ShowcaseGallery'
 import {
   Globe,
   Calendar,
@@ -201,6 +202,11 @@ export default async function ProjectCaseStudyPage({ params }: PageProps) {
             )}
           </div>
         </div>
+
+        {/* Project Gallery Showcase */}
+        {project.images && project.images.length > 0 && (
+          <ShowcaseGallery images={project.images} projectTitle={project.title} />
+        )}
 
         {/* 4. RESULTS / METRICS */}
         {Array.isArray(project.metrics) && project.metrics.length > 0 && (
