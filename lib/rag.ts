@@ -65,6 +65,15 @@ export async function syncDatabaseToKnowledgeBase(): Promise<{ success: boolean;
       }
     })
 
+    // Also delete any existing services and why-hire-me custom summaries to rebuild them
+    await db.chatKnowledge.deleteMany({
+      where: {
+        id: {
+          in: ['services_summary_singleton', 'why_hire_me_summary_singleton']
+        }
+      }
+    })
+
     let count = 0
 
     // 2. Sync BIO from About
@@ -119,7 +128,7 @@ export async function syncDatabaseToKnowledgeBase(): Promise<{ success: boolean;
       count++
     }
 
-    // 5. Sync Skills summary
+    // 5. Sync Skills summary & each individual skill
     const skills = await db.skill.findMany()
     if (skills.length > 0) {
       const skillsByCategory = skills.reduce((acc, skill) => {
@@ -143,7 +152,61 @@ export async function syncDatabaseToKnowledgeBase(): Promise<{ success: boolean;
         `[${embedding.join(',')}]`
       )
       count++
+
+      for (const skill of skills) {
+        const skillText = `Skill Name: ${skill.name}. Category: ${skill.category}. Proficiency level: ${skill.proficiency}%.`
+        const skillEmbedding = await getEmbedding(skillText)
+        await db.$executeRawUnsafe(
+          `INSERT INTO "ChatKnowledge" (id, type, answer, topic, embedding, "updatedAt")
+           VALUES ($1, 'SKILL', $2, $3, $4::vector, NOW())`,
+          `skill_${skill.id}`,
+          skillText,
+          `skill_${skill.name.toLowerCase().replace(/[^a-z0-9]/g, '')}`,
+          `[${skillEmbedding.join(',')}]`
+        )
+        count++
+      }
     }
+
+    // 6. Sync Services summary
+    const servicesText = `Farhan Ahmed's Services and Professional Expertise:
+1. Cloud & SaaS Architecture: Designing PostgreSQL databases, Redis layers, and high-performance server APIs using Node.js and Python. Focusing on speed, uptime, and data security.
+2. Frontend Engineering: Creating responsive, fluid, and custom-styled web apps using Next.js/React. Focused on UX transitions, performance audits, and high search accessibility.
+3. Systems Advisory: Guiding architecture audits, Docker deployments, automated CI/CD pipelines, and configuring cloud server security.
+4. AI & RAG Solutions: Building custom RAG workflows, vector database embeddings, chatbot integrations, and LLM pipelines.
+5. Database & API Tuning: Designing optimized SQL schemas, query scaling, custom RESTful/GraphQL interfaces, and authentication flows.
+6. Premium UI/UX Strategy: Fusing modern layouts, color harmony systems, interactive micro-animations, and custom graphics.`
+    const servicesEmbedding = await getEmbedding(servicesText)
+    await db.$executeRawUnsafe(
+      `INSERT INTO "ChatKnowledge" (id, type, answer, topic, embedding, "updatedAt")
+       VALUES ($1, 'CUSTOM', $2, $3, $4::vector, NOW())`,
+      `services_summary_singleton`,
+      servicesText,
+      `services`,
+      `[${servicesEmbedding.join(',')}]`
+    )
+    count++
+
+    // 7. Sync Why Hire Me summary
+    const whyHireMeText = `Why hire or partner with Farhan Ahmed:
+1. Clean, Maintainable Architectures: No spaghetti code. Structured logically with modular components, separation of concerns, and clean databases, making it simple for teams to take over.
+2. Transparent Communication: Clear expectation-setting, detailed task trackers, video updates, and robust documentation.
+3. Performance & Speed Optimization: Fine-tuned to load in milliseconds. Optimized bundles, advanced caching strategies, and asset compression.
+4. Security-First Approach: Strict validation, input sanitization, secure cookie storage, and database encryption.
+5. AI & RAG Integration Experience: Integrating advanced AI features, LLM workflows, custom embeddings, vector databases, and semantic search queries directly.
+6. Scalable System Engineering: Designing scalable database schemas, Redis caching layers, and high-performance server APIs.
+7. Production-Ready CI/CD & Cloud: Automated deployments, secure environment management, serverless configurations, and robust Docker orchestration.
+8. End-to-End Product Ownership: Helping design the product roadmap, optimize user retention flows, and align technical architecture with business strategy.`
+    const whyHireMeEmbedding = await getEmbedding(whyHireMeText)
+    await db.$executeRawUnsafe(
+      `INSERT INTO "ChatKnowledge" (id, type, answer, topic, embedding, "updatedAt")
+       VALUES ($1, 'CUSTOM', $2, $3, $4::vector, NOW())`,
+      `why_hire_me_summary_singleton`,
+      whyHireMeText,
+      `why_hire_me`,
+      `[${whyHireMeEmbedding.join(',')}]`
+    )
+    count++
 
     return { success: true, count }
   } catch (error) {
