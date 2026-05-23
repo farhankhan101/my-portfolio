@@ -30,7 +30,13 @@ export async function getEmbedding(text: string): Promise<number[]> {
   try {
     const model = genAI.getGenerativeModel({ model: 'gemini-embedding-001' })
     const result = await model.embedContent(text)
-    return result.embedding.values
+    const values = result.embedding.values
+    if (values.length > 768) {
+      const sliced = values.slice(0, 768)
+      const magnitude = Math.sqrt(sliced.reduce((sum, val) => sum + val * val, 0))
+      return sliced.map(val => val / magnitude)
+    }
+    return values
   } catch (error) {
     console.error('❌ Error getting embedding from Gemini API:', error)
     throw error
