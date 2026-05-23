@@ -15,25 +15,16 @@ import {
 export const revalidate = 0 // always fetch live stats
 
 export default async function AdminDashboard() {
-  // Query db statistics
-  const [
-    totalProjects,
-    unreadMessages,
-    totalKnowledge,
-    recentMessages,
-    latestProject,
-    latestAbout
-  ] = await Promise.all([
-    db.project.count(),
-    db.contactMessage.count({ where: { status: 'UNREAD' } }),
-    db.chatKnowledge.count(),
-    db.contactMessage.findMany({
-      take: 5,
-      orderBy: { createdAt: 'desc' }
-    }),
-    db.project.findFirst({ orderBy: { updatedAt: 'desc' }, select: { updatedAt: true } }),
-    db.about.findFirst({ select: { updatedAt: true } })
-  ])
+  // Query db statistics sequentially to prevent Prisma connection pool timeouts on connection_limit=1
+  const totalProjects = await db.project.count()
+  const unreadMessages = await db.contactMessage.count({ where: { status: 'UNREAD' } })
+  const totalKnowledge = await db.chatKnowledge.count()
+  const recentMessages = await db.contactMessage.findMany({
+    take: 5,
+    orderBy: { createdAt: 'desc' }
+  })
+  const latestProject = await db.project.findFirst({ orderBy: { updatedAt: 'desc' }, select: { updatedAt: true } })
+  const latestAbout = await db.about.findFirst({ select: { updatedAt: true } })
 
   // Determine last content update timestamp
   const dates = [

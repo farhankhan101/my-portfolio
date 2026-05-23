@@ -20,32 +20,34 @@ import {
 } from 'lucide-react'
 
 import SkillsShowcase from '@/components/public/SkillsShowcase'
+import InteractiveStars from '@/components/public/InteractiveStars'
+import TypewriterText from '@/components/public/TypewriterText'
+import CounterAnimation from '@/components/public/CounterAnimation'
+import HandwrittenName from '@/components/public/HandwrittenName'
 
 export const revalidate = 60 // Cache for 60 seconds
 
 export default async function HomePage() {
-  // Query DB contents
-  const [about, featuredProjects, experiences, skills, totalProjectsCount, earliestExperience] = await Promise.all([
-    db.about.findFirst(),
-    db.project.findMany({
-      where: { status: 'PUBLISHED', featured: true },
-      orderBy: { sortOrder: 'asc' },
-      take: 3
-    }),
-    db.experience.findMany({
-      orderBy: { sortOrder: 'asc' },
-      take: 3
-    }),
-    db.skill.findMany({
-      orderBy: { sortOrder: 'asc' }
-    }),
-    db.project.count({
-      where: { status: 'PUBLISHED' }
-    }),
-    db.experience.findFirst({
-      orderBy: { startDate: 'asc' }
-    })
-  ])
+  // Query DB contents sequentially to prevent Prisma connection pool timeouts on connection_limit=1
+  const about = await db.about.findFirst()
+  const featuredProjects = await db.project.findMany({
+    where: { status: 'PUBLISHED', featured: true },
+    orderBy: { sortOrder: 'asc' },
+    take: 3
+  })
+  const experiences = await db.experience.findMany({
+    orderBy: { sortOrder: 'asc' },
+    take: 3
+  })
+  const skills = await db.skill.findMany({
+    orderBy: { sortOrder: 'asc' }
+  })
+  const totalProjectsCount = await db.project.count({
+    where: { status: 'PUBLISHED' }
+  })
+  const earliestExperience = await db.experience.findFirst({
+    orderBy: { startDate: 'asc' }
+  })
 
   // Calculate dynamic stats based on database records
   const currentYear = new Date().getFullYear()
@@ -70,6 +72,8 @@ export default async function HomePage() {
 
       {/* 1. HERO SECTION */}
       <section className="relative pt-32 pb-16 md:pt-40 md:pb-24 px-6 overflow-hidden">
+        {/* Interactive Stars Canvas (fleeing from cursor) */}
+        <InteractiveStars />
         {/* Glow circles */}
         <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[500px] h-[500px] bg-sky-500/10 dark:bg-sky-500/5 rounded-full blur-[120px] pointer-events-none" />
         
@@ -106,10 +110,31 @@ export default async function HomePage() {
               </div>
             )}
 
+            {/* Handwritten Name Signature */}
+            <div className="block pt-2">
+              <HandwrittenName />
+            </div>
+
             {/* Headline & Title */}
             <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-foreground leading-tight">
               {about?.headline || 'Senior Full Stack Developer'}
             </h1>
+
+            {/* Typewriter rotating roles */}
+            <p className="text-base sm:text-lg font-bold text-sky-500 dark:text-sky-400 min-h-[1.75rem]">
+              <TypewriterText
+                texts={[
+                  'Full Stack Engineer',
+                  'SaaS Architect',
+                  'AI & RAG Specialist',
+                  'Cloud & DevOps Engineer',
+                  'UI/UX Craftsman',
+                ]}
+                typeSpeed={55}
+                pauseMs={2000}
+                deleteSpeed={30}
+              />
+            </p>
 
             {/* Tagline */}
             <p className="text-base sm:text-lg text-muted-foreground max-w-2xl font-medium leading-relaxed">
@@ -140,15 +165,21 @@ export default async function HomePage() {
       <section className="relative border-y border-border/60 bg-secondary/35 py-10 px-6 z-10">
         <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
           <div className="space-y-1">
-            <h4 className="text-3xl font-extrabold text-sky-500 dark:text-sky-400">{yearsExp}+</h4>
+            <h4 className="text-3xl font-extrabold text-sky-500 dark:text-sky-400">
+              <CounterAnimation to={yearsExp} suffix="+" duration={1600} />
+            </h4>
             <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Years Experience</p>
           </div>
           <div className="space-y-1">
-            <h4 className="text-3xl font-extrabold text-sky-500 dark:text-sky-400">{projectsCount}+</h4>
+            <h4 className="text-3xl font-extrabold text-sky-500 dark:text-sky-400">
+              <CounterAnimation to={projectsCount} suffix="+" duration={1800} />
+            </h4>
             <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Projects Completed</p>
           </div>
           <div className="space-y-1">
-            <h4 className="text-3xl font-extrabold text-sky-500 dark:text-sky-400">100%</h4>
+            <h4 className="text-3xl font-extrabold text-sky-500 dark:text-sky-400">
+              <CounterAnimation to={100} suffix="%" duration={1400} />
+            </h4>
             <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Client Satisfaction</p>
           </div>
           <div className="space-y-1">
