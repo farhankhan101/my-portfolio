@@ -24,6 +24,7 @@ import InteractiveStars from '@/components/public/InteractiveStars'
 import TypewriterText from '@/components/public/TypewriterText'
 import CounterAnimation from '@/components/public/CounterAnimation'
 import HandwrittenName from '@/components/public/HandwrittenName'
+import AboutSection from '@/components/public/AboutSection'
 
 export const revalidate = 60 // Cache for 60 seconds
 
@@ -345,7 +346,10 @@ export default async function HomePage() {
         </div>
       </section>
 
-      {/* 5. SKILLS SHOWCASE WITH PROGRESS & INTERACTIVE CHART VIEW */}
+      {/* 5. ABOUT ME SECTION (WITH STICKY SIDE PROFILE SCROLL) */}
+      <AboutSection about={about} />
+
+      {/* 6. SKILLS SHOWCASE WITH PROGRESS & INTERACTIVE CHART VIEW */}
       <SkillsShowcase initialSkills={skills} />
 
       {/* 6. CAREER TIMELINE PREVIEW */}
