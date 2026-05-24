@@ -25,6 +25,8 @@ import TypewriterText from '@/components/public/TypewriterText'
 import CounterAnimation from '@/components/public/CounterAnimation'
 import HandwrittenName from '@/components/public/HandwrittenName'
 import AboutSection from '@/components/public/AboutSection'
+import RotatingThreeDSphere from '@/components/public/RotatingThreeDSphere'
+import CursorTrail from '@/components/public/CursorTrail'
 
 export const revalidate = 60 // Cache for 60 seconds
 
@@ -68,6 +70,9 @@ export default async function HomePage() {
 
   return (
     <div className="relative w-full">
+      {/* Interactive Cursor Trail (glowing stars) */}
+      <CursorTrail />
+
       {/* BACKGROUND DECORATIVE GRID */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(148,163,184,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.05)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
 
@@ -353,8 +358,13 @@ export default async function HomePage() {
       <SkillsShowcase initialSkills={skills} />
 
       {/* 6. CAREER TIMELINE PREVIEW */}
-      <section className="py-20 px-6 border-t border-border/50 relative z-10">
-        <div className="max-w-5xl mx-auto space-y-12">
+      <section className="relative py-20 px-6 border-t border-border/50 z-10 overflow-hidden">
+        {/* Rotating 3D Sphere Background Particle System */}
+        <div className="absolute right-10 top-1/2 -translate-y-1/2 w-[380px] h-[380px] opacity-40 dark:opacity-30 pointer-events-none md:block hidden">
+          <RotatingThreeDSphere />
+        </div>
+
+        <div className="max-w-5xl mx-auto space-y-12 relative z-10">
           {/* Header */}
           <div className="flex items-end justify-between">
             <div className="space-y-2">
