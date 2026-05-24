@@ -32,11 +32,6 @@ export default async function ExperienceTimelinePage() {
         <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background" />
       </div>
 
-      {/* 3D Rotating Double Helix Background (Visible on all screens) */}
-      <div className="absolute -right-16 md:right-4 top-1/4 w-[280px] md:w-[360px] h-[650px] opacity-55 dark:opacity-35 pointer-events-none z-0">
-        <Journey3DHelix />
-      </div>
-
       {/* Background glow */}
       <div className="absolute top-40 right-1/4 w-96 h-96 bg-sky-500/10 dark:bg-sky-500/5 blur-[100px] pointer-events-none" />
 
@@ -64,12 +59,19 @@ export default async function ExperienceTimelinePage() {
         {experiences.length === 0 ? (
           <p className="text-sm text-muted-foreground py-12 text-center">No experience timeline items listed yet.</p>
         ) : (
-          <div className="relative border-l border-border/60 ml-4 md:ml-8 space-y-12">
+          <div className="relative border-l-2 border-slate-200 dark:border-slate-800/80 ml-4 md:ml-8 space-y-12">
+            {/* Slim 3D DNA Helix wrapping the timeline line */}
+            <div className="absolute left-0 top-0 bottom-0 w-8 -translate-x-1/2 pointer-events-none z-0">
+              <Journey3DHelix />
+            </div>
             {experiences.map((exp) => (
               <div key={exp.id} className="relative pl-8 md:pl-12 group">
                 
                 {/* Vertical timeline node */}
-                <div className="absolute -left-1.5 top-1.5 w-3 h-3 rounded-full bg-background border-2 border-border group-hover:border-sky-500 transition-colors" />
+                <div className="absolute -left-[15px] top-[22px] w-7 h-7 rounded-full bg-background border-2 border-slate-300 dark:border-slate-700 group-hover:border-sky-500 transition-all duration-300 flex items-center justify-center shadow-md z-10 group-hover:shadow-[0_0_12px_rgba(56,189,248,0.4)]">
+                  {/* Glowing inner core (slate by default, bright sky-500 on hover) */}
+                  <span className="w-2.5 h-2.5 rounded-full bg-slate-400 dark:bg-slate-600 group-hover:bg-sky-500 group-hover:scale-110 transition-all duration-300" />
+                </div>
 
                 {/* Main Card */}
                 <div className="bg-card/25 dark:bg-card/30 backdrop-blur-md p-6 rounded-2xl border border-border/50 hover:border-sky-500/30 transition-all space-y-6 shadow-sm hover:shadow-md">
