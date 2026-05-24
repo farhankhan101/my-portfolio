@@ -175,7 +175,7 @@ export async function syncDatabaseToKnowledgeBase(): Promise<{ success: boolean;
 3. Systems Advisory: Guiding architecture audits, Docker deployments, automated CI/CD pipelines, and configuring cloud server security.
 4. AI & RAG Solutions: Building custom RAG workflows, vector database embeddings, chatbot integrations, and LLM pipelines.
 5. Database & API Tuning: Designing optimized SQL schemas, query scaling, custom RESTful/GraphQL interfaces, and authentication flows.
-6. Premium UI/UX Strategy: Fusing modern layouts, color harmony systems, interactive micro-animations, and custom graphics.`
+6. Premium Interface Design: Fusing modern layouts, color harmony systems, interactive micro-animations, and custom graphics.`
     const servicesEmbedding = await getEmbedding(servicesText)
     await db.$executeRawUnsafe(
       `INSERT INTO "ChatKnowledge" (id, type, answer, topic, embedding, "updatedAt")

@@ -26,9 +26,9 @@ import CounterAnimation from '@/components/public/CounterAnimation'
 import HandwrittenName from '@/components/public/HandwrittenName'
 import AboutSection from '@/components/public/AboutSection'
 import RotatingThreeDSphere from '@/components/public/RotatingThreeDSphere'
-import CursorTrail from '@/components/public/CursorTrail'
 import FloatingParticles from '@/components/public/FloatingParticles'
 import Interactive3DShape from '@/components/public/Interactive3DShape'
+import Projects3DGrid from '@/components/public/Projects3DGrid'
 
 export const revalidate = 60 // Cache for 60 seconds
 
@@ -72,14 +72,17 @@ export default async function HomePage() {
 
   return (
     <div className="relative w-full">
-      {/* Interactive Cursor Trail (glowing stars) */}
-      <CursorTrail />
-
       {/* BACKGROUND DECORATIVE GRID */}
       <div className="absolute inset-0 bg-[linear-gradient(to_right,rgba(148,163,184,0.05)_1px,transparent_1px),linear-gradient(to_bottom,rgba(148,163,184,0.05)_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] pointer-events-none" />
 
       {/* 1. HERO SECTION */}
       <section className="relative pt-32 pb-16 md:pt-40 md:pb-24 px-6 overflow-hidden">
+        {/* Interactive 3D Grid Wave Background */}
+        <div className="absolute inset-0 h-[480px] opacity-75 dark:opacity-50 pointer-events-none z-0">
+          <Projects3DGrid />
+          <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/40 to-background" />
+        </div>
+
         {/* Interactive Stars Canvas (fleeing from cursor) */}
         <InteractiveStars />
         {/* Glow circles */}
@@ -128,7 +131,7 @@ export default async function HomePage() {
 
               {/* Headline & Title */}
               <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-foreground leading-tight">
-                {about?.headline || 'Senior Full Stack Developer'}
+                {about?.headline || 'Full Stack Developer'}
               </h1>
             </div>
 
@@ -138,11 +141,11 @@ export default async function HomePage() {
               <p className="text-base sm:text-lg font-bold text-sky-500 dark:text-sky-400 min-h-[1.75rem]">
                 <TypewriterText
                   texts={[
-                    'Full Stack Engineer',
+                    'Full Stack Developer',
                     'SaaS Architect',
                     'AI & RAG Specialist',
-                    'Cloud & DevOps Engineer',
-                    'UI/UX Craftsman',
+                    'Frontend Engineer',
+                    'Backend Systems Engineer',
                   ]}
                   typeSpeed={55}
                   pauseMs={2000}
@@ -304,9 +307,9 @@ export default async function HomePage() {
               <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-500 relative z-10">
                 <Palette size={20} />
               </div>
-              <h3 className="text-base font-bold text-foreground relative z-10">Premium UI/UX Strategy</h3>
+              <h3 className="text-base font-bold text-foreground relative z-10">Premium Interface Design</h3>
               <p className="text-xs text-muted-foreground leading-relaxed font-semibold relative z-10">
-                Fusing modern layouts, color harmony systems, interactive micro-animations, and custom graphics to create top-tier design aesthetics.
+                Fusing modern layouts, color harmony systems, interactive micro-animations, and custom graphics to create top-tier user experiences.
               </p>
             </div>
           </div>

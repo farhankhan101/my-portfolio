@@ -55,7 +55,7 @@ export default async function ProjectCaseStudyPage({ params }: PageProps) {
       {/* Background glow */}
       <div className="absolute top-20 left-1/4 w-96 h-96 bg-sky-500/10 dark:bg-sky-500/5 blur-[100px] pointer-events-none" />
 
-      <div className="max-w-4xl mx-auto space-y-12 relative z-10">
+      <div className="max-w-5xl mx-auto space-y-12 relative z-10">
         {/* Back Link */}
         <Link
           href="/projects"

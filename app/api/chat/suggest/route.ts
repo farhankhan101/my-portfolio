@@ -26,7 +26,7 @@ export async function POST(req: NextRequest) {
       if (msgLower.includes('stack') || msgLower.includes('tech') || msgLower.includes('skill')) {
         suggestions = [
           'Can you show me projects built with Next.js?',
-          'Do you have experience with cloud or DevOps?',
+          'Do you have experience with system design?',
           'Tell me about your Django expertise.',
         ]
       } else if (msgLower.includes('project') || msgLower.includes('work') || msgLower.includes('portfolio') || msgLower.includes('silquerm')) {
@@ -55,7 +55,7 @@ export async function POST(req: NextRequest) {
     })
 
     const prompt = `
-You are an AI assistant helping Farhan Ahmed (a Senior Full Stack Developer).
+You are an AI assistant helping Farhan Ahmed (a Full Stack Developer).
 Given the last question the user asked, and the assistant's response, generate exactly 3 short, relevant, and engaging follow-up questions that the user might want to ask next about Farhan, his skills, or his projects.
 Keep the questions concise (maximum 7-8 words each). Make sure they are tailored directly to the conversation content.
 

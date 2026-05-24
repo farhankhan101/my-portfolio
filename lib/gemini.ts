@@ -62,7 +62,7 @@ export async function generateChatStream(
     console.warn("⚠️ [Gemini Sandbox] Generating simulated chat stream response.")
     return new ReadableStream({
       async start(controller) {
-        const text = `[Gemini Sandbox Mode] Hi! I'm Farhan's AI Assistant. Because you are testing locally without a live Google Gemini API Key, I am running in Sandbox Mode. You asked: "${userMessage}". Farhan is a Senior Full Stack Developer at Silquetech with 5+ years of experience in React, Next.js, Django, and PostgreSQL. Feel free to contact him directly at farhan@silquetech.com!`
+        const text = `[Gemini Sandbox Mode] Hi! I'm Farhan's AI Assistant. Because you are testing locally without a live Google Gemini API Key, I am running in Sandbox Mode. You asked: "${userMessage}". Farhan is a Full Stack Developer at Silquetech with 5+ years of experience in React, Next.js, Django, and PostgreSQL. Feel free to contact him directly at farhan@silquetech.com!`
         const words = text.split(" ")
         for (const word of words) {
           controller.enqueue(encoder.encode(word + " "))
@@ -140,7 +140,7 @@ export async function refineAnswerWithAI(
     })
 
     const prompt = `
-You are a professional writing assistant helping Farhan Ahmed (a Senior Full Stack Developer) train his portfolio chatbot.
+You are a professional writing assistant helping Farhan Ahmed (a Full Stack Developer) train his portfolio chatbot.
 
 User asked this question:
 "${question}"

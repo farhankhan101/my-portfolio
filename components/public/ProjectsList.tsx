@@ -53,7 +53,7 @@ export default function ProjectsList({ initialProjects }: ProjectsListProps) {
               className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer border ${
                 activeCategory === cat
                   ? 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/30'
-                  : 'bg-secondary text-muted-foreground border-border hover:bg-secondary/80 hover:text-foreground'
+                  : 'bg-card/25 dark:bg-card/30 backdrop-blur-sm text-muted-foreground border-border hover:bg-secondary/60 hover:text-foreground'
               }`}
             >
               {cat}
@@ -69,7 +69,7 @@ export default function ProjectsList({ initialProjects }: ProjectsListProps) {
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder="Search by title or tech..."
-            className="w-full pl-9 pr-4 py-2 bg-card border border-border rounded-full text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:border-sky-500/50 transition-colors shadow-sm"
+            className="w-full pl-9 pr-4 py-2 bg-card/25 dark:bg-card/30 backdrop-blur-md border border-border rounded-full text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:border-sky-500/50 transition-colors shadow-sm"
           />
         </div>
       </div>
@@ -85,10 +85,10 @@ export default function ProjectsList({ initialProjects }: ProjectsListProps) {
           {filteredProjects.map((project) => (
             <div
               key={project.id}
-              className="group bg-card border border-border/60 hover:border-sky-500/50 rounded-2xl overflow-hidden flex flex-col justify-between transition-all shadow-md hover:shadow-xl hover:-translate-y-0.5 duration-300"
+              className="group bg-card/25 dark:bg-card/30 backdrop-blur-md border border-border/50 hover:border-sky-500/40 rounded-2xl overflow-hidden flex flex-col justify-between transition-all shadow-md hover:shadow-xl hover:-translate-y-0.5 duration-300"
             >
               {/* Cover Image */}
-              <div className="relative aspect-video bg-secondary overflow-hidden border-b border-border/40">
+              <div className="relative aspect-video bg-secondary/30 overflow-hidden border-b border-border/40">
                 <Image
                   src={project.coverImage}
                   alt={project.title}
@@ -121,7 +121,7 @@ export default function ProjectsList({ initialProjects }: ProjectsListProps) {
                 <div className="flex items-center justify-between pt-4 border-t border-border/40 mt-auto">
                   <div className="flex gap-1.5 flex-wrap">
                     {project.techStack.slice(0, 3).map((t) => (
-                      <span key={t} className="px-2 py-0.5 bg-secondary border border-border/40 rounded text-[9px] font-bold text-muted-foreground">
+                      <span key={t} className="px-2 py-0.5 bg-card/45 border border-border/40 rounded text-[9px] font-bold text-muted-foreground">
                         {t}
                       </span>
                     ))}

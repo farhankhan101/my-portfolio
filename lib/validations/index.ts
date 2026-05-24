@@ -47,7 +47,7 @@ export const experienceSchema = z.object({
 
 export const skillSchema = z.object({
   name: z.string().min(1, 'Skill name is required'),
-  category: z.enum(['Frontend', 'Backend', 'DevOps', 'Tools']),
+  category: z.enum(['Frontend', 'Backend', 'Tools']),
   iconSlug: z.string().min(1, 'Devicons slug is required'),
   proficiency: z.coerce.number().min(0).max(100, 'Proficiency must be between 0 and 100'),
   sortOrder: z.coerce.number().default(0),
@@ -81,8 +81,9 @@ export const siteConfigSchema = z.object({
 export const contactSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
   email: z.string().email('Please enter a valid email address'),
-  subject: z.enum(['Project Inquiry', 'Freelance', 'Job Opportunity', 'General'], {
-    message: 'Please select an inquiry subject'
-  }),
+  phone: z.string().optional().nullable(),
+  subject: z.string().min(2, 'Subject must be at least 2 characters'),
   message: z.string().min(10, 'Message must be at least 10 characters long'),
+  attachmentName: z.string().optional().nullable(),
+  attachmentData: z.string().optional().nullable(),
 })

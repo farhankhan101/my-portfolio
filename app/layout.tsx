@@ -6,6 +6,7 @@ import { ThemeProvider } from '@/components/ThemeProvider'
 import Navbar from '@/components/public/Navbar'
 import Footer from '@/components/public/Footer'
 import ChatbotWidget from '@/components/public/ChatbotWidget'
+import CursorTrail from '@/components/public/CursorTrail'
 
 const outfit = Outfit({
   subsets: ['latin'],
@@ -13,8 +14,8 @@ const outfit = Outfit({
 })
 
 export const metadata: Metadata = {
-  title: 'Farhan Ahmed | Senior Full Stack Developer Portfolio',
-  description: 'Senior Full Stack Developer specializing in SaaS applications, Next.js, React, Node.js, and Django REST Framework.',
+  title: 'Farhan Ahmed | Full Stack Developer Portfolio',
+  description: 'Full Stack Developer specializing in SaaS applications, Next.js, React, Node.js, and Django REST Framework.',
 }
 
 export default function RootLayout({
@@ -30,6 +31,7 @@ export default function RootLayout({
     >
       <body className="min-h-full flex flex-col bg-background text-foreground font-sans">
         <ThemeProvider>
+          <CursorTrail />
           <Navbar />
           <div className="flex-1 flex flex-col">
             {children}

@@ -99,7 +99,7 @@ model Experience {
 model Skill {
   id         String @id @default(cuid())
   name       String
-  category   String // "Frontend" | "Backend" | "DevOps" | "Tools"
+  category   String // "Frontend" | "Backend" | "Tools"
   iconSlug   String // devicons slug e.g. "react", "django"
   proficiency Int   @default(90) // 0-100
   sortOrder  Int    @default(0)

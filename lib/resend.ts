@@ -14,18 +14,23 @@ interface SendContactEmailParams {
   email: string
   subject: string
   message: string
+  phone?: string | null
+  attachmentName?: string | null
+  attachmentData?: string | null
 }
 
-export async function sendContactEmail({ name, email, subject, message }: SendContactEmailParams) {
+export async function sendContactEmail({ name, email, subject, message, phone, attachmentName, attachmentData }: SendContactEmailParams) {
   const adminSubject = `New Contact from ${name} — ${subject}`
   const userSubject = `Got your message! I'll be in touch soon — Farhan Ahmed`
 
   const adminHtml = `
     <div style="font-family: 'Inter', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff;">
       <h2 style="color: #0369a1; border-bottom: 2px solid #f0f6ff; padding-bottom: 10px; margin-top: 0;">New Portfolio Message</h2>
-      <p style="font-size: 16px; color: #334155; margin: 16px 0;"><strong>Name:</strong> ${name}</p>
-      <p style="font-size: 16px; color: #334155; margin: 16px 0;"><strong>Email:</strong> <a href="mailto:${email}" style="color: #0369a1; text-decoration: none;">${email}</a></p>
-      <p style="font-size: 16px; color: #334155; margin: 16px 0;"><strong>Subject:</strong> ${subject}</p>
+      <p style="font-size: 16px; color: #334155; margin: 12px 0;"><strong>Name:</strong> ${name}</p>
+      <p style="font-size: 16px; color: #334155; margin: 12px 0;"><strong>Email:</strong> <a href="mailto:${email}" style="color: #0369a1; text-decoration: none;">${email}</a></p>
+      ${phone ? `<p style="font-size: 16px; color: #334155; margin: 12px 0;"><strong>Phone:</strong> ${phone}</p>` : ''}
+      <p style="font-size: 16px; color: #334155; margin: 12px 0;"><strong>Subject:</strong> ${subject}</p>
+      ${attachmentName ? `<p style="font-size: 16px; color: #334155; margin: 12px 0;"><strong>Attachment:</strong> ${attachmentName}</p>` : ''}
       <div style="margin: 20px 0; padding: 15px; background-color: #f8fafc; border-left: 4px solid #0369a1; border-radius: 4px; font-style: italic; color: #475569; line-height: 1.6;">
         "${message.replace(/\n/g, '<br/>')}"
       </div>
@@ -59,7 +64,7 @@ export async function sendContactEmail({ name, email, subject, message }: SendCo
         <tr>
           <td style="vertical-align: top;">
             <p style="margin: 0; font-weight: 700; color: #0f172a; font-size: 16px;">Farhan Ahmed</p>
-            <p style="margin: 2px 0 0 0; color: #64748b; font-size: 14px;">Senior Full Stack Developer</p>
+            <p style="margin: 2px 0 0 0; color: #64748b; font-size: 14px;">Full Stack Developer</p>
             <p style="margin: 6px 0 0 0; font-size: 14px;">
               <a href="https://github.com/farhan-ahmed" style="color: #0369a1; text-decoration: none; margin-right: 12px;">GitHub</a>
               <a href="https://linkedin.com/in/farhan-ahmed" style="color: #0369a1; text-decoration: none;">LinkedIn</a>
@@ -89,6 +94,12 @@ export async function sendContactEmail({ name, email, subject, message }: SendCo
       subject: adminSubject,
       html: adminHtml,
       replyTo: email,
+      attachments: attachmentName && attachmentData ? [
+        {
+          filename: attachmentName,
+          content: attachmentData,
+        }
+      ] : undefined
     })
 
     // Send Auto-reply to User

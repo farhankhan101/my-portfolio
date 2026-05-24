@@ -56,21 +56,37 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const { name, email, subject, message } = result.data
+    const { name, email, subject, message, phone, attachmentName, attachmentData } = result.data
 
-    // 4. Save to DB
+    // 4. Save to DB (append phone & file details in message text to avoid changing DB schema)
+    let formattedMessage = message
+    if (phone) {
+      formattedMessage += `\n\n[Contact Number: ${phone}]`
+    }
+    if (attachmentName) {
+      formattedMessage += `\n[Attached File: ${attachmentName}]`
+    }
+
     const contactMessage = await db.contactMessage.create({
       data: {
         name,
         email,
         subject,
-        message,
+        message: formattedMessage,
         status: 'UNREAD',
       },
     })
 
-    // 5. Send emails via Resend
-    await sendContactEmail({ name, email, subject, message })
+    // 5. Send emails via Resend (with optional base64 attachment support)
+    await sendContactEmail({
+      name,
+      email,
+      subject,
+      message,
+      phone,
+      attachmentName,
+      attachmentData
+    })
 
     return NextResponse.json(
       {

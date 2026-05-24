@@ -7,13 +7,13 @@ import { Plus, Edit2, Trash2, Loader2, Sparkles, GripVertical, ChevronUp, Chevro
 interface Skill {
   id: string
   name: string
-  category: 'Frontend' | 'Backend' | 'DevOps' | 'Tools'
+  category: 'Frontend' | 'Backend' | 'Tools'
   iconSlug: string
   proficiency: number
   sortOrder: number
 }
 
-const CATEGORIES = ['Frontend', 'Backend', 'DevOps', 'Tools'] as const
+const CATEGORIES = ['Frontend', 'Backend', 'Tools'] as const
 
 export default function AdminSkills() {
   const [skills, setSkills] = useState<Skill[]>([])
@@ -25,7 +25,7 @@ export default function AdminSkills() {
   // Form State
   const [editingId, setEditingId] = useState<string | null>(null)
   const [name, setName] = useState('')
-  const [category, setCategory] = useState<'Frontend' | 'Backend' | 'DevOps' | 'Tools'>('Frontend')
+  const [category, setCategory] = useState<'Frontend' | 'Backend' | 'Tools'>('Frontend')
   const [iconSlug, setIconSlug] = useState('')
   const [proficiency, setProficiency] = useState(85)
   const [sortOrder, setSortOrder] = useState(0)

@@ -24,18 +24,22 @@ async function main() {
   console.log('✅ Admin user created/verified (farhan@silquetech.com / adminpassword123)')
 
   // 2. About
+  const aboutData = {
+    headline: 'Full Stack Developer',
+    tagline: 'I build scalable web apps that solve real problems.',
+    bio: `<p>I'm Farhan Ahmed, a Full Stack Developer at Silquetech, Karachi. I specialize in building robust backend services and interactive frontends. Over the last 5+ years, I have architected and deployed multiple SaaS applications, custom developer tools, and automation systems.</p>`,
+    bioShort: 'Full Stack Developer with 5+ years experience in React, Next.js, Django, and PostgreSQL.',
+    avatarUrl: '/assets/avatar.jpg',
+    location: 'Karachi, Pakistan',
+    availableFor: ['Software Engineer', 'Contract', 'Consulting'],
+  }
+
   await prisma.about.upsert({
     where: { id: 'singleton' },
-    update: {},
+    update: aboutData,
     create: {
       id: 'singleton',
-      headline: 'Senior Full Stack Developer',
-      tagline: 'I build scalable web apps that solve real problems.',
-      bio: `<p>I'm Farhan Ahmed, a Senior Full Stack Developer at Silquetech, Karachi. I specialize in building robust backend services and interactive frontends. Over the last 5+ years, I have architected and deployed multiple SaaS applications, custom developer tools, and automation systems.</p>`,
-      bioShort: 'Senior Full Stack Developer with 5+ years experience in React, Next.js, Django, and PostgreSQL.',
-      avatarUrl: '/assets/avatar.jpg',
-      location: 'Karachi, Pakistan',
-      availableFor: ['Software Engineer', 'Contract', 'Consulting'],
+      ...aboutData
     },
   })
   console.log('✅ About section created/verified')
@@ -51,7 +55,7 @@ async function main() {
     data: [
       {
         company: 'Silquetech',
-        role: 'Senior Full Stack Developer',
+        role: 'Full Stack Developer',
         type: 'Full-time',
         location: 'Karachi, Pakistan',
         startDate: new Date('2022-01-01'),
@@ -377,7 +381,7 @@ async function main() {
       { name: 'PostgreSQL', category: 'Backend', iconSlug: 'postgresql', proficiency: 90, sortOrder: 8 },
       { name: 'Python', category: 'Backend', iconSlug: 'python', proficiency: 85, sortOrder: 9 },
       { name: 'Redis', category: 'Backend', iconSlug: 'redis', proficiency: 80, sortOrder: 10 },
-      { name: 'Docker', category: 'DevOps', iconSlug: 'docker', proficiency: 80, sortOrder: 11 },
+      { name: 'Docker', category: 'Tools', iconSlug: 'docker', proficiency: 80, sortOrder: 11 },
       { name: 'Git', category: 'Tools', iconSlug: 'git', proficiency: 92, sortOrder: 12 },
     ],
   })
@@ -389,7 +393,7 @@ async function main() {
       {
         type: 'QA',
         question: 'Who are you?',
-        answer: "I'm Farhan Ahmed, a Senior Full Stack Developer based in Karachi, Pakistan. I specialize in React, Next.js, Django, and PostgreSQL.",
+        answer: "I'm Farhan Ahmed, a Full Stack Developer based in Karachi, Pakistan. I specialize in React, Next.js, Django, and PostgreSQL.",
         topic: 'intro',
       },
       {
@@ -401,7 +405,7 @@ async function main() {
       {
         type: 'QA',
         question: 'What is your tech stack?',
-        answer: 'Frontend: React, Next.js, Vue.js, TypeScript, Tailwind CSS. Backend: Django REST Framework, Node.js, Express. Database: PostgreSQL, Redis. DevOps: Docker, Vercel, GitHub Actions.',
+        answer: 'Frontend: React, Next.js, Vue.js, TypeScript, Tailwind CSS. Backend: Django REST Framework, Node.js, Express. Database: PostgreSQL, Redis. Tools: Docker, Vercel, GitHub Actions.',
         topic: 'skills',
       },
       {
@@ -425,7 +429,7 @@ async function main() {
       {
         type: 'QA',
         question: 'What is Silquetech or your role there?',
-        answer: 'I work as a Senior Full Stack Developer at Silquetech, a digital studio designing and engineering high-performance software. I led the development of restaurant SaaS platforms, client products, and designed and built the corporate website platform using Next.js, Framer Motion, and Tailwind CSS.',
+        answer: 'I work as a Full Stack Developer at Silquetech, a digital studio designing and engineering high-performance software. I led the development of restaurant SaaS platforms, client products, and designed and built the corporate website platform using Next.js, Framer Motion, and Tailwind CSS.',
         topic: 'projects',
       },
     ],
@@ -433,20 +437,24 @@ async function main() {
   console.log('✅ Chatbot knowledge database initialized')
 
   // 7. Site config
+  const siteConfigData = {
+    seoTitle: 'Farhan Ahmed — Full Stack Developer',
+    seoDescription: 'Full Stack Developer in Karachi. React, Next.js, Django, PostgreSQL. Available for freelance.',
+    socialLinks: {
+      github: 'https://github.com/farhan-ahmed',
+      linkedin: 'https://www.linkedin.com/in/muhammad-farhan-khan-0202b31b6/',
+      whatsapp: 'https://wa.me/923079971295',
+    },
+    contactEmail: 'farhan@silquetech.com',
+    footerText: 'Built with Next.js & coffee ☕',
+  }
+
   await prisma.siteConfig.upsert({
     where: { id: 'singleton' },
-    update: {},
+    update: siteConfigData,
     create: {
       id: 'singleton',
-      seoTitle: 'Farhan Ahmed — Senior Full Stack Developer',
-      seoDescription: 'Senior Full Stack Developer in Karachi. React, Next.js, Django, PostgreSQL. Available for freelance.',
-      socialLinks: {
-        github: 'https://github.com/farhan-ahmed',
-        linkedin: 'https://www.linkedin.com/in/muhammad-farhan-khan-0202b31b6/',
-        whatsapp: 'https://wa.me/923079971295',
-      },
-      contactEmail: 'farhan@silquetech.com',
-      footerText: 'Built with Next.js & coffee ☕',
+      ...siteConfigData
     },
   })
   console.log('✅ Site config created')

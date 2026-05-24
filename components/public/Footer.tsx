@@ -47,7 +47,7 @@ export default function Footer() {
               Farhan Ahmed
             </span>
             <p className="text-xs text-muted-foreground font-semibold">
-              Senior Full Stack Architect • SaaS & API Specialist
+              Full Stack Developer • SaaS & API Specialist
             </p>
           </div>
           <p className="text-xs text-muted-foreground max-w-sm leading-relaxed font-semibold">

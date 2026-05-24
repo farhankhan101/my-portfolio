@@ -16,7 +16,7 @@ interface SkillsShowcaseProps {
   initialSkills: Skill[]
 }
 
-const CATEGORIES = ['All', 'Frontend', 'Backend', 'DevOps', 'Tools']
+const CATEGORIES = ['All', 'Frontend', 'Backend', 'Tools']
 
 // Elegant inline SVG icons for technology stack
 function getTechIcon(name: string) {
@@ -318,7 +318,7 @@ export default function SkillsShowcase({ initialSkills }: SkillsShowcaseProps) {
                     <Sparkles className="text-sky-500 animate-pulse" size={24} />
                     <h4 className="text-xs font-bold text-foreground">Select a specific category</h4>
                     <p className="text-[11px] text-muted-foreground max-w-[200px]">
-                      Please choose Frontend, Backend, DevOps, or Tools tab above to render the interactive spider web.
+                      Please choose Frontend, Backend, or Tools tab above to render the interactive spider web.
                     </p>
                   </div>
                 )}
