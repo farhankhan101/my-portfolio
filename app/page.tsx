@@ -27,6 +27,8 @@ import HandwrittenName from '@/components/public/HandwrittenName'
 import AboutSection from '@/components/public/AboutSection'
 import RotatingThreeDSphere from '@/components/public/RotatingThreeDSphere'
 import CursorTrail from '@/components/public/CursorTrail'
+import FloatingParticles from '@/components/public/FloatingParticles'
+import Interactive3DShape from '@/components/public/Interactive3DShape'
 
 export const revalidate = 60 // Cache for 60 seconds
 
@@ -87,17 +89,17 @@ export default async function HomePage() {
           
           {/* Avatar (left) */}
           {about?.avatarUrl && (
-            <div className="col-span-1 md:col-span-4 flex justify-center">
+            <div className="col-span-1 md:col-span-5 flex justify-center">
               <div className="relative shrink-0 group">
                 {/* Outer soft shadow border */}
-                <div className="absolute -inset-1.5 rounded-[2rem] bg-gradient-to-tr from-sky-500 to-indigo-500 opacity-40 blur-md group-hover:opacity-60 transition duration-300 animate-pulse" />
-                <div className="relative w-48 h-48 sm:w-56 sm:h-56 md:w-60 md:h-60 rounded-[2rem] overflow-hidden border border-border bg-card shadow-2xl">
+                <div className="absolute -inset-1.5 rounded-[2.2rem] bg-gradient-to-tr from-sky-500 to-indigo-500 opacity-40 blur-md group-hover:opacity-60 transition duration-300 animate-pulse" />
+                <div className="relative w-56 h-56 sm:w-64 sm:h-64 md:w-72 md:h-72 rounded-[2.2rem] overflow-hidden border border-border bg-card shadow-2xl">
                   <Image
                     src={about.avatarUrl}
                     alt="Farhan Ahmed Avatar"
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 224px, 240px"
+                    sizes="(max-width: 768px) 256px, 288px"
                     priority
                     unoptimized={about.avatarUrl.startsWith('/uploads/')}
                   />
@@ -107,48 +109,55 @@ export default async function HomePage() {
           )}
 
           {/* Text content (right) */}
-          <div className="col-span-1 md:col-span-8 space-y-6 text-center md:text-left">
+          <div className="col-span-1 md:col-span-7 space-y-4 text-center md:text-left">
             {/* Availability Badge */}
             {about?.availableFor && about.availableFor.length > 0 && (
               <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-sky-500/10 dark:bg-sky-500/20 border border-sky-500/20 dark:border-sky-400/20 text-sky-600 dark:text-sky-450 text-xs font-bold uppercase tracking-wider">
                 <span className="w-1.5 h-1.5 rounded-full bg-sky-500 dark:bg-sky-400 animate-pulse" />
-                <span>{about.availableFor[0]}</span>
+                <span>
+                  {about.availableFor[0] === 'Freelance' ? 'Software Engineer' : about.availableFor[0]}
+                </span>
               </div>
             )}
 
-            {/* Handwritten Name Signature */}
-            <div className="block pt-2">
-              <HandwrittenName />
+            {/* Handwritten Name Signature & Headline - tightly spaced */}
+            <div className="space-y-1 md:space-y-2">
+              <div className="block">
+                <HandwrittenName />
+              </div>
+
+              {/* Headline & Title */}
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-foreground leading-tight">
+                {about?.headline || 'Senior Full Stack Developer'}
+              </h1>
             </div>
 
-            {/* Headline & Title */}
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-foreground leading-tight">
-              {about?.headline || 'Senior Full Stack Developer'}
-            </h1>
+            {/* Rotating Roles & Tagline - tightly spaced */}
+            <div className="space-y-3">
+              {/* Typewriter rotating roles */}
+              <p className="text-base sm:text-lg font-bold text-sky-500 dark:text-sky-400 min-h-[1.75rem]">
+                <TypewriterText
+                  texts={[
+                    'Full Stack Engineer',
+                    'SaaS Architect',
+                    'AI & RAG Specialist',
+                    'Cloud & DevOps Engineer',
+                    'UI/UX Craftsman',
+                  ]}
+                  typeSpeed={55}
+                  pauseMs={2000}
+                  deleteSpeed={30}
+                />
+              </p>
 
-            {/* Typewriter rotating roles */}
-            <p className="text-base sm:text-lg font-bold text-sky-500 dark:text-sky-400 min-h-[1.75rem]">
-              <TypewriterText
-                texts={[
-                  'Full Stack Engineer',
-                  'SaaS Architect',
-                  'AI & RAG Specialist',
-                  'Cloud & DevOps Engineer',
-                  'UI/UX Craftsman',
-                ]}
-                typeSpeed={55}
-                pauseMs={2000}
-                deleteSpeed={30}
-              />
-            </p>
-
-            {/* Tagline */}
-            <p className="text-base sm:text-lg text-muted-foreground max-w-2xl font-medium leading-relaxed">
-              {about?.tagline || 'Specializing in building premium SaaS applications, React frameworks, and Django APIs.'}
-            </p>
+              {/* Tagline */}
+              <p className="text-base sm:text-lg text-muted-foreground max-w-2xl font-medium leading-relaxed">
+                {about?.tagline || 'Specializing in building premium SaaS applications, React frameworks, and Django APIs.'}
+              </p>
+            </div>
 
             {/* CTAs */}
-            <div className="flex flex-wrap items-center justify-center md:justify-start gap-4">
+            <div className="flex flex-wrap items-center justify-center md:justify-start gap-4 pt-2">
               <Link
                 href="/projects"
                 className="flex items-center gap-2 px-6 py-3 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-lg text-sm shadow-xl hover:shadow-sky-550/10 transition-all cursor-pointer"
@@ -196,7 +205,11 @@ export default async function HomePage() {
       </section>
 
       {/* 3. CORE SERVICES / EXPERTISE SECTION */}
-      <section className="py-20 px-6 border-b border-border/50 relative z-10">
+      <section className="py-20 px-6 border-b border-border/50 relative z-10 overflow-hidden">
+        {/* Interactive Floating Particles in Background */}
+        <div className="absolute inset-0 opacity-30 dark:opacity-20 pointer-events-none">
+          <FloatingParticles count={30} />
+        </div>
         <div className="max-w-5xl mx-auto space-y-12">
           {/* Header */}
           <div className="text-center space-y-3">
@@ -213,62 +226,86 @@ export default async function HomePage() {
 
           {/* Grid of expertise */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-card border border-border/60 hover:border-sky-500/50 hover:shadow-lg rounded-2xl p-6 transition-all space-y-4">
-              <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-500">
+            <div className="bg-card border border-border/60 hover:border-sky-500/50 hover:shadow-lg rounded-2xl p-6 transition-all space-y-4 relative overflow-hidden group">
+              {/* Interactive 3D Cube Canvas */}
+              <div className="absolute right-3 top-3 w-16 h-16 opacity-30 group-hover:opacity-55 pointer-events-none transition-all duration-300">
+                <Interactive3DShape shape="cube" />
+              </div>
+              <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-500 relative z-10">
                 <Server size={20} />
               </div>
-              <h3 className="text-base font-bold text-foreground">Cloud & SaaS Architecture</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed font-semibold">
+              <h3 className="text-base font-bold text-foreground relative z-10">Cloud & SaaS Architecture</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed font-semibold relative z-10">
                 Designing PostgreSQL databases, Redis layers, and high-performance server APIs using Node.js and Python. Focusing on speed, uptime, and strict data security.
               </p>
             </div>
             
-            <div className="bg-card border border-border/60 hover:border-sky-500/50 hover:shadow-lg rounded-2xl p-6 transition-all space-y-4">
-              <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-500">
+            <div className="bg-card border border-border/60 hover:border-sky-500/50 hover:shadow-lg rounded-2xl p-6 transition-all space-y-4 relative overflow-hidden group">
+              {/* Interactive 3D Octahedron Crystal Canvas */}
+              <div className="absolute right-3 top-3 w-16 h-16 opacity-30 group-hover:opacity-55 pointer-events-none transition-all duration-300">
+                <Interactive3DShape shape="pyramid" />
+              </div>
+              <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-500 relative z-10">
                 <Globe size={20} />
               </div>
-              <h3 className="text-base font-bold text-foreground">Frontend Engineering</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed font-semibold">
+              <h3 className="text-base font-bold text-foreground relative z-10">Frontend Engineering</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed font-semibold relative z-10">
                 Creating responsive, fluid, and custom-styled web apps using Next.js/React. Focused on excellent UX transitions, performance audits, and high search accessibility.
               </p>
             </div>
 
-            <div className="bg-card border border-border/60 hover:border-sky-500/50 hover:shadow-lg rounded-2xl p-6 transition-all space-y-4">
-              <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-500">
+            <div className="bg-card border border-border/60 hover:border-sky-500/50 hover:shadow-lg rounded-2xl p-6 transition-all space-y-4 relative overflow-hidden group">
+              {/* Interactive 3D Concentric Orbiting Rings Canvas */}
+              <div className="absolute right-3 top-3 w-16 h-16 opacity-30 group-hover:opacity-55 pointer-events-none transition-all duration-300">
+                <Interactive3DShape shape="torus" />
+              </div>
+              <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-500 relative z-10">
                 <TrendingUp size={20} />
               </div>
-              <h3 className="text-base font-bold text-foreground">Systems Advisory</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed font-semibold">
+              <h3 className="text-base font-bold text-foreground relative z-10">Systems Advisory</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed font-semibold relative z-10">
                 Guiding architecture audits, Docker deployments, automated CI/CD pipelines, and configuring cloud server security parameters.
               </p>
             </div>
 
-            <div className="bg-card border border-border/60 hover:border-sky-500/50 hover:shadow-lg rounded-2xl p-6 transition-all space-y-4">
-              <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-500">
+            <div className="bg-card border border-border/60 hover:border-sky-500/50 hover:shadow-lg rounded-2xl p-6 transition-all space-y-4 relative overflow-hidden group">
+              {/* Interactive 3D Neural Node Connections Canvas */}
+              <div className="absolute right-3 top-3 w-16 h-16 opacity-30 group-hover:opacity-55 pointer-events-none transition-all duration-300">
+                <Interactive3DShape shape="network" />
+              </div>
+              <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-500 relative z-10">
                 <Cpu size={20} />
               </div>
-              <h3 className="text-base font-bold text-foreground">AI & RAG Solutions</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed font-semibold">
+              <h3 className="text-base font-bold text-foreground relative z-10">AI & RAG Solutions</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed font-semibold relative z-10">
                 Building custom RAG workflows, vector database embeddings, chatbot integrations, and hooking LLM pipelines into core software models.
               </p>
             </div>
 
-            <div className="bg-card border border-border/60 hover:border-sky-500/50 hover:shadow-lg rounded-2xl p-6 transition-all space-y-4">
-              <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-500">
+            <div className="bg-card border border-border/60 hover:border-sky-500/50 hover:shadow-lg rounded-2xl p-6 transition-all space-y-4 relative overflow-hidden group">
+              {/* Interactive 3D Cylinder Struts Canvas */}
+              <div className="absolute right-3 top-3 w-16 h-16 opacity-30 group-hover:opacity-55 pointer-events-none transition-all duration-300">
+                <Interactive3DShape shape="cylinder" />
+              </div>
+              <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-500 relative z-10">
                 <Database size={20} />
               </div>
-              <h3 className="text-base font-bold text-foreground">Database & API Tuning</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed font-semibold">
+              <h3 className="text-base font-bold text-foreground relative z-10">Database & API Tuning</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed font-semibold relative z-10">
                 Designing highly optimized SQL schemas, query scaling, custom RESTful/GraphQL interfaces, and iron-clad user authentication flows.
               </p>
             </div>
 
-            <div className="bg-card border border-border/60 hover:border-sky-500/50 hover:shadow-lg rounded-2xl p-6 transition-all space-y-4">
-              <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-500">
+            <div className="bg-card border border-border/60 hover:border-sky-500/50 hover:shadow-lg rounded-2xl p-6 transition-all space-y-4 relative overflow-hidden group">
+              {/* Interactive 3D Sphere Points Grid Canvas */}
+              <div className="absolute right-3 top-3 w-16 h-16 opacity-30 group-hover:opacity-55 pointer-events-none transition-all duration-300">
+                <Interactive3DShape shape="sphere" />
+              </div>
+              <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-500 relative z-10">
                 <Palette size={20} />
               </div>
-              <h3 className="text-base font-bold text-foreground">Premium UI/UX Strategy</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed font-semibold">
+              <h3 className="text-base font-bold text-foreground relative z-10">Premium UI/UX Strategy</h3>
+              <p className="text-xs text-muted-foreground leading-relaxed font-semibold relative z-10">
                 Fusing modern layouts, color harmony systems, interactive micro-animations, and custom graphics to create top-tier design aesthetics.
               </p>
             </div>
@@ -277,7 +314,15 @@ export default async function HomePage() {
       </section>
 
       {/* 4. FEATURED PROJECTS SPOTLIGHT */}
-      <section className="py-20 px-6 relative z-10">
+      <section className="py-20 px-6 relative z-10 overflow-hidden">
+        {/* Interactive Floating Particles in Background */}
+        <div className="absolute inset-0 opacity-30 dark:opacity-20 pointer-events-none">
+          <FloatingParticles count={25} />
+        </div>
+        {/* Large Interactive 3D Network in Background */}
+        <div className="absolute -right-16 -bottom-16 w-[320px] h-[320px] opacity-15 dark:opacity-10 pointer-events-none md:block hidden">
+          <Interactive3DShape shape="network" />
+        </div>
         <div className="max-w-5xl mx-auto space-y-12">
           {/* Header */}
           <div className="flex items-end justify-between">
@@ -409,6 +454,14 @@ export default async function HomePage() {
 
       {/* 7. WHY HIRE ME SECTION */}
       <section className="py-20 px-6 border-t border-border/50 bg-secondary/10 relative z-10 overflow-hidden">
+        {/* Interactive Floating Particles in Background */}
+        <div className="absolute inset-0 opacity-30 dark:opacity-20 pointer-events-none">
+          <FloatingParticles count={30} />
+        </div>
+        {/* Large Interactive 3D Torus in Background */}
+        <div className="absolute -right-16 -top-16 w-[320px] h-[320px] opacity-15 dark:opacity-10 pointer-events-none md:block hidden">
+          <Interactive3DShape shape="torus" />
+        </div>
         <style dangerouslySetInnerHTML={{ __html: `
           @keyframes marquee {
             0% { transform: translateX(0); }

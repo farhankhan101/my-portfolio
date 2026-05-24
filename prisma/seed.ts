@@ -35,7 +35,7 @@ async function main() {
       bioShort: 'Senior Full Stack Developer with 5+ years experience in React, Next.js, Django, and PostgreSQL.',
       avatarUrl: '/assets/avatar.jpg',
       location: 'Karachi, Pakistan',
-      availableFor: ['Freelance', 'Contract', 'Consulting'],
+      availableFor: ['Software Engineer', 'Contract', 'Consulting'],
     },
   })
   console.log('✅ About section created/verified')

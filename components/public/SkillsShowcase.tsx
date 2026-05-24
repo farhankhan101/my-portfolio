@@ -2,6 +2,8 @@
 
 import { useState, useMemo } from 'react'
 import { LayoutGrid, BarChart2, Code2, Sparkles } from 'lucide-react'
+import FloatingParticles from './FloatingParticles'
+import Interactive3DShape from './Interactive3DShape'
 
 interface Skill {
   id: string
@@ -179,6 +181,14 @@ export default function SkillsShowcase({ initialSkills }: SkillsShowcaseProps) {
 
   return (
     <section className="py-24 px-6 border-t border-border/50 relative z-10 overflow-hidden">
+      {/* Interactive Floating Particles in Background */}
+      <div className="absolute inset-0 opacity-40 dark:opacity-30 pointer-events-none">
+        <FloatingParticles count={30} />
+      </div>
+      {/* Large Interactive 3D Cylinder in Background */}
+      <div className="absolute -left-16 -bottom-16 w-[320px] h-[320px] opacity-15 dark:opacity-10 pointer-events-none md:block hidden">
+        <Interactive3DShape shape="cylinder" />
+      </div>
       {/* Visual glowing meshes in background */}
       <div className="absolute top-0 right-0 w-[400px] h-[400px] bg-sky-500/5 dark:bg-sky-500/3 blur-[120px] pointer-events-none" />
       <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-indigo-500/5 dark:bg-indigo-500/3 blur-[120px] pointer-events-none" />

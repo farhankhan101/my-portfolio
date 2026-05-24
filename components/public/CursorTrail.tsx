@@ -35,13 +35,34 @@ export default function CursorTrail() {
     resize()
     window.addEventListener('resize', resize)
 
-    const colors = [
-      'rgba(56, 189, 248, ',  // sky-400
-      'rgba(129, 140, 248, ', // indigo-400
-      'rgba(6, 182, 212, ',   // cyan-500
-      'rgba(165, 180, 252, ', // indigo-300
-      'rgba(244, 63, 94, '    // rose-500 (extra subtle accent)
-    ]
+    const getColors = () => {
+      const isDark = document.documentElement.classList.contains('dark')
+      return isDark
+        ? [
+            'rgba(56, 189, 248, ',  // sky-400 (light blue)
+            'rgba(6, 182, 212, ',   // cyan-500 (cyan)
+            'rgba(14, 165, 233, ',  // sky-500 (blue)
+            'rgba(2, 132, 199, ',   // sky-700 (mid blue)
+            'rgba(3, 105, 161, '    // sky-800 (deep blue)
+          ]
+        : [
+            'rgba(56, 189, 248, ',  // sky-400 (light blue)
+            'rgba(14, 165, 233, ',  // sky-500 (vibrant blue)
+            'rgba(6, 182, 212, ',   // cyan-500 (cyan)
+            'rgba(255, 255, 255, ', // pure white (blends/fades on light bg)
+            'rgba(255, 255, 255, '  // pure white (blends/fades on light bg)
+          ]
+    }
+
+    const observer = new MutationObserver(() => {
+      const isDark = document.documentElement.classList.contains('dark')
+      canvas.style.mixBlendMode = isDark ? 'screen' : 'normal'
+    })
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
+
+    // Set initial blend mode
+    const isDark = document.documentElement.classList.contains('dark')
+    canvas.style.mixBlendMode = isDark ? 'screen' : 'normal'
 
     const drawStar = (
       c: CanvasRenderingContext2D,
@@ -92,22 +113,22 @@ export default function CursorTrail() {
       // Spawn particles only if cursor moves enough, to optimize performance
       if (dist > 2) {
         const spawnCount = Math.min(Math.floor(dist / 4) + 1, 4)
+        const currentColors = getColors()
         for (let i = 0; i < spawnCount; i++) {
-          const type = Math.random() > 0.45 ? 'star' : 'dust'
-          const randomColor = colors[Math.floor(Math.random() * colors.length)]
+          const randomColor = currentColors[Math.floor(Math.random() * currentColors.length)]
           
           particlesRef.current.push({
             x: mx + (Math.random() - 0.5) * 8,
             y: my + (Math.random() - 0.5) * 8,
             vx: (Math.random() - 0.5) * 1.5,
             vy: (Math.random() - 0.5) * 1.5 - 0.5, // slight upward float
-            size: type === 'star' ? Math.random() * 5 + 3 : Math.random() * 2 + 1,
+            size: Math.random() * 4 + 1.8, // nice glowing dot sizes
             alpha: 1,
             decay: 0.015 + Math.random() * 0.02,
             color: randomColor,
-            rotation: Math.random() * Math.PI * 2,
-            rotationSpeed: (Math.random() - 0.5) * 0.08,
-            type
+            rotation: 0,
+            rotationSpeed: 0,
+            type: 'dust'
           })
         }
       }
@@ -126,7 +147,6 @@ export default function CursorTrail() {
         p.x += p.vx
         p.y += p.vy
         p.alpha -= p.decay
-        p.rotation += p.rotationSpeed
 
         if (p.alpha <= 0) {
           particles.splice(i, 1)
@@ -135,22 +155,17 @@ export default function CursorTrail() {
 
         const colorStr = `${p.color}${p.alpha})`
 
-        if (p.type === 'star') {
-          // Draw standard custom glowing star shape
-          drawStar(ctx, p.x, p.y, 4, p.size, p.size / 2.5, colorStr, p.rotation)
-          
-          // Draw soft radial blur background on hover
-          ctx.beginPath()
-          ctx.arc(p.x, p.y, p.size * 2, 0, Math.PI * 2)
-          ctx.fillStyle = `${p.color}${p.alpha * 0.15})`
-          ctx.fill()
-        } else {
-          // Draw small dust particle
-          ctx.beginPath()
-          ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
-          ctx.fillStyle = colorStr
-          ctx.fill()
-        }
+        // Draw clean glowing circular dot particle
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, p.size, 0, Math.PI * 2)
+        ctx.fillStyle = colorStr
+        ctx.fill()
+        
+        // Draw soft glowing radial blur background
+        ctx.beginPath()
+        ctx.arc(p.x, p.y, p.size * 2.2, 0, Math.PI * 2)
+        ctx.fillStyle = `${p.color}${p.alpha * 0.15})`
+        ctx.fill()
       }
 
       animationFrameId = requestAnimationFrame(update)
@@ -162,6 +177,7 @@ export default function CursorTrail() {
       cancelAnimationFrame(animationFrameId)
       window.removeEventListener('resize', resize)
       window.removeEventListener('mousemove', handleMouseMove)
+      observer.disconnect()
     }
   }, [])
 
@@ -169,7 +185,6 @@ export default function CursorTrail() {
     <canvas
       ref={canvasRef}
       className="fixed inset-0 pointer-events-none z-50 w-full h-full"
-      style={{ mixBlendMode: 'screen' }}
       aria-hidden="true"
     />
   )

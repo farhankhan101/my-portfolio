@@ -2,6 +2,8 @@
 
 import Image from 'next/image'
 import { MapPin, Briefcase, FileText, CheckCircle2, User, Sparkles, ArrowUpRight } from 'lucide-react'
+import FloatingParticles from './FloatingParticles'
+import Interactive3DShape from './Interactive3DShape'
 
 interface AboutData {
   bio: string
@@ -25,6 +27,10 @@ export default function AboutSection({ about }: AboutSectionProps) {
 
   return (
     <section className="py-24 px-6 border-b border-border/50 bg-secondary/5 relative z-10">
+      {/* Interactive Floating Particles in Background */}
+      <div className="absolute inset-0 opacity-40 dark:opacity-30 pointer-events-none overflow-hidden">
+        <FloatingParticles count={35} />
+      </div>
       {/* Background soft grids */}
       <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(14,165,233,0.04),transparent_50%)] pointer-events-none" />
 
@@ -51,43 +57,56 @@ export default function AboutSection({ about }: AboutSectionProps) {
               {/* Animated outer glowing boundary */}
               <div className="absolute -inset-2 rounded-[2.5rem] bg-gradient-to-tr from-sky-500 to-indigo-500 opacity-25 blur-lg group-hover:opacity-40 transition duration-500" />
               
-              {/* Inner glass box */}
-              <div className="relative p-4 rounded-[2.5rem] border border-border/60 bg-card shadow-xl overflow-hidden flex flex-col items-center text-center">
+              {/* Inner glass box - redesigned as a full background image card */}
+              <div className="relative w-full h-[460px] rounded-[2.5rem] border border-border/60 bg-card shadow-xl overflow-hidden group">
                 
-                {/* Profile Image container */}
-                <div className="relative w-44 h-44 sm:w-48 sm:h-48 rounded-[2rem] overflow-hidden border border-border shadow-inner bg-secondary mb-5">
-                  <Image
-                    src={avatarImage}
-                    alt="Farhan Ahmed profile"
-                    fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-105"
-                    sizes="(max-width: 768px) 176px, 192px"
-                    unoptimized
-                  />
+                {/* Full Profile Background Image */}
+                <Image
+                  src={avatarImage}
+                  alt="Farhan Ahmed profile"
+                  fill
+                  className="object-cover transition-transform duration-500 group-hover:scale-105"
+                  sizes="(max-width: 768px) 100vw, 400px"
+                  unoptimized
+                  priority
+                />
+
+                {/* Interactive 3D orbital rings overlay (over the photo) */}
+                <div className="absolute inset-0 opacity-20 dark:opacity-15 pointer-events-none overflow-hidden z-10">
+                  <Interactive3DShape shape="torus" hovered={true} />
                 </div>
 
-                {/* Info Badges */}
-                <div className="w-full space-y-3.5 pt-2">
-                  <div className="flex items-center justify-center gap-2.5 text-xs text-muted-foreground font-semibold">
-                    <MapPin size={15} className="text-sky-500 shrink-0" />
-                    <span>{about.location}</span>
-                  </div>
+                {/* Small floating interactive 3D sphere in top-right corner */}
+                <div className="absolute right-4 top-4 w-12 h-12 opacity-55 dark:opacity-45 pointer-events-none z-30 transition-all duration-500 group-hover:scale-110">
+                  <Interactive3DShape shape="sphere" hovered={true} />
+                </div>
 
-                  <div className="flex items-center justify-center gap-2.5 text-xs text-muted-foreground font-semibold">
-                    <Briefcase size={15} className="text-indigo-500 shrink-0" />
-                    <span className="capitalize">{about.availableFor.join(' / ')}</span>
-                  </div>
+                {/* Bottom darkness gradient and info overlay */}
+                <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent pt-24 pb-8 px-6 flex flex-col items-center text-center z-20">
+                  <div className="w-full space-y-3">
+                    <div className="flex items-center justify-center gap-2.5 text-xs text-slate-300 font-bold tracking-wide">
+                      <MapPin size={15} className="text-sky-400 shrink-0" />
+                      <span>{about.location}</span>
+                    </div>
 
-                  <div className="pt-4 flex items-center justify-center gap-3">
-                    <a
-                      href={about.resumeUrl || '#'}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-bold bg-sky-500/10 hover:bg-sky-500/20 text-sky-600 dark:text-sky-400 rounded-lg transition-all border border-sky-500/20"
-                    >
-                      <FileText size={13} />
-                      <span>Download Resume</span>
-                    </a>
+                    <div className="flex items-center justify-center gap-2.5 text-xs text-slate-300 font-bold tracking-wide">
+                      <Briefcase size={15} className="text-indigo-400 shrink-0" />
+                      <span className="capitalize">
+                        {about.availableFor.map(item => item === 'Freelance' ? 'Software Engineer' : item).join(' / ')}
+                      </span>
+                    </div>
+
+                    <div className="pt-4 flex items-center justify-center">
+                      <a
+                        href={about.resumeUrl || '#'}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="inline-flex items-center gap-1.5 px-5 py-2.5 text-xs font-extrabold bg-sky-500/20 hover:bg-sky-500/35 text-sky-200 rounded-lg transition-all border border-sky-400/30 shadow-lg cursor-pointer backdrop-blur-sm"
+                      >
+                        <FileText size={13} className="text-sky-300" />
+                        <span>Download Resume</span>
+                      </a>
+                    </div>
                   </div>
                 </div>
               </div>

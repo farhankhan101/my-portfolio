@@ -29,13 +29,22 @@ export default function InteractiveStars() {
     const ctx = canvas.getContext('2d')
     if (!ctx) return
 
-    // Colors matching sky/indigo theme
-    const colors = [
-      'rgba(56, 189, 248, ',  // sky-400
-      'rgba(129, 140, 248, ', // indigo-400
-      'rgba(6, 182, 212, ',   // cyan-500
-      'rgba(165, 180, 252, '  // indigo-300
-    ]
+    const getColors = () => {
+      const isDark = document.documentElement.classList.contains('dark')
+      return isDark
+        ? [
+            'rgba(56, 189, 248, ',  // sky-400
+            'rgba(129, 140, 248, ', // indigo-400
+            'rgba(6, 182, 212, ',   // cyan-500
+            'rgba(165, 180, 252, '  // indigo-300
+          ]
+        : [
+            'rgba(2, 132, 199, ',   // sky-700
+            'rgba(79, 70, 229, ',   // indigo-600
+            'rgba(8, 145, 178, ',   // cyan-650
+            'rgba(67, 56, 202, '    // indigo-700
+          ]
+    }
 
     const resize = () => {
       const parent = canvas.parentElement
@@ -43,6 +52,7 @@ export default function InteractiveStars() {
       canvas.height = parent ? parent.clientHeight : window.innerHeight
 
       // Initialize stars
+      const currentColors = getColors()
       const count = Math.min(Math.floor((canvas.width * canvas.height) / 14000), 100)
       const stars: Star[] = []
 
@@ -61,11 +71,19 @@ export default function InteractiveStars() {
           size: Math.random() * 2.5 + 0.8,
           opacity: Math.random() * 0.7 + 0.3,
           opacitySpeed: 0.005 + Math.random() * 0.015,
-          color: colors[Math.floor(Math.random() * colors.length)]
+          color: currentColors[Math.floor(Math.random() * currentColors.length)]
         })
       }
       starsRef.current = stars
     }
+
+    const observer = new MutationObserver(() => {
+      const currentColors = getColors()
+      starsRef.current.forEach(star => {
+        star.color = currentColors[Math.floor(Math.random() * currentColors.length)]
+      })
+    })
+    observer.observe(document.documentElement, { attributes: true, attributeFilter: ['class'] })
 
     resize()
     window.addEventListener('resize', resize)
@@ -153,11 +171,14 @@ export default function InteractiveStars() {
           const dist = Math.sqrt(dx * dx + dy * dy)
 
           if (dist < maxConnDist) {
-            const lineOpacity = (1 - dist / maxConnDist) * 0.15
+            const isDark = document.documentElement.classList.contains('dark')
+            const lineOpacity = (1 - dist / maxConnDist) * (isDark ? 0.15 : 0.35)
             ctx.beginPath()
             ctx.moveTo(stars[i].x, stars[i].y)
             ctx.lineTo(stars[j].x, stars[j].y)
-            ctx.strokeStyle = `rgba(129, 140, 248, ${lineOpacity})` // indigo connection
+            ctx.strokeStyle = isDark
+              ? `rgba(129, 140, 248, ${lineOpacity})`
+              : `rgba(79, 70, 229, ${lineOpacity})` // Richer indigo line in light mode
             ctx.lineWidth = 0.6
             ctx.stroke()
           }
@@ -188,6 +209,7 @@ export default function InteractiveStars() {
     return () => {
       cancelAnimationFrame(frameRef.current)
       window.removeEventListener('resize', resize)
+      observer.disconnect()
       if (container) {
         container.removeEventListener('mousemove', handleMouseMove)
         container.removeEventListener('mouseleave', handleMouseLeave)

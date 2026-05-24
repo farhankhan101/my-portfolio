@@ -93,7 +93,9 @@ export default function FloatingParticles({ count = 55, className = '' }: Floati
         if (p.y < 0 || p.y > h) p.vy *= -1
         // Pulse alpha
         p.alpha += 0.004 * p.alphaDir
-        if (p.alpha >= 0.65 || p.alpha <= 0.05) p.alphaDir *= -1
+        const maxAlpha = isDarkRef.current ? 0.65 : 0.82
+        const minAlpha = isDarkRef.current ? 0.05 : 0.18
+        if (p.alpha >= maxAlpha || p.alpha <= minAlpha) p.alphaDir *= -1
       }
 
       // Draw connection lines
@@ -103,7 +105,7 @@ export default function FloatingParticles({ count = 55, className = '' }: Floati
           const dy = particles[i].y - particles[j].y
           const dist = Math.sqrt(dx * dx + dy * dy)
           if (dist < CONN_DIST) {
-            const lineAlpha = (1 - dist / CONN_DIST) * 0.18
+            const lineAlpha = (1 - dist / CONN_DIST) * (isDarkRef.current ? 0.18 : 0.38)
             ctx.beginPath()
             ctx.moveTo(particles[i].x, particles[i].y)
             ctx.lineTo(particles[j].x, particles[j].y)
