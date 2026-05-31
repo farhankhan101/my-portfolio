@@ -148,9 +148,10 @@ export default async function ProjectCaseStudyPage({ params }: PageProps) {
                 <h2 className="text-lg font-bold text-foreground uppercase tracking-wider border-l-4 border-amber-500 pl-3">
                   Technical Challenges
                 </h2>
-                <p className="text-sm text-muted-foreground leading-relaxed font-medium">
-                  {project.challenge}
-                </p>
+                <div
+                  className="text-sm text-muted-foreground leading-relaxed space-y-4 markdown-prose font-medium"
+                  dangerouslySetInnerHTML={{ __html: project.challenge }}
+                />
               </div>
             )}
 
@@ -160,9 +161,23 @@ export default async function ProjectCaseStudyPage({ params }: PageProps) {
                 <h2 className="text-lg font-bold text-foreground uppercase tracking-wider border-l-4 border-emerald-500 pl-3">
                   Engineering Solutions
                 </h2>
-                <p className="text-sm text-muted-foreground leading-relaxed font-medium">
-                  {project.solution}
-                </p>
+                <div
+                  className="text-sm text-muted-foreground leading-relaxed space-y-4 markdown-prose font-medium"
+                  dangerouslySetInnerHTML={{ __html: project.solution }}
+                />
+              </div>
+            )}
+
+            {/* Results & Impact */}
+            {project.results && (
+              <div className="space-y-4">
+                <h2 className="text-lg font-bold text-foreground uppercase tracking-wider border-l-4 border-sky-500 pl-3">
+                  Results & Impact
+                </h2>
+                <div
+                  className="text-sm text-muted-foreground leading-relaxed space-y-4 markdown-prose font-medium"
+                  dangerouslySetInnerHTML={{ __html: project.results }}
+                />
               </div>
             )}
           </div>
