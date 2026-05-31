@@ -29,12 +29,18 @@ import RotatingThreeDSphere from '@/components/public/RotatingThreeDSphere'
 import FloatingParticles from '@/components/public/FloatingParticles'
 import Interactive3DShape from '@/components/public/Interactive3DShape'
 import Projects3DGrid from '@/components/public/Projects3DGrid'
+import HomepageReviews from '@/components/public/HomepageReviews'
 
 export const revalidate = 60 // Cache for 60 seconds
 
 export default async function HomePage() {
   // Query DB contents sequentially to prevent Prisma connection pool timeouts on connection_limit=1
   const about = await db.about.findFirst()
+  const reviews = await db.review.findMany({
+    where: { isApproved: true },
+    orderBy: { createdAt: 'desc' },
+    take: 6
+  })
   const featuredProjects = await db.project.findMany({
     where: { status: 'PUBLISHED', featured: true },
     orderBy: { sortOrder: 'asc' },
@@ -577,6 +583,8 @@ export default async function HomePage() {
               ))}
             </div>
           </div>
+
+          <HomepageReviews initialReviews={reviews} />
         </div>
       </section>
     </div>

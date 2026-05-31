@@ -123,3 +123,54 @@ export async function sendContactEmail({ name, email, subject, message, phone, a
     throw error
   }
 }
+
+interface SendVerificationCodeParams {
+  email: string
+  code: string
+}
+
+export async function sendVerificationCodeEmail({ email, code }: SendVerificationCodeParams) {
+  const subject = `Your Review Verification Code — Farhan Ahmed`
+  const html = `
+    <div style="font-family: 'Inter', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 8px; background-color: #ffffff;">
+      <h2 style="color: #0369a1; border-bottom: 2px solid #f0f6ff; padding-bottom: 10px; margin-top: 0;">Verification Code</h2>
+      <p style="font-size: 16px; color: #334155; margin: 12px 0;">Hello,</p>
+      <p style="font-size: 16px; color: #334155; line-height: 1.6;">
+        You requested a verification code to leave a review on Farhan Ahmed's engineering portfolio.
+      </p>
+      <div style="margin: 24px 0; padding: 20px; background-color: #f0f9ff; border: 1px dashed #0284c7; border-radius: 8px; text-align: center;">
+        <span style="font-size: 32px; font-weight: 800; letter-spacing: 6px; color: #0369a1;">${code}</span>
+      </div>
+      <p style="font-size: 14px; color: #64748b; line-height: 1.6;">
+        This code is valid for <strong>10 minutes</strong>. If you did not request this, you can safely ignore this email.
+      </p>
+      <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 30px 0 15px 0;" />
+      <p style="font-size: 12px; color: #94a3b8; text-align: center; margin: 0;">Sent via farhan.dev authentication service</p>
+    </div>
+  `
+
+  if (!resend) {
+    console.warn('⚠️ [Resend SDK Sandbox] Resend API key is missing or dummy. Logging verification code to console:')
+    console.log(`[To: ${email}] [Verification Code: ${code}]`)
+    return { success: true, sandbox: true }
+  }
+
+  try {
+    const result = await resend.emails.send({
+      from: fromEmail,
+      to: email,
+      subject: subject,
+      html: html,
+    })
+
+    if (result.error) {
+      console.error('❌ Resend verification delivery error:', result.error)
+      throw new Error(result.error.message)
+    }
+
+    return { success: true, messageId: result.data?.id }
+  } catch (error: any) {
+    console.error('❌ Error sending verification email via Resend:', error)
+    throw error
+  }
+}

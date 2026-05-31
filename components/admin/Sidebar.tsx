@@ -21,7 +21,8 @@ import {
   X,
   ExternalLink,
   Sun,
-  Moon
+  Moon,
+  Star
 } from 'lucide-react'
 
 const navItems = [
@@ -31,6 +32,7 @@ const navItems = [
   { name: 'Skills', href: '/admin/skills', icon: Wrench },
   { name: 'About & SEO', href: '/admin/about', icon: User },
   { name: 'Messages', href: '/admin/messages', icon: MessageSquare },
+  { name: 'Reviews', href: '/admin/reviews', icon: Star },
   { name: 'Chatbot Trainer', href: '/admin/chatbot', icon: Bot },
   { name: 'Media Library', href: '/admin/media', icon: Image },
 ]

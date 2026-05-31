@@ -87,3 +87,12 @@ export const contactSchema = z.object({
   attachmentName: z.string().optional().nullable(),
   attachmentData: z.string().optional().nullable(),
 })
+
+export const reviewSchema = z.object({
+  name: z.string().min(2, 'Name must be at least 2 characters'),
+  email: z.string().email('Please enter a valid email address'),
+  rating: z.coerce.number().min(1).max(5, 'Rating must be between 1 and 5'),
+  comment: z.string().min(10, 'Comment must be at least 10 characters long'),
+  code: z.string().length(6, 'Verification code must be exactly 6 characters'),
+})
+

@@ -179,3 +179,25 @@ model SiteConfig {
   contactEmail    String
   footerText      String
 }
+
+// ─── REVIEWS ──────────────────────────────────────────────────────────────
+
+model Review {
+  id         String   @id @default(cuid())
+  name       String
+  email      String
+  rating     Int      @default(5)
+  comment    String   @db.Text
+  isApproved Boolean  @default(false)
+  createdAt  DateTime @default(now())
+}
+
+model ReviewVerification {
+  id        String   @id @default(cuid())
+  email     String
+  code      String
+  expiresAt DateTime
+  verified  Boolean  @default(false)
+  createdAt DateTime @default(now())
+}
+

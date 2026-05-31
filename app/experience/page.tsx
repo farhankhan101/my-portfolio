@@ -4,6 +4,7 @@ import { Briefcase, Calendar, MapPin, Sparkles, Trophy, Settings } from 'lucide-
 import Journey3DHelix from '@/components/public/Journey3DHelix'
 import Interactive3DShape from '@/components/public/Interactive3DShape'
 import Projects3DGrid from '@/components/public/Projects3DGrid'
+import ReviewBanner from '@/components/public/ReviewBanner'
 
 export const metadata = {
   title: 'Work Experience | Farhan Ahmed Portfolio',
@@ -168,6 +169,9 @@ export default async function ExperienceTimelinePage() {
             ))}
           </div>
         )}
+
+        {/* Reviews CTA Banner */}
+        <ReviewBanner />
       </div>
     </div>
   )
