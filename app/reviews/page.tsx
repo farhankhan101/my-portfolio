@@ -351,7 +351,7 @@ function ReviewsPageContent() {
                   {/* Submit Button */}
                   <button
                     type="submit"
-                    disabled={!codeSent || submittingReview}
+                    disabled={!codeSent || code.length !== 6 || submittingReview}
                     className="w-full flex items-center justify-center gap-2 py-3 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-lg text-sm shadow-xl transition-all cursor-pointer disabled:opacity-40 disabled:pointer-events-none"
                   >
                     {submittingReview ? <Loader2 className="animate-spin" size={16} /> : <Send size={16} />}

@@ -1,6 +1,15 @@
 // app/api/admin/reviews/route.ts
-import { NextResponse } from 'next/server'
+import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
+import { z } from 'zod'
+
+const createReviewSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  email: z.string().email('Please enter a valid email address'),
+  rating: z.number().min(1).max(5),
+  comment: z.string().min(10, 'Comment must be at least 10 characters long'),
+  isApproved: z.boolean().default(true),
+})
 
 export async function GET() {
   try {
@@ -11,5 +20,36 @@ export async function GET() {
   } catch (error: any) {
     console.error('❌ GET admin/reviews error:', error)
     return NextResponse.json({ error: 'Failed to retrieve reviews.' }, { status: 500 })
+  }
+}
+
+export async function POST(req: NextRequest) {
+  try {
+    const body = await req.json()
+    const result = createReviewSchema.safeParse(body)
+    
+    if (!result.success) {
+      return NextResponse.json(
+        { error: 'Validation failed', details: result.error.flatten().fieldErrors },
+        { status: 400 }
+      )
+    }
+
+    const { name, email, rating, comment, isApproved } = result.data
+
+    const review = await db.review.create({
+      data: {
+        name,
+        email,
+        rating,
+        comment,
+        isApproved,
+      },
+    })
+
+    return NextResponse.json(review, { status: 201 })
+  } catch (error: any) {
+    console.error('❌ POST admin/reviews error:', error)
+    return NextResponse.json({ error: 'Failed to create review.' }, { status: 500 })
   }
 }

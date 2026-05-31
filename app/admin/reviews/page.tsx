@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react'
 import DataTable, { Column } from '@/components/admin/DataTable'
-import { Star, Check, X, Trash2, ShieldCheck, ShieldAlert, Award } from 'lucide-react'
+import { Star, Check, X, Trash2, ShieldCheck, ShieldAlert, Award, Loader2 } from 'lucide-react'
 
 interface Review {
   id: string
@@ -20,6 +20,16 @@ export default function AdminReviews() {
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState<'PENDING' | 'APPROVED' | 'ALL'>('PENDING')
   const [expandedReviewId, setExpandedReviewId] = useState<string | null>(null)
+
+  // Add Review Modal State
+  const [showAddModal, setShowAddModal] = useState(false)
+  const [addName, setAddName] = useState('')
+  const [addEmail, setAddEmail] = useState('')
+  const [addRating, setAddRating] = useState(5)
+  const [addComment, setAddComment] = useState('')
+  const [addIsApproved, setAddIsApproved] = useState(true)
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [addError, setAddError] = useState<string | null>(null)
 
   const fetchReviews = async () => {
     setLoading(true)
@@ -71,6 +81,54 @@ export default function AdminReviews() {
       }
     } catch (error) {
       console.error('Error deleting review:', error)
+    }
+  }
+
+  const handleAddReviewSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!addName || !addEmail || !addComment) {
+      setAddError('All fields are required.')
+      return
+    }
+    if (addComment.length < 10) {
+      setAddError('Comment must be at least 10 characters long.')
+      return
+    }
+
+    setIsSubmitting(true)
+    setAddError(null)
+
+    try {
+      const res = await fetch('/api/admin/reviews', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: addName,
+          email: addEmail,
+          rating: addRating,
+          comment: addComment,
+          isApproved: addIsApproved,
+        }),
+      })
+
+      if (res.ok) {
+        const newReview = await res.json()
+        setReviews((prev) => [newReview, ...prev])
+        // Reset form
+        setAddName('')
+        setAddEmail('')
+        setAddRating(5)
+        setAddComment('')
+        setAddIsApproved(true)
+        setShowAddModal(false)
+      } else {
+        const data = await res.json()
+        setAddError(data.error || 'Failed to add review.')
+      }
+    } catch (error) {
+      setAddError('An unexpected error occurred.')
+    } finally {
+      setIsSubmitting(false)
     }
   }
 
@@ -210,11 +268,23 @@ export default function AdminReviews() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Review Moderation</h1>
-        <p className="text-sm text-muted-foreground mt-1">
-          Approve, reject, and manage testimonials submitted by clients and partners.
-        </p>
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-foreground">Review Moderation</h1>
+          <p className="text-sm text-muted-foreground mt-1">
+            Approve, reject, and manage testimonials submitted by clients and partners.
+          </p>
+        </div>
+        <button
+          onClick={() => {
+            setAddError(null)
+            setShowAddModal(true)
+          }}
+          className="flex items-center gap-1.5 px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer self-start sm:self-auto shadow-md hover:shadow-sky-500/10"
+        >
+          <Star size={14} className="fill-white" />
+          <span>Add Review</span>
+        </button>
       </div>
 
       {/* KPI Cards Grid */}
@@ -300,6 +370,142 @@ export default function AdminReviews() {
           }
         />
       </div>
+
+      {/* Add Review Modal Dialog */}
+      {showAddModal && (
+        <div className="fixed inset-0 bg-background/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+          <div className="bg-card border border-border rounded-xl shadow-2xl max-w-md w-full overflow-hidden flex flex-col max-h-[90vh]">
+            <div className="p-5 border-b border-border flex items-center justify-between">
+              <h2 className="text-sm font-bold text-foreground flex items-center gap-2">
+                <Star size={16} className="text-sky-500 fill-sky-500" />
+                <span>Add Review (Direct Entry)</span>
+              </h2>
+              <button
+                onClick={() => setShowAddModal(false)}
+                className="p-1 rounded-md hover:bg-secondary text-muted-foreground transition-all cursor-pointer border-0"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            <form onSubmit={handleAddReviewSubmit} className="p-5 space-y-4 overflow-y-auto flex-1">
+              {addError && (
+                <div className="p-3 bg-red-500/10 border border-red-500/25 text-red-600 dark:text-red-400 text-xs font-semibold rounded-lg">
+                  {addError}
+                </div>
+              )}
+
+              {/* Name */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider">Reviewer Name</label>
+                <input
+                  type="text"
+                  value={addName}
+                  onChange={(e) => setAddName(e.target.value)}
+                  placeholder="e.g. John Doe"
+                  required
+                  disabled={isSubmitting}
+                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500 text-xs font-semibold transition-all"
+                />
+              </div>
+
+              {/* Email */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider">Reviewer Email</label>
+                <input
+                  type="email"
+                  value={addEmail}
+                  onChange={(e) => setAddEmail(e.target.value)}
+                  placeholder="e.g. john@example.com"
+                  required
+                  disabled={isSubmitting}
+                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500 text-xs font-semibold transition-all"
+                />
+              </div>
+
+              {/* Rating */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider">Rating</label>
+                <div className="flex items-center gap-1">
+                  {[1, 2, 3, 4, 5].map((stars) => (
+                    <button
+                      key={stars}
+                      type="button"
+                      onClick={() => setAddRating(stars)}
+                      disabled={isSubmitting}
+                      className="p-1 hover:scale-110 transition-transform cursor-pointer"
+                    >
+                      <Star
+                        size={20}
+                        className={
+                          stars <= addRating
+                            ? 'fill-amber-400 text-amber-400'
+                            : 'text-muted-foreground/30'
+                        }
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Comment */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider">Comment</label>
+                <textarea
+                  value={addComment}
+                  onChange={(e) => setAddComment(e.target.value)}
+                  placeholder="Write the review message content..."
+                  required
+                  disabled={isSubmitting}
+                  rows={4}
+                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500 text-xs font-semibold transition-all resize-none"
+                />
+              </div>
+
+              {/* Status */}
+              <div className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  id="addIsApproved"
+                  checked={addIsApproved}
+                  onChange={(e) => setAddIsApproved(e.target.checked)}
+                  disabled={isSubmitting}
+                  className="rounded border-border text-sky-600 focus:ring-sky-500 h-4 w-4"
+                />
+                <label htmlFor="addIsApproved" className="text-xs font-bold text-foreground cursor-pointer select-none">
+                  Approve and publish review immediately
+                </label>
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-2 border-t border-border flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => setShowAddModal(false)}
+                  disabled={isSubmitting}
+                  className="px-4 py-2 bg-secondary hover:bg-secondary/80 text-foreground border border-border text-xs font-bold rounded-lg transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 className="animate-spin animate-duration-1000" size={13} />
+                      <span>Adding...</span>
+                    </>
+                  ) : (
+                    <span>Add Review</span>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
