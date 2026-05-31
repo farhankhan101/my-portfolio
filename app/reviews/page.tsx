@@ -12,6 +12,8 @@ interface Review {
   id: string
   name: string
   email: string
+  designation?: string | null
+  company?: string | null
   rating: number
   comment: string
   createdAt: string
@@ -37,6 +39,8 @@ function ReviewsPageContent() {
   // Form State
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
+  const [designation, setDesignation] = useState('')
+  const [company, setCompany] = useState('')
   const [rating, setRating] = useState(5)
   const [comment, setComment] = useState('')
   const [code, setCode] = useState('')
@@ -135,7 +139,15 @@ function ReviewsPageContent() {
       const res = await fetch('/api/reviews', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name, email, rating, comment, code }),
+        body: JSON.stringify({ 
+          name, 
+          email, 
+          designation: designation || null, 
+          company: company || null, 
+          rating, 
+          comment, 
+          code 
+        }),
       })
 
       const data = await res.json()
@@ -143,6 +155,8 @@ function ReviewsPageContent() {
         setSuccessMsg(data.message || 'Review submitted successfully!')
         setName('')
         setEmail('')
+        setDesignation('')
+        setCompany('')
         setRating(5)
         setComment('')
         setCode('')
@@ -273,6 +287,32 @@ function ReviewsPageContent() {
                           {sendingCode ? <Loader2 className="animate-spin" size={14} /> : 'Get Code'}
                         </button>
                       </div>
+                    </div>
+                  </div>
+
+                  {/* Designation & Company */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider">Designation (Optional)</label>
+                      <input
+                        type="text"
+                        value={designation}
+                        onChange={(e) => setDesignation(e.target.value)}
+                        placeholder="e.g. Founder"
+                        disabled={submittingReview}
+                        className="w-full px-4 py-2.5 bg-background/40 border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500 text-sm font-semibold transition-all"
+                      />
+                    </div>
+                    <div className="space-y-1.5">
+                      <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider">Company (Optional)</label>
+                      <input
+                        type="text"
+                        value={company}
+                        onChange={(e) => setCompany(e.target.value)}
+                        placeholder="e.g. Acme Corp"
+                        disabled={submittingReview}
+                        className="w-full px-4 py-2.5 bg-background/40 border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500 text-sm font-semibold transition-all"
+                      />
                     </div>
                   </div>
 
@@ -473,7 +513,14 @@ function ReviewsPageContent() {
                               <ShieldCheck size={14} className="text-sky-500 dark:text-sky-400 shrink-0" />
                             </span>
                           </h4>
-                          <span className="text-[10px] text-muted-foreground/60 block mt-0.5">
+                          {(review.designation || review.company) && (
+                            <span className="text-[10px] text-sky-600 dark:text-sky-400 font-bold block mt-0.5">
+                              {review.designation}
+                              {review.designation && review.company && ' at '}
+                              {review.company}
+                            </span>
+                          )}
+                          <span className="text-[9px] text-muted-foreground/50 block mt-0.5">
                             {new Date(review.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                           </span>
                         </div>

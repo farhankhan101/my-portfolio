@@ -69,7 +69,19 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    const { name, email, rating, comment, code } = result.data
+    const { name, email, designation, company, rating, comment, code } = result.data
+
+    // Check if email has already submitted a review
+    const existingReview = await db.review.findUnique({
+      where: { email }
+    })
+
+    if (existingReview) {
+      return NextResponse.json(
+        { error: 'You have already submitted a review with this email address.' },
+        { status: 400 }
+      )
+    }
 
     // Check verification code in the database
     const verification = await db.reviewVerification.findFirst({
@@ -92,6 +104,8 @@ export async function POST(req: NextRequest) {
       data: {
         name,
         email,
+        designation,
+        company,
         rating,
         comment,
         isApproved: false, // requires admin approval

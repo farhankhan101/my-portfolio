@@ -9,6 +9,8 @@ interface Review {
   id: string
   name: string
   email: string
+  designation?: string | null
+  company?: string | null
   rating: number
   comment: string
   isApproved: boolean
@@ -25,6 +27,8 @@ export default function AdminReviews() {
   const [showAddModal, setShowAddModal] = useState(false)
   const [addName, setAddName] = useState('')
   const [addEmail, setAddEmail] = useState('')
+  const [addDesignation, setAddDesignation] = useState('')
+  const [addCompany, setAddCompany] = useState('')
   const [addRating, setAddRating] = useState(5)
   const [addComment, setAddComment] = useState('')
   const [addIsApproved, setAddIsApproved] = useState(true)
@@ -105,6 +109,8 @@ export default function AdminReviews() {
         body: JSON.stringify({
           name: addName,
           email: addEmail,
+          designation: addDesignation || null,
+          company: addCompany || null,
           rating: addRating,
           comment: addComment,
           isApproved: addIsApproved,
@@ -117,6 +123,8 @@ export default function AdminReviews() {
         // Reset form
         setAddName('')
         setAddEmail('')
+        setAddDesignation('')
+        setAddCompany('')
         setAddRating(5)
         setAddComment('')
         setAddIsApproved(true)
@@ -139,7 +147,7 @@ export default function AdminReviews() {
   
   const approvedRatings = reviews.filter((r) => r.isApproved).map((r) => r.rating)
   const averageRating = approvedRatings.length > 0
-    ? (approvedRatings.reduce((sum, r) => sum + r, 0) / approvedRatings.length).toFixed(1)
+    ? (approvedRatings.reduce((sum, val) => sum + val, 0) / approvedRatings.length).toFixed(1)
     : '0.0'
 
   // Filter reviews based on active tab
@@ -158,6 +166,13 @@ export default function AdminReviews() {
           <span className="text-sm font-bold text-foreground block">
             {item.name}
           </span>
+          {(item.designation || item.company) && (
+            <span className="text-[10px] text-sky-600 dark:text-sky-400 font-bold block">
+              {item.designation}
+              {item.designation && item.company && ' at '}
+              {item.company}
+            </span>
+          )}
           <span className="text-[10px] text-muted-foreground font-semibold block">{item.email}</span>
         </div>
       ),
@@ -421,6 +436,32 @@ export default function AdminReviews() {
                   disabled={isSubmitting}
                   className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500 text-xs font-semibold transition-all"
                 />
+              </div>
+
+              {/* Designation & Company */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider">Designation</label>
+                  <input
+                    type="text"
+                    value={addDesignation}
+                    onChange={(e) => setAddDesignation(e.target.value)}
+                    placeholder="e.g. CEO"
+                    disabled={isSubmitting}
+                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500 text-xs font-semibold transition-all"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider">Company</label>
+                  <input
+                    type="text"
+                    value={addCompany}
+                    onChange={(e) => setAddCompany(e.target.value)}
+                    placeholder="e.g. Google"
+                    disabled={isSubmitting}
+                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500 text-xs font-semibold transition-all"
+                  />
+                </div>
               </div>
 
               {/* Rating */}

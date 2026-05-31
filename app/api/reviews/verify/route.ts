@@ -57,6 +57,18 @@ export async function POST(req: NextRequest) {
 
     const { email } = result.data
 
+    // Check if this email has already submitted a review
+    const existingReview = await db.review.findUnique({
+      where: { email }
+    })
+
+    if (existingReview) {
+      return NextResponse.json(
+        { error: 'You have already submitted a review with this email address. Only one review is allowed per user.' },
+        { status: 400 }
+      )
+    }
+
     // Generate 6-digit verification code
     const code = Math.floor(100000 + Math.random() * 900000).toString()
     console.log(`🔑 [OTP Generator] Verification Code for ${email} is: ${code}`)

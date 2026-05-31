@@ -183,13 +183,15 @@ model SiteConfig {
 // ─── REVIEWS ──────────────────────────────────────────────────────────────
 
 model Review {
-  id         String   @id @default(cuid())
-  name       String
-  email      String
-  rating     Int      @default(5)
-  comment    String   @db.Text
-  isApproved Boolean  @default(false)
-  createdAt  DateTime @default(now())
+  id          String   @id @default(cuid())
+  name        String
+  email       String   @unique
+  designation String?
+  company     String?
+  rating      Int      @default(5)
+  comment     String   @db.Text
+  isApproved  Boolean  @default(false)
+  createdAt   DateTime @default(now())
 }
 
 model ReviewVerification {

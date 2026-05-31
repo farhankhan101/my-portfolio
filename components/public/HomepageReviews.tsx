@@ -13,6 +13,8 @@ interface Review {
   rating: number
   comment: string
   createdAt: any
+  designation?: string | null
+  company?: string | null
 }
 
 interface HomepageReviewsProps {
@@ -190,7 +192,7 @@ export default function HomepageReviews({ initialReviews }: HomepageReviewsProps
         /* Empty State */
         <div className="bg-card/25 dark:bg-card/30 backdrop-blur-md border border-border/50 rounded-2xl p-10 text-center space-y-5 relative overflow-hidden group shadow-sm">
           {/* Interactive 3D Canvas */}
-          <div className="absolute right-6 top-6 w-24 h-24 opacity-20 group-hover:opacity-45 pointer-events-none transition-all duration-300">
+          <div className="absolute right-6 top-6 w-24 h-24 opacity-20 group-hover:opacity-45 pointer-events-none transition-all duration-350">
             <Interactive3DShape shape="network" />
           </div>
           
@@ -296,7 +298,14 @@ export default function HomepageReviews({ initialReviews }: HomepageReviewsProps
                           <span>{review.name}</span>
                           <ShieldCheck size={14} className="text-sky-500 dark:text-sky-400 shrink-0" />
                         </h4>
-                        <span className="text-[10px] text-muted-foreground font-semibold block mt-0.5">
+                        {(review.designation || review.company) && (
+                          <span className="text-[10px] text-muted-foreground font-semibold block mt-0.5">
+                            {review.designation}
+                            {review.designation && review.company && ' at '}
+                            {review.company}
+                          </span>
+                        )}
+                        <span className="text-[9px] text-muted-foreground/50 block mt-0.5">
                           {new Date(review.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}
                         </span>
                       </div>
