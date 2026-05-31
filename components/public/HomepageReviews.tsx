@@ -1,9 +1,10 @@
 // components/public/HomepageReviews.tsx
 'use client'
 
+import { useState, useEffect, useRef } from 'react'
 import Link from 'next/link'
-import { Star, MessageSquare, ShieldCheck, ArrowRight, Award, Quote } from 'lucide-react'
-import { motion } from 'framer-motion'
+import { Star, MessageSquare, ShieldCheck, ArrowRight, Award, Quote, ChevronLeft, ChevronRight } from 'lucide-react'
+import { motion, AnimatePresence } from 'framer-motion'
 import Interactive3DShape from '@/components/public/Interactive3DShape'
 
 interface Review {
@@ -31,16 +32,126 @@ const getShapeForIndex = (index: number) => {
 }
 
 export default function HomepageReviews({ initialReviews }: HomepageReviewsProps) {
-  const reviewsCount = initialReviews.length
+  const [reviews, setReviews] = useState<Review[]>(initialReviews)
+  const [activeIndex, setActiveIndex] = useState(0)
+  const [isMobile, setIsMobile] = useState(false)
+  const [isHovered, setIsHovered] = useState(false)
+  const autoplayTimerRef = useRef<NodeJS.Timeout | null>(null)
+
+  // 1. Fetch latest verified reviews client-side to bypass Next.js static prerender cache
+  useEffect(() => {
+    const loadLatestReviews = async () => {
+      try {
+        const res = await fetch('/api/reviews')
+        if (res.ok) {
+          const data = await res.json()
+          if (data && data.length > 0) {
+            setReviews(data)
+          }
+        }
+      } catch (err) {
+        console.error('Failed to update reviews client-side:', err)
+      }
+    }
+    loadLatestReviews()
+  }, [])
+
+  // 2. Handle screen resizing to adjust 3D layout scale responsive offsets
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
+  }, [])
+
+  // 3. Autoplay rotation logic
+  useEffect(() => {
+    if (reviews.length <= 1 || isHovered) {
+      if (autoplayTimerRef.current) clearInterval(autoplayTimerRef.current)
+      return
+    }
+
+    autoplayTimerRef.current = setInterval(() => {
+      setActiveIndex((prev) => (prev + 1) % reviews.length)
+    }, 5000) // cycle every 5 seconds
+
+    return () => {
+      if (autoplayTimerRef.current) clearInterval(autoplayTimerRef.current)
+    }
+  }, [reviews, isHovered])
+
+  const reviewsCount = reviews.length
 
   const avgRating = reviewsCount > 0
-    ? (initialReviews.reduce((sum, r) => sum + r.rating, 0) / reviewsCount).toFixed(1)
+    ? (reviews.reduce((sum, r) => sum + r.rating, 0) / reviewsCount).toFixed(1)
     : '0.0'
+
+  const handleNext = () => {
+    setActiveIndex((prev) => (prev + 1) % reviews.length)
+  }
+
+  const handlePrev = () => {
+    setActiveIndex((prev) => (prev - 1 + reviews.length) % reviews.length)
+  }
+
+  const getCardStyle = (index: number) => {
+    if (reviews.length === 0) return {}
+
+    // Calculate relative circular index
+    const diff = (index - activeIndex + reviews.length) % reviews.length
+
+    let x = 0
+    let scale = 1
+    let zIndex = 30
+    let opacity = 1
+    let rotate = 0
+    let pointerEvents: 'auto' | 'none' = 'auto'
+
+    const offset = isMobile ? 40 : 220
+
+    if (diff === 0) {
+      // Center active card
+      x = 0
+      scale = 1
+      zIndex = 30
+      opacity = 1
+      rotate = 0
+      pointerEvents = 'auto'
+    } else if (diff === 1) {
+      // Right card stacked behind
+      x = offset
+      scale = 0.88
+      zIndex = 20
+      opacity = 0.45
+      rotate = 4
+      pointerEvents = 'auto'
+    } else if (diff === reviews.length - 1) {
+      // Left card stacked behind
+      x = -offset
+      scale = 0.88
+      zIndex = 10
+      opacity = 0.45
+      rotate = -4
+      pointerEvents = 'auto'
+    } else {
+      // Hidden cards
+      x = 0
+      scale = 0.6
+      zIndex = 0
+      opacity = 0
+      rotate = 0
+      pointerEvents = 'none'
+    }
+
+    return { x, scale, zIndex, opacity, rotate, pointerEvents }
+  }
 
   return (
     <div className="max-w-5xl mx-auto pt-16 pb-12 border-t border-border/40">
       {/* Header */}
-      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-10">
+      <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 mb-12">
         <div className="space-y-3">
           <span className="flex items-center gap-1.5 text-sky-500 dark:text-sky-400 text-xs font-bold uppercase tracking-wider">
             <Award size={14} /> Endorsements
@@ -49,7 +160,7 @@ export default function HomepageReviews({ initialReviews }: HomepageReviewsProps
             What Partners Say
           </h2>
           <p className="text-xs sm:text-sm text-muted-foreground font-medium max-w-xl leading-relaxed">
-            Here's what clients and developers say about my code delivery standards, system architecture designs, and software collaboration.
+            Read authentic feedback from clients and developers about my SaaS deliveries, cloud structures, and software collaboration standards.
           </p>
         </div>
 
@@ -66,7 +177,7 @@ export default function HomepageReviews({ initialReviews }: HomepageReviewsProps
             </div>
             <Link
               href="/reviews"
-              className="inline-flex items-center gap-1.5 px-4 py-2 bg-secondary border border-border hover:border-sky-500/30 text-foreground hover:text-sky-600 dark:hover:text-sky-400 text-xs font-bold rounded-lg transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 px-4 py-2 bg-secondary border border-border hover:border-sky-500/30 text-foreground hover:text-sky-600 dark:hover:text-sky-400 text-xs font-bold rounded-lg transition-colors cursor-pointer shadow-sm"
             >
               <span>View All</span>
               <ArrowRight size={13} />
@@ -103,61 +214,146 @@ export default function HomepageReviews({ initialReviews }: HomepageReviewsProps
           </div>
         </div>
       ) : (
-        /* Grid of reviews */
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {initialReviews.map((review, idx) => (
-            <motion.div
-              key={review.id}
-              initial={{ opacity: 0, y: 15 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ delay: idx * 0.1 }}
-              className="p-6 bg-card/25 dark:bg-card/30 backdrop-blur-md border border-border/50 hover:border-sky-500/50 hover:shadow-lg rounded-2xl shadow-sm flex flex-col justify-between transition-all space-y-4 relative overflow-hidden group hover:shadow-sky-500/5 min-h-[170px]"
+        /* 3D Stacked Card Carousel Wrapper */
+        <div 
+          className="relative w-full py-10 flex flex-col items-center select-none"
+          onMouseEnter={() => setIsHovered(true)}
+          onMouseLeave={() => setIsHovered(false)}
+        >
+          {/* Left Arrow (Desktop Only) */}
+          {reviews.length > 1 && !isMobile && (
+            <button
+              onClick={handlePrev}
+              className="absolute left-4 top-1/2 -translate-y-1/2 z-40 p-2.5 rounded-full bg-card/60 backdrop-blur-md border border-border hover:border-sky-500/50 text-foreground hover:text-sky-500 hover:scale-115 transition-all cursor-pointer shadow-md"
+              aria-label="Previous review"
             >
-              {/* Interactive 3D Canvas */}
-              <div className="absolute right-3 top-3 w-14 h-14 opacity-15 group-hover:opacity-40 pointer-events-none transition-all duration-300">
-                <Interactive3DShape shape={getShapeForIndex(idx)} />
-              </div>
+              <ChevronLeft size={18} />
+            </button>
+          )}
 
-              {/* Decorative Quote mark */}
-              <Quote className="absolute right-4 bottom-4 text-sky-500/10 dark:text-sky-500/5 w-10 h-10 rotate-180 pointer-events-none" />
-
-              <div className="flex items-start justify-between gap-4 relative z-10">
-                <div className="flex items-center gap-2.5">
-                  <div className="w-8 h-8 rounded-full bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-xs font-extrabold text-sky-600 dark:text-sky-400">
-                    {review.name.slice(0, 2).toUpperCase()}
+          {/* 3D Stack Deck container */}
+          <div className="relative w-full max-w-lg md:max-w-xl h-[260px] md:h-[230px] flex items-center justify-center">
+            {reviews.map((review, idx) => {
+              const style = getCardStyle(idx)
+              const isCenter = idx === activeIndex
+              
+              return (
+                <motion.div
+                  key={review.id}
+                  style={{
+                    position: 'absolute',
+                    width: '100%',
+                    pointerEvents: style.pointerEvents,
+                  }}
+                  animate={{
+                    x: style.x,
+                    scale: style.scale,
+                    zIndex: style.zIndex,
+                    opacity: style.opacity,
+                    rotate: style.rotate
+                  }}
+                  transition={{
+                    type: 'spring',
+                    stiffness: 280,
+                    damping: 24
+                  }}
+                  drag={reviews.length > 1 ? "x" : false}
+                  dragConstraints={{ left: 0, right: 0 }}
+                  onDragEnd={(e, info) => {
+                    if (info.offset.x < -60) {
+                      handleNext()
+                    } else if (info.offset.x > 60) {
+                      handlePrev()
+                    }
+                  }}
+                  onClick={() => {
+                    if (!isCenter) {
+                      setActiveIndex(idx)
+                    }
+                  }}
+                  className={`p-6 md:p-8 bg-card/30 dark:bg-card/45 backdrop-blur-xl border ${
+                    isCenter 
+                      ? 'border-sky-500/60 shadow-xl shadow-sky-500/5 dark:shadow-sky-500/3' 
+                      : 'border-border/50 shadow-sm cursor-pointer hover:border-border'
+                  } rounded-2xl flex flex-col justify-between transition-all relative overflow-hidden group min-h-[220px] md:min-h-[190px]`}
+                >
+                  {/* Interactive 3D Wireframe Canvas */}
+                  <div className="absolute right-3 top-3 w-16 h-16 opacity-10 group-hover:opacity-30 pointer-events-none transition-all duration-300">
+                    <Interactive3DShape shape={getShapeForIndex(idx)} hovered={isCenter} />
                   </div>
-                  <div>
-                    <h4 className="text-xs font-bold text-foreground flex items-center gap-1">
-                      <span>{review.name}</span>
-                      <ShieldCheck size={12} className="text-sky-500 dark:text-sky-400 shrink-0" />
-                    </h4>
-                    <span className="text-[9px] text-muted-foreground font-semibold block mt-0.5">
-                      {new Date(review.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}
-                    </span>
+
+                  {/* Decorative Quote Mark */}
+                  <Quote className="absolute right-6 bottom-6 text-sky-500/5 dark:text-sky-500/3 w-14 h-14 rotate-180 pointer-events-none" />
+
+                  {/* Top line metadata */}
+                  <div className="flex items-start justify-between gap-4 relative z-10">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-xs font-extrabold text-sky-600 dark:text-sky-400">
+                        {review.name.slice(0, 2).toUpperCase()}
+                      </div>
+                      <div>
+                        <h4 className="text-xs sm:text-sm font-bold text-foreground flex items-center gap-1.5">
+                          <span>{review.name}</span>
+                          <ShieldCheck size={14} className="text-sky-500 dark:text-sky-400 shrink-0" />
+                        </h4>
+                        <span className="text-[10px] text-muted-foreground font-semibold block mt-0.5">
+                          {new Date(review.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}
+                        </span>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-0.5">
+                      {[...Array(5)].map((_, i) => (
+                        <Star
+                          key={i}
+                          size={11}
+                          className={
+                            i < review.rating
+                              ? 'fill-amber-400 text-amber-400'
+                              : 'text-muted-foreground/30'
+                          }
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
 
-                <div className="flex items-center gap-0.5">
-                  {[...Array(5)].map((_, i) => (
-                    <Star
-                      key={i}
-                      size={10}
-                      className={
-                        i < review.rating
-                          ? 'fill-amber-400 text-amber-400'
-                          : 'text-muted-foreground/30'
-                      }
-                    />
-                  ))}
-                </div>
-              </div>
+                  {/* Comment Body */}
+                  <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed font-semibold italic pl-3 border-l-2 border-sky-500/40 relative z-10 my-4 flex-1">
+                    "{review.comment}"
+                  </p>
+                </motion.div>
+              )
+            })}
+          </div>
 
-              <p className="text-xs text-foreground/80 leading-relaxed font-semibold italic pl-2 border-l-2 border-sky-500/30 relative z-10">
-                "{review.comment.length > 120 ? `${review.comment.slice(0, 120)}...` : review.comment}"
-              </p>
-            </motion.div>
-          ))}
+          {/* Right Arrow (Desktop Only) */}
+          {reviews.length > 1 && !isMobile && (
+            <button
+              onClick={handleNext}
+              className="absolute right-4 top-1/2 -translate-y-1/2 z-40 p-2.5 rounded-full bg-card/60 backdrop-blur-md border border-border hover:border-sky-500/50 text-foreground hover:text-sky-500 hover:scale-115 transition-all cursor-pointer shadow-md"
+              aria-label="Next review"
+            >
+              <ChevronRight size={18} />
+            </button>
+          )}
+
+          {/* Navigation Dot Indicators */}
+          {reviews.length > 1 && (
+            <div className="flex items-center gap-2 mt-6 z-10">
+              {reviews.map((_, idx) => (
+                <button
+                  key={idx}
+                  onClick={() => setActiveIndex(idx)}
+                  className={`h-2 rounded-full transition-all duration-300 cursor-pointer ${
+                    idx === activeIndex
+                      ? 'w-6 bg-sky-500'
+                      : 'w-2 bg-muted-foreground/30 hover:bg-muted-foreground/50'
+                  }`}
+                  aria-label={`Go to review slide ${idx + 1}`}
+                />
+              ))}
+            </div>
+          )}
         </div>
       )}
     </div>
