@@ -448,7 +448,9 @@ function ReviewsPageContent() {
                         <div>
                           <h4 className="text-sm font-bold text-foreground flex items-center gap-1.5">
                             <span>{review.name}</span>
-                            <ShieldCheck size={14} className="text-sky-550 shrink-0" title="Verified email owner" />
+                            <span title="Verified email owner">
+                              <ShieldCheck size={14} className="text-sky-550 shrink-0" />
+                            </span>
                           </h4>
                           <span className="text-[10px] text-muted-foreground/60 block mt-0.5">
                             {new Date(review.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}

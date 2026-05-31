@@ -18,6 +18,7 @@ import {
 } from 'lucide-react'
 import Interactive3DGlobe from '@/components/public/Interactive3DGlobe'
 import Interactive3DShape from '@/components/public/Interactive3DShape'
+import ReviewBanner from '@/components/public/ReviewBanner'
 import Projects3DGrid from '@/components/public/Projects3DGrid'
 
 export default function ContactPage() {
@@ -445,6 +446,9 @@ export default function ContactPage() {
             </div>
           </div>
         </div>
+
+        {/* Reviews CTA Banner */}
+        <ReviewBanner />
 
         {/* Full-width interactive AI chatbot panel stuck above the footer */}
         <div className="w-full bg-gradient-to-b from-card/25 via-card/30 to-card/45 dark:from-card/30 dark:via-card/35 dark:to-card/50 backdrop-blur-md p-6 sm:p-8 rounded-t-2xl rounded-b-none border border-border/50 border-b-0 shadow-none relative overflow-hidden group mb-0">
