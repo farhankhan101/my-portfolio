@@ -39,8 +39,8 @@ export default function ReviewBanner() {
 
       <div className="space-y-3 max-w-xl text-center md:text-left z-10">
         {/* Verification Tag */}
-        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-500/10 dark:bg-sky-500/20 border border-sky-500/20 dark:border-sky-400/20 text-sky-600 dark:text-sky-450 text-[10px] font-bold uppercase tracking-wider rounded-full">
-          <ShieldCheck size={12} className="text-sky-550" />
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-sky-500/10 dark:bg-sky-500/20 border border-sky-500/20 dark:border-sky-400/20 text-sky-600 dark:text-sky-455 text-[10px] font-bold uppercase tracking-wider rounded-full">
+          <ShieldCheck size={12} className="text-sky-500 dark:text-sky-400" />
           <span>Authentic Partner Reviews</span>
         </div>
 
@@ -49,7 +49,7 @@ export default function ReviewBanner() {
         </h3>
         
         <p className="text-xs text-muted-foreground leading-relaxed font-semibold">
-          Read recommendations from companies and developers I've worked with, or write a verified review if we have collaborated on software projects.
+          Read recommendations from companies and developers I've worked with, or leave a verified review if we have collaborated on software projects.
         </p>
 
         {/* Mini Stats Display */}
@@ -77,11 +77,11 @@ export default function ReviewBanner() {
       {/* Buttons */}
       <div className="flex flex-col sm:flex-row gap-3 w-full sm:w-auto z-10">
         <Link
-          href="/reviews?write=true"
-          className="flex items-center justify-center gap-1.5 px-5 py-2.5 bg-sky-655 hover:bg-sky-600 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer shadow-md shadow-sky-550/10 text-center"
+          href="/reviews?leave=true"
+          className="flex items-center justify-center gap-1.5 px-5 py-2.5 bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold rounded-lg transition-all cursor-pointer shadow-md shadow-sky-500/10 hover:shadow-sky-500/20 text-center"
         >
           <MessageSquare size={13} />
-          <span>Write a Review</span>
+          <span>Leave a Review</span>
         </Link>
         <Link
           href="/reviews"

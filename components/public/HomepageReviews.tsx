@@ -2,8 +2,9 @@
 'use client'
 
 import Link from 'next/link'
-import { Star, MessageSquare, ShieldCheck, ArrowRight, Award } from 'lucide-react'
+import { Star, MessageSquare, ShieldCheck, ArrowRight, Award, Quote } from 'lucide-react'
 import { motion } from 'framer-motion'
+import Interactive3DShape from '@/components/public/Interactive3DShape'
 
 interface Review {
   id: string
@@ -15,6 +16,18 @@ interface Review {
 
 interface HomepageReviewsProps {
   initialReviews: Review[]
+}
+
+const getShapeForIndex = (index: number) => {
+  const shapes: ('cube' | 'pyramid' | 'torus' | 'cylinder' | 'sphere' | 'network')[] = [
+    'sphere',
+    'torus',
+    'pyramid',
+    'cylinder',
+    'cube',
+    'network'
+  ]
+  return shapes[index % shapes.length]
 }
 
 export default function HomepageReviews({ initialReviews }: HomepageReviewsProps) {
@@ -64,23 +77,28 @@ export default function HomepageReviews({ initialReviews }: HomepageReviewsProps
 
       {reviewsCount === 0 ? (
         /* Empty State */
-        <div className="bg-card/20 border border-border/50 rounded-2xl p-10 text-center space-y-5">
-          <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center text-muted-foreground mx-auto">
+        <div className="bg-card/25 dark:bg-card/30 backdrop-blur-md border border-border/50 rounded-2xl p-10 text-center space-y-5 relative overflow-hidden group shadow-sm">
+          {/* Interactive 3D Canvas */}
+          <div className="absolute right-6 top-6 w-24 h-24 opacity-20 group-hover:opacity-45 pointer-events-none transition-all duration-300">
+            <Interactive3DShape shape="network" />
+          </div>
+          
+          <div className="w-12 h-12 rounded-full bg-secondary flex items-center justify-center text-muted-foreground mx-auto relative z-10">
             <MessageSquare size={18} />
           </div>
-          <div className="space-y-2">
+          <div className="space-y-2 relative z-10">
             <h3 className="text-sm font-bold text-foreground">No reviews yet. Share your experience!</h3>
             <p className="text-xs text-muted-foreground leading-relaxed max-w-sm mx-auto font-semibold">
               If we have worked together on software engineering projects, please take a moment to leave a verified review.
             </p>
           </div>
-          <div className="pt-2">
+          <div className="pt-2 relative z-10">
             <Link
-              href="/reviews?write=true"
-              className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-sky-655 hover:bg-sky-600 text-white text-xs font-bold rounded-lg shadow-lg hover:shadow-sky-550/10 transition-all cursor-pointer"
+              href="/reviews?leave=true"
+              className="inline-flex items-center gap-1.5 px-5 py-2.5 bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold rounded-lg shadow-lg hover:shadow-sky-500/10 transition-all cursor-pointer"
             >
               <MessageSquare size={14} />
-              <span>Write a Review</span>
+              <span>Leave a Review</span>
             </Link>
           </div>
         </div>
@@ -94,9 +112,17 @@ export default function HomepageReviews({ initialReviews }: HomepageReviewsProps
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{ delay: idx * 0.1 }}
-              className="p-6 bg-card/25 border border-border/60 hover:border-sky-500/30 rounded-2xl shadow-sm flex flex-col justify-between transition-colors space-y-4"
+              className="p-6 bg-card/25 dark:bg-card/30 backdrop-blur-md border border-border/50 hover:border-sky-500/50 hover:shadow-lg rounded-2xl shadow-sm flex flex-col justify-between transition-all space-y-4 relative overflow-hidden group hover:shadow-sky-500/5 min-h-[170px]"
             >
-              <div className="flex items-start justify-between gap-4">
+              {/* Interactive 3D Canvas */}
+              <div className="absolute right-3 top-3 w-14 h-14 opacity-15 group-hover:opacity-40 pointer-events-none transition-all duration-300">
+                <Interactive3DShape shape={getShapeForIndex(idx)} />
+              </div>
+
+              {/* Decorative Quote mark */}
+              <Quote className="absolute right-4 bottom-4 text-sky-500/10 dark:text-sky-500/5 w-10 h-10 rotate-180 pointer-events-none" />
+
+              <div className="flex items-start justify-between gap-4 relative z-10">
                 <div className="flex items-center gap-2.5">
                   <div className="w-8 h-8 rounded-full bg-sky-500/10 border border-sky-500/20 flex items-center justify-center text-xs font-extrabold text-sky-600 dark:text-sky-400">
                     {review.name.slice(0, 2).toUpperCase()}
@@ -104,7 +130,7 @@ export default function HomepageReviews({ initialReviews }: HomepageReviewsProps
                   <div>
                     <h4 className="text-xs font-bold text-foreground flex items-center gap-1">
                       <span>{review.name}</span>
-                      <ShieldCheck size={12} className="text-sky-550 shrink-0" />
+                      <ShieldCheck size={12} className="text-sky-500 dark:text-sky-400 shrink-0" />
                     </h4>
                     <span className="text-[9px] text-muted-foreground font-semibold block mt-0.5">
                       {new Date(review.createdAt).toLocaleDateString(undefined, { month: 'short', year: 'numeric' })}
@@ -127,7 +153,7 @@ export default function HomepageReviews({ initialReviews }: HomepageReviewsProps
                 </div>
               </div>
 
-              <p className="text-xs text-foreground/80 leading-relaxed font-semibold italic pl-1 border-l-2 border-sky-500/20">
+              <p className="text-xs text-foreground/80 leading-relaxed font-semibold italic pl-2 border-l-2 border-sky-500/30 relative z-10">
                 "{review.comment.length > 120 ? `${review.comment.slice(0, 120)}...` : review.comment}"
               </p>
             </motion.div>

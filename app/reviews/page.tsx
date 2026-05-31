@@ -4,8 +4,9 @@
 import { useState, useEffect, Suspense } from 'react'
 import { useSearchParams } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Star, MessageSquare, ShieldCheck, Mail, Send, Award, ArrowRight, Loader2, Sparkles } from 'lucide-react'
+import { Star, MessageSquare, ShieldCheck, Mail, Send, Award, ArrowRight, Loader2, Sparkles, Quote } from 'lucide-react'
 import Projects3DGrid from '@/components/public/Projects3DGrid'
+import Interactive3DShape from '@/components/public/Interactive3DShape'
 
 interface Review {
   id: string
@@ -14,6 +15,18 @@ interface Review {
   rating: number
   comment: string
   createdAt: string
+}
+
+const getShapeForIndex = (index: number) => {
+  const shapes: ('cube' | 'pyramid' | 'torus' | 'cylinder' | 'sphere' | 'network')[] = [
+    'sphere',
+    'torus',
+    'pyramid',
+    'cylinder',
+    'cube',
+    'network'
+  ]
+  return shapes[index % shapes.length]
 }
 
 function ReviewsPageContent() {
@@ -56,9 +69,9 @@ function ReviewsPageContent() {
     fetchReviews()
   }, [])
 
-  // Auto-open form if ?write=true is in URL
+  // Auto-open form if ?leave=true or ?write=true is in URL
   useEffect(() => {
-    if (searchParams.get('write') === 'true') {
+    if (searchParams.get('leave') === 'true' || searchParams.get('write') === 'true') {
       setShowForm(true)
     }
   }, [searchParams])
@@ -190,9 +203,9 @@ function ReviewsPageContent() {
               setErrorMsg(null)
               setSuccessMsg(null)
             }}
-            className="px-6 py-3 bg-sky-655 hover:bg-sky-600 text-white text-sm font-bold rounded-lg shadow-xl hover:shadow-sky-550/10 transition-all cursor-pointer shrink-0 animate-pulse hover:animate-none"
+            className="px-6 py-3 bg-sky-600 hover:bg-sky-500 text-white text-sm font-bold rounded-lg shadow-xl hover:shadow-sky-500/10 hover:shadow-sky-500/20 transition-all cursor-pointer shrink-0 animate-pulse hover:animate-none"
           >
-            {showForm ? 'Cancel Review' : 'Write Verified Review'}
+            {showForm ? 'Cancel' : 'Leave Verified Review'}
           </button>
         </div>
 
@@ -208,7 +221,7 @@ function ReviewsPageContent() {
               <div className="bg-card/30 backdrop-blur-md border border-border/60 rounded-2xl p-6 md:p-8 shadow-xl max-w-2xl mx-auto space-y-6">
                 <div className="flex items-center gap-2 text-sky-500">
                   <Sparkles size={18} />
-                  <h3 className="text-base font-bold text-foreground">Write a verified recommendation</h3>
+                  <h3 className="text-base font-bold text-foreground">Leave a verified recommendation</h3>
                 </div>
 
                 {errorMsg && (
@@ -307,7 +320,7 @@ function ReviewsPageContent() {
                     />
                   </div>
 
-                  {/* Verification Code Box (Visible only after sending code) */}
+                  {/* Verification Code Box */}
                   {codeSent && (
                     <motion.div
                       initial={{ opacity: 0, y: -10 }}
@@ -426,7 +439,7 @@ function ReviewsPageContent() {
                 <div>
                   <h3 className="text-sm font-bold text-foreground">No approved testimonials yet</h3>
                   <p className="text-xs text-muted-foreground mt-1 leading-relaxed max-w-sm mx-auto font-semibold">
-                    Be the first verified user to leave a review! Click "Write Verified Review" above to submit yours.
+                    Be the first verified user to leave a review! Click "Leave Verified Review" above to submit yours.
                   </p>
                 </div>
               </div>
@@ -438,9 +451,17 @@ function ReviewsPageContent() {
                     initial={{ opacity: 0, y: 15 }}
                     animate={{ opacity: 1, y: 0 }}
                     transition={{ delay: idx * 0.05 }}
-                    className="p-6 bg-card/25 border border-border/60 rounded-2xl shadow-sm space-y-4 flex flex-col justify-between hover:border-sky-500/30 transition-colors"
+                    className="p-6 bg-card/25 dark:bg-card/30 backdrop-blur-md border border-border/50 hover:border-sky-500/50 hover:shadow-lg rounded-2xl shadow-sm space-y-4 flex flex-col justify-between transition-all relative overflow-hidden group hover:shadow-sky-500/5 min-h-[150px]"
                   >
-                    <div className="flex items-start justify-between gap-4">
+                    {/* Interactive 3D Canvas */}
+                    <div className="absolute right-3 top-3 w-14 h-14 opacity-15 group-hover:opacity-40 pointer-events-none transition-all duration-300">
+                      <Interactive3DShape shape={getShapeForIndex(idx)} />
+                    </div>
+
+                    {/* Decorative Quote mark */}
+                    <Quote className="absolute right-4 bottom-4 text-sky-500/10 dark:text-sky-500/5 w-10 h-10 rotate-180 pointer-events-none" />
+
+                    <div className="flex items-start justify-between gap-4 relative z-10">
                       <div className="flex items-center gap-3">
                         <div className="w-9 h-9 rounded-full bg-sky-500/10 border border-sky-500/25 flex items-center justify-center text-xs font-extrabold text-sky-600 dark:text-sky-400">
                           {review.name.slice(0, 2).toUpperCase()}
@@ -449,7 +470,7 @@ function ReviewsPageContent() {
                           <h4 className="text-sm font-bold text-foreground flex items-center gap-1.5">
                             <span>{review.name}</span>
                             <span title="Verified email owner">
-                              <ShieldCheck size={14} className="text-sky-550 shrink-0" />
+                              <ShieldCheck size={14} className="text-sky-500 dark:text-sky-400 shrink-0" />
                             </span>
                           </h4>
                           <span className="text-[10px] text-muted-foreground/60 block mt-0.5">
@@ -473,7 +494,7 @@ function ReviewsPageContent() {
                       </div>
                     </div>
 
-                    <p className="text-xs sm:text-sm text-foreground/80 leading-relaxed font-semibold italic pl-1 border-l-2 border-sky-500/30">
+                    <p className="text-xs sm:text-sm text-foreground/80 leading-relaxed font-semibold italic pl-2 border-l-2 border-sky-500/30 relative z-10">
                       "{review.comment}"
                     </p>
                   </motion.div>
