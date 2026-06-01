@@ -458,10 +458,10 @@ export default async function HomePage() {
           {/* Infinite Marquee Wrapper with side blur overlays */}
           <div className="relative w-full overflow-hidden py-4">
             {/* Left blur overlay */}
-            <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-28 md:w-44 bg-gradient-to-r from-background via-background/80 to-transparent z-20 pointer-events-none" />
+            <div className="absolute left-0 top-0 bottom-0 w-4 sm:w-20 md:w-44 bg-gradient-to-r from-background via-background/80 to-transparent z-20 pointer-events-none" />
             
             {/* Right blur overlay */}
-            <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-28 md:w-44 bg-gradient-to-l from-background via-background/80 to-transparent z-20 pointer-events-none" />
+            <div className="absolute right-0 top-0 bottom-0 w-4 sm:w-20 md:w-44 bg-gradient-to-l from-background via-background/80 to-transparent z-20 pointer-events-none" />
 
             {/* Scrolling Track */}
             <div className="marquee-track-custom gap-6 flex flex-row">
