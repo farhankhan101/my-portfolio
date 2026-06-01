@@ -316,14 +316,13 @@ export default function ContactPage() {
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
                   <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider">Attachment</label>
-                  <button
-                    type="button"
-                    onClick={() => document.getElementById('file-upload')?.click()}
+                  <label
+                    htmlFor="file-upload"
                     className="flex items-center gap-1.5 px-3 py-1.5 bg-sky-500/10 hover:bg-sky-500/20 border border-sky-500/25 text-sky-600 dark:text-sky-400 text-xs font-bold rounded-lg transition-colors cursor-pointer"
                   >
                     <Paperclip size={13} />
                     <span>Attach Document</span>
-                  </button>
+                  </label>
                   <input
                     id="file-upload"
                     type="file"
@@ -339,7 +338,7 @@ export default function ContactPage() {
                         }
                       }
                     }}
-                    className="hidden"
+                    className="sr-only"
                   />
                 </div>
 

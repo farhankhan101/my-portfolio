@@ -6,14 +6,23 @@ import DataTable, { Column } from '@/components/admin/DataTable'
 import { Mail, Check, MessageSquare, Trash2, ArrowUpRight, Inbox, Paperclip, Download } from 'lucide-react'
 
 const parseMessage = (rawMessage: string) => {
-  const attachmentRegex = /\n\[Attachment:\s*([^\]]+)\]\(([^)]+)\)/
-  const match = rawMessage.match(attachmentRegex)
-  
-  if (match) {
-    const name = match[1]
-    const url = match[2]
-    const cleanMessage = rawMessage.replace(attachmentRegex, '')
-    return { cleanMessage, attachment: { name, url } }
+  // 1. Check for new format with URL
+  const newRegex = /\n\[Attachment:\s*([^\]]+)\]\(([^)]+)\)/
+  const newMatch = rawMessage.match(newRegex)
+  if (newMatch) {
+    const name = newMatch[1]
+    const url = newMatch[2]
+    const cleanMessage = rawMessage.replace(newRegex, '')
+    return { cleanMessage, attachment: { name, url, available: true } }
+  }
+
+  // 2. Check for legacy format without URL (sent before the uploads update)
+  const oldRegex = /\n\[Attached File:\s*([^\]]+)\]/
+  const oldMatch = rawMessage.match(oldRegex)
+  if (oldMatch) {
+    const name = oldMatch[1]
+    const cleanMessage = rawMessage.replace(oldRegex, '')
+    return { cleanMessage, attachment: { name, url: '', available: false } }
   }
   
   return { cleanMessage: rawMessage, attachment: null }
@@ -247,22 +256,28 @@ export default function AdminMessages() {
               {attachment && (
                 <div className="space-y-1.5">
                   <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">Attachment</span>
-                  <div className="flex items-center justify-between p-3 bg-sky-500/5 border border-sky-500/10 rounded-xl">
+                  <div className="flex items-center justify-between p-3.5 bg-secondary/35 border border-border rounded-xl">
                     <div className="flex items-center gap-2.5 min-w-0">
-                      <Paperclip size={16} className="text-sky-600 dark:text-sky-400 shrink-0" />
+                      <Paperclip size={16} className="text-muted-foreground shrink-0" />
                       <div className="min-w-0 font-medium">
                         <span className="block text-xs font-bold text-foreground truncate">{attachment.name}</span>
                       </div>
                     </div>
-                    <a
-                      href={attachment.url}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white text-[10px] font-bold uppercase tracking-wider rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
-                    >
-                      <span>View / Download</span>
-                      <Download size={12} />
-                    </a>
+                    {attachment.available ? (
+                      <a
+                        href={attachment.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white text-[10px] font-bold uppercase tracking-wider rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
+                      >
+                        <span>View / Download</span>
+                        <Download size={12} />
+                      </a>
+                    ) : (
+                      <span className="px-2.5 py-1 bg-amber-500/10 text-amber-600 dark:text-amber-400 border border-amber-500/20 text-[9px] font-extrabold uppercase tracking-wider rounded">
+                        Not Uploaded
+                      </span>
+                    )}
                   </div>
                 </div>
               )}
