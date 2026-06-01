@@ -144,6 +144,33 @@ export default function SkillsShowcase({ initialSkills }: SkillsShowcaseProps) {
     return skillsByCategory[activeCategory] || []
   }, [initialSkills, skillsByCategory, activeCategory])
 
+  // Helper to construct infinite marquee repeating array
+  const getMarqueeList = (skills: Skill[]) => {
+    if (skills.length === 0) return []
+    let list = [...skills]
+    // Make sure we have at least 12 items to fill width cleanly
+    while (list.length < 12) {
+      list = [...list, ...skills]
+    }
+    // Duplicate to form two identical halves for marquee seamless transition
+    return [...list, ...list]
+  }
+
+  const row1 = useMemo(() => {
+    const rowSkills = filteredSkills.filter((_, idx) => idx % 3 === 0)
+    return getMarqueeList(rowSkills)
+  }, [filteredSkills])
+
+  const row2 = useMemo(() => {
+    const rowSkills = filteredSkills.filter((_, idx) => idx % 3 === 1)
+    return getMarqueeList(rowSkills)
+  }, [filteredSkills])
+
+  const row3 = useMemo(() => {
+    const rowSkills = filteredSkills.filter((_, idx) => idx % 3 === 2)
+    return getMarqueeList(rowSkills)
+  }, [filteredSkills])
+
   // Radar chart constants
   const cx = 200
   const cy = 200
@@ -258,48 +285,202 @@ export default function SkillsShowcase({ initialSkills }: SkillsShowcaseProps) {
 
         {/* View Mode: Interactive Grid list of 3D Cards */}
         {viewMode === 'grid' && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 animate-in fade-in duration-300">
-            {filteredSkills.map((skill) => (
-              <div
-                key={skill.id}
-                className="group relative p-4 sm:p-6 bg-card border border-border/60 rounded-2xl flex flex-col justify-between space-y-3 sm:space-y-5 transition-all duration-300 hover:border-sky-500/40 hover:-translate-y-1 hover:shadow-lg"
-              >
-                {/* Custom radial hover background glow */}
-                <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(14,165,233,0.06),transparent_65%)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+          <div className="space-y-6 animate-in fade-in duration-300 overflow-hidden">
+            {/* A. DESKTOP VIEW: 3-row horizontal scrolling marquee */}
+            <div className="hidden md:flex flex-col gap-6 relative w-full overflow-hidden py-2">
+              {/* Fade overlays on sides of the rows */}
+              <div className="absolute left-0 top-0 bottom-0 w-24 bg-gradient-to-r from-background via-background/70 to-transparent z-20 pointer-events-none" />
+              <div className="absolute right-0 top-0 bottom-0 w-24 bg-gradient-to-l from-background via-background/70 to-transparent z-20 pointer-events-none" />
 
-                <div className="flex items-start justify-between relative z-10">
-                  {/* Styled Icon */}
-                  <div className="p-2 sm:p-3 bg-secondary rounded-xl border border-border/40 group-hover:bg-sky-500/5 group-hover:border-sky-500/20 transition-all">
-                    {getTechIcon(skill.name)}
-                  </div>
-                  {/* Category badge */}
-                  <span className="text-[8px] sm:text-[9px] font-bold text-muted-foreground/60 uppercase bg-secondary/80 border border-border/30 px-1.5 sm:px-2 py-0.5 rounded">
-                    {skill.category}
-                  </span>
-                </div>
-
-                <div className="space-y-2 sm:space-y-3.5 relative z-10">
-                  <h3 className="text-xs sm:text-sm font-extrabold text-foreground tracking-tight group-hover:text-sky-500 transition-colors">
-                    {skill.name}
-                  </h3>
-                  
-                  {/* Custom loader ring representation */}
-                  <div className="space-y-1">
-                    <div className="flex justify-between items-center text-[9px] sm:text-[10px] font-bold text-muted-foreground">
-                      <span>Proficiency</span>
-                      <span className="text-foreground">{skill.proficiency}%</span>
-                    </div>
-                    {/* Progress Slider bar */}
-                    <div className="w-full h-1 bg-secondary rounded-full overflow-hidden border border-border/10">
+              {/* Row 1 (Moving Left) */}
+              {row1.length > 0 && (
+                <div className="flex overflow-hidden w-full">
+                  <div className="animate-marquee flex gap-6 flex-row">
+                    {row1.map((skill, idx) => (
                       <div
-                        className="h-full bg-gradient-to-r from-sky-500 via-indigo-500 to-sky-500 bg-[size:200%_auto] rounded-full transition-all duration-1000 group-hover:bg-[100%_0]"
-                        style={{ width: `${skill.proficiency}%` }}
-                      />
-                    </div>
+                        key={`row1-${skill.id}-${idx}`}
+                        className="group relative w-[240px] shrink-0 p-5 bg-card/65 dark:bg-card/45 border border-border/55 rounded-2xl flex flex-col justify-between space-y-4 transition-all duration-300 hover:border-sky-500/50 hover:bg-card/90 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(14,165,233,0.08)]"
+                      >
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(14,165,233,0.06),transparent_65%)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+                        <div className="flex items-start justify-between relative z-10">
+                          <div className="p-2.5 bg-secondary rounded-xl border border-border/40 group-hover:bg-sky-500/5 group-hover:border-sky-500/20 transition-all">
+                            {getTechIcon(skill.name)}
+                          </div>
+                          <span className="text-[8px] sm:text-[9px] font-bold text-muted-foreground/60 uppercase bg-secondary/80 border border-border/30 px-2 py-0.5 rounded">
+                            {skill.category}
+                          </span>
+                        </div>
+                        <div className="space-y-3 relative z-10">
+                          <h3 className="text-xs sm:text-sm font-extrabold text-foreground tracking-tight group-hover:text-sky-500 transition-colors">
+                            {skill.name}
+                          </h3>
+                          <div className="space-y-1">
+                            <div className="flex justify-between items-center text-[9px] sm:text-[10px] font-bold text-muted-foreground">
+                              <span>Proficiency</span>
+                              <span className="text-foreground">{skill.proficiency}%</span>
+                            </div>
+                            <div className="w-full h-1 bg-secondary rounded-full overflow-hidden border border-border/10">
+                              <div
+                                className="h-full bg-gradient-to-r from-sky-500 via-indigo-500 to-sky-500 bg-[size:200%_auto] rounded-full transition-all duration-1000 group-hover:bg-[100%_0]"
+                                style={{ width: `${skill.proficiency}%` }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
                   </div>
                 </div>
+              )}
+
+              {/* Row 2 (Moving Right - Reverse) */}
+              {row2.length > 0 && (
+                <div className="flex overflow-hidden w-full">
+                  <div className="animate-marquee-reverse flex gap-6 flex-row">
+                    {row2.map((skill, idx) => (
+                      <div
+                        key={`row2-${skill.id}-${idx}`}
+                        className="group relative w-[240px] shrink-0 p-5 bg-card/65 dark:bg-card/45 border border-border/55 rounded-2xl flex flex-col justify-between space-y-4 transition-all duration-300 hover:border-sky-500/50 hover:bg-card/90 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(14,165,233,0.08)]"
+                      >
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(14,165,233,0.06),transparent_65%)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+                        <div className="flex items-start justify-between relative z-10">
+                          <div className="p-2.5 bg-secondary rounded-xl border border-border/40 group-hover:bg-sky-500/5 group-hover:border-sky-500/20 transition-all">
+                            {getTechIcon(skill.name)}
+                          </div>
+                          <span className="text-[8px] sm:text-[9px] font-bold text-muted-foreground/60 uppercase bg-secondary/80 border border-border/30 px-2 py-0.5 rounded">
+                            {skill.category}
+                          </span>
+                        </div>
+                        <div className="space-y-3 relative z-10">
+                          <h3 className="text-xs sm:text-sm font-extrabold text-foreground tracking-tight group-hover:text-sky-500 transition-colors">
+                            {skill.name}
+                          </h3>
+                          <div className="space-y-1">
+                            <div className="flex justify-between items-center text-[9px] sm:text-[10px] font-bold text-muted-foreground">
+                              <span>Proficiency</span>
+                              <span className="text-foreground">{skill.proficiency}%</span>
+                            </div>
+                            <div className="w-full h-1 bg-secondary rounded-full overflow-hidden border border-border/10">
+                              <div
+                                className="h-full bg-gradient-to-r from-sky-500 via-indigo-500 to-sky-500 bg-[size:200%_auto] rounded-full transition-all duration-1000 group-hover:bg-[100%_0]"
+                                style={{ width: `${skill.proficiency}%` }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Row 3 (Moving Left) */}
+              {row3.length > 0 && (
+                <div className="flex overflow-hidden w-full">
+                  <div className="animate-marquee flex gap-6 flex-row">
+                    {row3.map((skill, idx) => (
+                      <div
+                        key={`row3-${skill.id}-${idx}`}
+                        className="group relative w-[240px] shrink-0 p-5 bg-card/65 dark:bg-card/45 border border-border/55 rounded-2xl flex flex-col justify-between space-y-4 transition-all duration-300 hover:border-sky-500/50 hover:bg-card/90 hover:-translate-y-1 hover:shadow-[0_8px_30px_rgb(14,165,233,0.08)]"
+                      >
+                        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(14,165,233,0.06),transparent_65%)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
+                        <div className="flex items-start justify-between relative z-10">
+                          <div className="p-2.5 bg-secondary rounded-xl border border-border/40 group-hover:bg-sky-500/5 group-hover:border-sky-500/20 transition-all">
+                            {getTechIcon(skill.name)}
+                          </div>
+                          <span className="text-[8px] sm:text-[9px] font-bold text-muted-foreground/60 uppercase bg-secondary/80 border border-border/30 px-2 py-0.5 rounded">
+                            {skill.category}
+                          </span>
+                        </div>
+                        <div className="space-y-3 relative z-10">
+                          <h3 className="text-xs sm:text-sm font-extrabold text-foreground tracking-tight group-hover:text-sky-500 transition-colors">
+                            {skill.name}
+                          </h3>
+                          <div className="space-y-1">
+                            <div className="flex justify-between items-center text-[9px] sm:text-[10px] font-bold text-muted-foreground">
+                              <span>Proficiency</span>
+                              <span className="text-foreground">{skill.proficiency}%</span>
+                            </div>
+                            <div className="w-full h-1 bg-secondary rounded-full overflow-hidden border border-border/10">
+                              <div
+                                className="h-full bg-gradient-to-r from-sky-500 via-indigo-500 to-sky-500 bg-[size:200%_auto] rounded-full transition-all duration-1000 group-hover:bg-[100%_0]"
+                                style={{ width: `${skill.proficiency}%` }}
+                              />
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* B. MOBILE VIEW: Premium single-card horizontal swiper with SVG circular radial dials */}
+            <div className="block md:hidden space-y-4">
+              <div className="flex overflow-x-auto gap-5 pb-6 px-4 -mx-6 scrollbar-none snap-x snap-mandatory [&::-webkit-scrollbar]:hidden">
+                {filteredSkills.map((skill) => (
+                  <div
+                    key={`${skill.id}-mobile`}
+                    className="snap-center shrink-0 w-[80vw] sm:w-[50vw] bg-card border border-border/60 rounded-2xl p-5 relative overflow-hidden shadow-md flex flex-col justify-between min-h-[200px]"
+                  >
+                    {/* Background glow mesh inside active card */}
+                    <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(14,165,233,0.04),transparent_70%)] pointer-events-none" />
+
+                    {/* Top Row: Icon and Tag */}
+                    <div className="flex items-center justify-between">
+                      <div className="p-2.5 bg-sky-500/10 rounded-xl border border-sky-500/20 text-sky-500">
+                        {getTechIcon(skill.name)}
+                      </div>
+                      <span className="text-[8px] font-extrabold text-sky-500 bg-sky-500/10 border border-sky-500/20 px-2 py-0.5 rounded uppercase tracking-wider">
+                        {skill.category}
+                      </span>
+                    </div>
+
+                    {/* Middle/Bottom: Title & Circular Dial Chart */}
+                    <div className="flex items-center justify-between gap-4 mt-6">
+                      <div className="space-y-0.5">
+                        <span className="text-[8px] font-bold text-muted-foreground uppercase tracking-widest">Technology</span>
+                        <h3 className="text-base font-extrabold text-foreground tracking-tight leading-snug">
+                          {skill.name}
+                        </h3>
+                      </div>
+
+                      {/* Circular Dial SVG Progress Gauge */}
+                      <div className="relative w-14 h-14 shrink-0 flex items-center justify-center">
+                        <svg className="w-full h-full -rotate-90" viewBox="0 0 36 36">
+                          {/* Background Ring */}
+                          <circle
+                            cx="18"
+                            cy="18"
+                            r="16"
+                            fill="none"
+                            className="stroke-border/40"
+                            strokeWidth="2.5"
+                          />
+                          {/* Foreground Progress Ring with Glow */}
+                          <circle
+                            cx="18"
+                            cy="18"
+                            r="16"
+                            fill="none"
+                            className="stroke-sky-500"
+                            strokeWidth="2.5"
+                            strokeDasharray="100"
+                            strokeDashoffset={100 - skill.proficiency}
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                        {/* Centered percentage text */}
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                          <span className="text-[10px] font-black text-foreground">{skill.proficiency}%</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
+            </div>
           </div>
         )}
 
