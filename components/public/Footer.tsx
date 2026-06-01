@@ -40,10 +40,10 @@ export default function Footer() {
 
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-12 gap-10 relative z-10">
         
-        {/* Left branding (5 cols) */}
-        <div className="md:col-span-5 space-y-4">
+        {/* Left branding (5 cols) - centered on mobile */}
+        <div className="md:col-span-5 space-y-4 text-center md:text-left flex flex-col items-center md:items-start justify-center md:justify-start">
           <div className="space-y-1">
-            <span className="text-base font-extrabold text-foreground tracking-tight">
+            <span className="text-base font-extrabold text-foreground tracking-tight block">
               Farhan Ahmed
             </span>
             <p className="text-xs text-muted-foreground font-semibold">
@@ -61,44 +61,44 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Middle Navigation (3 cols) */}
-        <div className="md:col-span-3 space-y-4">
-          <h4 className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider border-b border-border/50 pb-2">
+        {/* Middle Navigation (3 cols) - horizontal row on mobile */}
+        <div className="md:col-span-3 space-y-3.5 text-center md:text-left flex flex-col items-center md:items-start">
+          <h4 className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider border-b border-border/50 pb-2 w-full md:w-fit">
             Navigation
           </h4>
-          <div className="flex flex-col gap-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wider">
-            <Link href="/projects" className="hover:text-sky-500 transition-colors w-fit">Work</Link>
-            <Link href="/experience" className="hover:text-sky-500 transition-colors w-fit">Experience</Link>
-            <Link href="/contact" className="hover:text-sky-500 transition-colors w-fit">Contact</Link>
+          <div className="flex flex-row md:flex-col justify-center md:justify-start items-center gap-5 md:gap-2.5 text-xs font-bold text-muted-foreground uppercase tracking-wider w-full">
+            <Link href="/projects" className="hover:text-sky-500 transition-colors">Work</Link>
+            <Link href="/experience" className="hover:text-sky-500 transition-colors">Experience</Link>
+            <Link href="/contact" className="hover:text-sky-500 transition-colors">Contact</Link>
           </div>
         </div>
 
-        {/* Right Details: Location & Time (4 cols) */}
-        <div className="md:col-span-4 space-y-4">
-          <h4 className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider border-b border-border/50 pb-2">
+        {/* Right Details: Location & Time (4 cols) - centered items on mobile */}
+        <div className="md:col-span-4 space-y-4 text-center md:text-left flex flex-col items-center md:items-start">
+          <h4 className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider border-b border-border/50 pb-2 w-full md:w-fit">
             Local Metadata
           </h4>
-          <div className="space-y-3 font-semibold text-xs text-muted-foreground">
+          <div className="flex flex-col sm:flex-row flex-wrap md:flex-col justify-center md:justify-start items-center md:items-start gap-3 md:gap-3 text-xs text-muted-foreground font-semibold w-full">
             <div className="flex items-center gap-2">
-              <MapPin size={14} className="text-sky-500" />
+              <MapPin size={14} className="text-sky-500 shrink-0" />
               <span>Karachi, Pakistan (GMT+5)</span>
             </div>
             {currentTime && (
               <div className="flex items-center gap-2">
-                <Clock size={14} className="text-sky-500" />
+                <Clock size={14} className="text-sky-500 shrink-0" />
                 <span>Local Time: {currentTime}</span>
               </div>
             )}
             <div className="flex items-center gap-2">
-              <Mail size={14} className="text-sky-500" />
+              <Mail size={14} className="text-sky-500 shrink-0" />
               <a href="mailto:farhan@silquetech.com" className="hover:text-sky-500 transition-colors">
                 farhan@silquetech.com
               </a>
             </div>
           </div>
 
-          {/* Social Icons row */}
-          <div className="flex gap-2.5 pt-2">
+          {/* Social Icons row - centered on mobile */}
+          <div className="flex gap-2.5 pt-2 justify-center md:justify-start w-full md:w-auto">
             <a
               href="https://github.com/farhankhan101"
               target="_blank"
@@ -137,10 +137,10 @@ export default function Footer() {
         </div>
       </div>
 
-      {/* Under copyright bar */}
-      <div className="max-w-7xl mx-auto mt-12 pt-6 border-t border-border/40 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-semibold text-muted-foreground relative z-10">
-        <span>&copy; {currentYear} Farhan Ahmed. All rights reserved.</span>
-        <span>Crafted with Next.js & Tailwind CSS v4</span>
+      {/* Under copyright bar - perfectly centered text on mobile */}
+      <div className="max-w-7xl mx-auto mt-12 pt-6 border-t border-border/40 flex flex-col sm:flex-row items-center justify-between gap-4 text-[11px] font-semibold text-muted-foreground relative z-10 text-center">
+        <span className="w-full sm:w-auto text-center sm:text-left">&copy; {currentYear} Farhan Ahmed. All rights reserved.</span>
+        <span className="w-full sm:w-auto text-center sm:text-right">Crafted with Next.js & Tailwind CSS v4</span>
       </div>
     </footer>
   )
