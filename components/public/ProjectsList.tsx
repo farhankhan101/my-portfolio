@@ -151,15 +151,25 @@ export default function ProjectsList({ initialProjects }: ProjectsListProps) {
             ))}
           </div>
 
-          {filteredProjects.length > visibleCount && (
+          {filteredProjects.length > 4 && (
             <div className="flex justify-center pt-6">
-              <button
-                onClick={handleLoadMore}
-                className="px-6 py-2.5 rounded-full text-xs font-bold bg-sky-600 hover:bg-sky-500 dark:bg-sky-500 dark:hover:bg-sky-400 text-white border border-transparent shadow-md hover:shadow-sky-500/20 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
-              >
-                <span>Load More Projects</span>
-                <ArrowRight size={14} className="rotate-90 text-white" />
-              </button>
+              {visibleCount < filteredProjects.length ? (
+                <button
+                  onClick={handleLoadMore}
+                  className="px-6 py-2.5 rounded-full text-xs font-bold bg-sky-600 hover:bg-sky-500 dark:bg-sky-500 dark:hover:bg-sky-400 text-white border border-transparent shadow-md hover:shadow-sky-500/20 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
+                >
+                  <span>Load More Projects</span>
+                  <ArrowRight size={14} className="rotate-90 text-white" />
+                </button>
+              ) : (
+                <button
+                  onClick={() => setVisibleCount(4)}
+                  className="px-6 py-2.5 rounded-full text-xs font-bold bg-secondary hover:bg-secondary/80 border border-border text-muted-foreground hover:text-foreground transition-all duration-300 hover:-translate-y-0.5 cursor-pointer flex items-center gap-2 group"
+                >
+                  <span>Show Less</span>
+                  <ArrowRight size={14} className="-rotate-90 text-muted-foreground group-hover:text-foreground transition-transform duration-300" />
+                </button>
+              )}
             </div>
           )}
         </>

@@ -51,7 +51,7 @@ export default async function ProjectCaseStudyPage({ params }: PageProps) {
   }
 
   return (
-    <div className="relative w-full py-32 px-6">
+    <div className="relative w-full py-20 md:py-32 px-4 sm:px-6 overflow-hidden">
       {/* Background glow */}
       <div className="absolute top-20 left-1/4 w-96 h-96 bg-sky-500/10 dark:bg-sky-500/5 blur-[100px] pointer-events-none" />
 
@@ -203,7 +203,7 @@ export default async function ProjectCaseStudyPage({ params }: PageProps) {
                 <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
                   <User size={12} className="text-sky-500" /> My Role
                 </span>
-                <span className="text-sm font-bold text-foreground block pl-4.5">{project.role}</span>
+                <span className="text-sm font-bold text-foreground block pl-5">{project.role}</span>
               </div>
             )}
 
@@ -212,7 +212,7 @@ export default async function ProjectCaseStudyPage({ params }: PageProps) {
                 <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
                   <Users size={12} className="text-sky-500" /> Client / Organization
                 </span>
-                <span className="text-sm font-bold text-foreground block pl-4.5">{project.client}</span>
+                <span className="text-sm font-bold text-foreground block pl-5">{project.client}</span>
               </div>
             )}
           </div>

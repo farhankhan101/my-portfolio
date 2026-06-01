@@ -71,7 +71,7 @@ export default function ShowcaseGallery({ images, projectTitle }: ShowcaseGaller
           {/* Close button */}
           <button
             onClick={() => setLightboxIdx(null)}
-            className="absolute top-6 right-6 p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer z-50"
+            className="absolute top-4 right-4 md:top-6 md:right-6 p-2 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer z-50"
             title="Close Lightbox"
           >
             <X size={24} />
@@ -82,17 +82,17 @@ export default function ShowcaseGallery({ images, projectTitle }: ShowcaseGaller
             <>
               <button
                 onClick={handlePrev}
-                className="absolute left-6 p-3 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer z-50"
+                className="absolute left-2 md:left-6 p-2 md:p-3 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer z-50"
                 title="Previous Image"
               >
-                <ChevronLeft size={30} />
+                <ChevronLeft size={24} className="md:w-[30px] md:h-[30px]" />
               </button>
               <button
                 onClick={handleNext}
-                className="absolute right-6 p-3 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer z-50"
+                className="absolute right-2 md:right-6 p-2 md:p-3 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-colors cursor-pointer z-50"
                 title="Next Image"
               >
-                <ChevronRight size={30} />
+                <ChevronRight size={24} className="md:w-[30px] md:h-[30px]" />
               </button>
             </>
           )}
