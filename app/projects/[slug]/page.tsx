@@ -67,13 +67,30 @@ export default async function ProjectCaseStudyPage({ params }: PageProps) {
 
         {/* Hero details */}
         <div className="space-y-6">
-          <div className="flex flex-wrap items-center gap-3">
-            <span className="px-2.5 py-0.5 rounded bg-sky-500/10 border border-sky-500/20 text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider">
-              {project.category}
-            </span>
-            <span className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1.5">
-              <Calendar size={13} className="text-muted-foreground/60" /> {project.duration || 'Ongoing'}
-            </span>
+          <div className="flex items-center justify-between gap-3 w-full">
+            <div className="flex flex-wrap items-center gap-3">
+              <span className="px-2.5 py-0.5 rounded bg-sky-500/10 border border-sky-500/20 text-[10px] font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider">
+                {project.category}
+              </span>
+              <span className="text-[10px] font-semibold text-muted-foreground flex items-center gap-1.5">
+                <Calendar size={13} className="text-muted-foreground/60" />{' '}
+                {project.duration
+                  ? /^\d+$/.test(project.duration)
+                    ? `${project.duration} Months`
+                    : project.duration
+                  : 'Ongoing'}
+              </span>
+            </div>
+            {project.liveUrl && (
+              <a
+                href={project.liveUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-sky-600 hover:bg-sky-500 text-white font-bold text-[10px] uppercase tracking-wider transition-colors shadow-sm cursor-pointer"
+              >
+                <Globe size={11} /> <span>Live Demo</span>
+              </a>
+            )}
           </div>
 
           <div className="space-y-3">
@@ -85,19 +102,9 @@ export default async function ProjectCaseStudyPage({ params }: PageProps) {
             </p>
           </div>
 
-          {/* Action buttons (Live site / GitHub) */}
-          <div className="flex flex-wrap gap-4 pt-2">
-            {project.liveUrl && (
-              <a
-                href={project.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-5 py-2.5 bg-sky-600 hover:bg-sky-500 text-white font-bold rounded-lg text-xs transition-colors shadow-lg hover:shadow-sky-550/10"
-              >
-                <Globe size={14} /> Live Showcase Demo
-              </a>
-            )}
-            {project.githubUrl && (
+          {/* Action buttons (GitHub Repository if configured) */}
+          {project.githubUrl && (
+            <div className="flex flex-wrap gap-4 pt-2">
               <a
                 href={project.githubUrl}
                 target="_blank"
@@ -110,8 +117,8 @@ export default async function ProjectCaseStudyPage({ params }: PageProps) {
                 </svg>
                 <span>Source Repository</span>
               </a>
-            )}
-          </div>
+            </div>
+          )}
         </div>
 
         {/* Hero Cover Image */}
