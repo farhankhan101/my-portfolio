@@ -58,7 +58,7 @@ export default function AboutSection({ about }: AboutSectionProps) {
               <div className="absolute -inset-2 rounded-[2.5rem] bg-gradient-to-tr from-sky-500 to-indigo-500 opacity-25 blur-lg group-hover:opacity-40 transition duration-500" />
               
               {/* Inner glass box - redesigned as a full background image card */}
-              <div className="relative w-full h-[460px] rounded-[2.5rem] border border-border/60 bg-card shadow-xl overflow-hidden group">
+              <div className="relative w-full h-[460px] rounded-[2.5rem] border border-border/80 bg-card shadow-xl overflow-hidden group">
                 
                 {/* Full Profile Background Image */}
                 <Image
@@ -83,17 +83,19 @@ export default function AboutSection({ about }: AboutSectionProps) {
 
                 {/* Bottom darkness gradient and info overlay */}
                 <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-black/95 via-black/60 to-transparent pt-24 pb-8 px-6 flex flex-col items-center text-center z-20">
-                  <div className="w-full space-y-3">
-                    <div className="flex items-center justify-center gap-2.5 text-xs text-slate-300 font-bold tracking-wide">
-                      <MapPin size={15} className="text-sky-400 shrink-0" />
-                      <span>{about.location}</span>
-                    </div>
+                  <div className="w-full space-y-3 flex flex-col items-center">
+                    <div className="max-w-[280px] w-full text-left space-y-2.5">
+                      <div className="flex items-start gap-2.5 text-xs text-slate-300 font-bold tracking-wide">
+                        <MapPin size={14} className="text-sky-400 shrink-0 mt-0.5" />
+                        <span>{about.location}</span>
+                      </div>
 
-                    <div className="flex items-center justify-center gap-2.5 text-xs text-slate-300 font-bold tracking-wide">
-                      <Briefcase size={15} className="text-indigo-400 shrink-0" />
-                      <span className="capitalize">
-                        {about.availableFor.map(item => item === 'Freelance' ? 'Software Engineer' : item).join(' / ')}
-                      </span>
+                      <div className="flex items-start gap-2.5 text-xs text-slate-300 font-bold tracking-wide">
+                        <Briefcase size={14} className="text-indigo-400 shrink-0 mt-0.5" />
+                        <span className="capitalize leading-normal">
+                          {about.availableFor.map(item => item === 'Freelance' ? 'Software Engineer' : item).join(' / ')}
+                        </span>
+                      </div>
                     </div>
 
                     <div className="pt-4 flex items-center justify-center">
@@ -117,7 +119,7 @@ export default function AboutSection({ about }: AboutSectionProps) {
           <div className="md:col-span-7 space-y-8">
             
             {/* Block 1: Bio */}
-            <div className="p-6 md:p-8 bg-card border border-border/60 rounded-2xl shadow-sm hover:border-sky-500/30 transition-all space-y-4">
+            <div className="p-6 md:p-8 bg-card border border-border/80 rounded-2xl shadow-sm hover:border-sky-500/35 transition-all space-y-4">
               <div className="flex items-center gap-2 text-sky-500">
                 <Sparkles size={18} />
                 <h3 className="text-base font-bold text-foreground">Who I Am</h3>
@@ -129,7 +131,7 @@ export default function AboutSection({ about }: AboutSectionProps) {
             </div>
 
             {/* Block 2: Work Philosophy */}
-            <div className="p-6 md:p-8 bg-card border border-border/60 rounded-2xl shadow-sm hover:border-indigo-500/30 transition-all space-y-4">
+            <div className="p-6 md:p-8 bg-card border border-border/80 rounded-2xl shadow-sm hover:border-indigo-500/35 transition-all space-y-4">
               <div className="flex items-center gap-2 text-indigo-500">
                 <CheckCircle2 size={18} />
                 <h3 className="text-base font-bold text-foreground">My Work Philosophy</h3>
@@ -164,7 +166,7 @@ export default function AboutSection({ about }: AboutSectionProps) {
             </div>
 
             {/* Block 3: Value Proposition */}
-            <div className="p-6 md:p-8 bg-card border border-border/60 rounded-2xl shadow-sm hover:border-cyan-500/30 transition-all space-y-4">
+            <div className="p-6 md:p-8 bg-card border border-border/80 rounded-2xl shadow-sm hover:border-cyan-500/35 transition-all space-y-4">
               <div className="flex items-center gap-2 text-cyan-500">
                 <Sparkles size={18} />
                 <h3 className="text-base font-bold text-foreground">Why Partner With Me?</h3>
@@ -173,11 +175,11 @@ export default function AboutSection({ about }: AboutSectionProps) {
                 With 5+ years of software engineering expertise leading development in SaaS setups, I deliver not just code, but total product ownership:
               </p>
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
-                <div className="p-4 bg-secondary/30 rounded-xl border border-border/40">
+                <div className="p-4 bg-secondary/30 rounded-xl border border-border/65">
                   <h4 className="text-xs font-bold text-foreground">100% Transparency</h4>
                   <p className="text-[11px] text-muted-foreground mt-1 font-medium">Detailed tracking, regular build releases, and clear scope agreements.</p>
                 </div>
-                <div className="p-4 bg-secondary/30 rounded-xl border border-border/40">
+                <div className="p-4 bg-secondary/30 rounded-xl border border-border/65">
                   <h4 className="text-xs font-bold text-foreground">Production-Ready</h4>
                   <p className="text-[11px] text-muted-foreground mt-1 font-medium">Automated CI/CD deployments, zero-downtime release schemes, and secure Docker configs.</p>
                 </div>
