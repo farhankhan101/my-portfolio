@@ -350,11 +350,11 @@ export default async function HomePage() {
           </div>
 
           {/* Grid list */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+          <div className="flex md:grid md:grid-cols-3 overflow-x-auto md:overflow-visible gap-6 md:gap-8 pb-6 md:pb-0 -mx-6 px-6 md:mx-0 md:px-0 snap-x snap-mandatory scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
             {featuredProjects.map((project) => (
               <div
                 key={project.id}
-                className="group bg-card border border-border/60 hover:border-sky-500/50 rounded-2xl overflow-hidden flex flex-col justify-between transition-all shadow-md hover:shadow-xl hover:-translate-y-0.5 duration-300"
+                className="w-[82vw] sm:w-[50vw] md:w-auto shrink-0 snap-center group bg-card border border-border/60 hover:border-sky-500/50 rounded-2xl overflow-hidden flex flex-col justify-between transition-all shadow-md hover:shadow-xl hover:-translate-y-0.5 duration-300 relative"
               >
                 {/* Image */}
                 <div className="relative aspect-video bg-secondary overflow-hidden border-b border-border/40">
@@ -440,14 +440,16 @@ export default async function HomePage() {
             {experiences.map((exp) => (
               <div key={exp.id} className="relative pl-8 group">
                 {/* Timeline node */}
-                <div className="absolute -left-1.5 top-1.5 w-3 h-3 rounded-full bg-background border-2 border-border/80 group-hover:border-sky-500 transition-colors" />
+                <div className="absolute -left-1.5 top-1.5 w-3 h-3 rounded-full bg-background border-2 border-border/80 group-hover:border-sky-500 group-hover:shadow-[0_0_8px_rgba(56,189,248,0.5)] transition-all" />
                 
                 <div className="space-y-2">
-                  <div className="flex flex-wrap items-center gap-x-2 gap-y-1 text-xs">
-                    <span className="font-bold text-foreground text-sm">{exp.role}</span>
-                    <span className="text-muted-foreground">•</span>
-                    <span className="text-sky-600 dark:text-sky-400 font-semibold">{exp.company}</span>
-                    <span className="text-muted-foreground font-medium ml-auto">
+                  <div className="flex flex-col sm:flex-row sm:items-center gap-x-2 gap-y-1.5">
+                    <div className="flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                      <span className="font-bold text-foreground text-sm">{exp.role}</span>
+                      <span className="text-muted-foreground hidden sm:inline">•</span>
+                      <span className="text-sky-600 dark:text-sky-400 font-semibold text-xs sm:text-sm">{exp.company}</span>
+                    </div>
+                    <span className="text-muted-foreground font-medium text-[10px] sm:text-xs sm:ml-auto bg-secondary/80 border border-border/40 px-2 py-0.5 rounded-full w-fit">
                       {new Date(exp.startDate).toLocaleDateString(undefined, { year: 'numeric', month: 'short' })}
                       {' — '}
                       {exp.endDate ? new Date(exp.endDate).toLocaleDateString(undefined, { year: 'numeric', month: 'short' }) : 'Present'}

@@ -43,34 +43,36 @@ export default function ProjectsList({ initialProjects }: ProjectsListProps) {
   return (
     <div className="space-y-8">
       {/* Filters & Search Row */}
-      <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
-        {/* Categories Chips */}
-        <div className="flex flex-wrap gap-2 w-full md:w-auto">
-          {CATEGORIES.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => setActiveCategory(cat)}
-              className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer border ${
-                activeCategory === cat
-                  ? 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/30'
-                  : 'bg-card/25 dark:bg-card/30 backdrop-blur-sm text-muted-foreground border-border hover:bg-secondary/60 hover:text-foreground'
-              }`}
-            >
-              {cat}
-            </button>
-          ))}
-        </div>
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
+          {/* Categories Chips */}
+          <div className="flex overflow-x-auto gap-2 w-full md:w-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none snap-x whitespace-nowrap [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+            {CATEGORIES.map((cat) => (
+              <button
+                key={cat}
+                onClick={() => setActiveCategory(cat)}
+                className={`px-3.5 py-1.5 rounded-full text-xs font-bold transition-all cursor-pointer border shrink-0 snap-center ${
+                  activeCategory === cat
+                    ? 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/30'
+                    : 'bg-card/25 dark:bg-card/30 backdrop-blur-sm text-muted-foreground border-border hover:bg-secondary/60 hover:text-foreground'
+                }`}
+              >
+                {cat}
+              </button>
+            ))}
+          </div>
 
-        {/* Search Input */}
-        <div className="relative w-full md:w-80">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/60" size={15} />
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search by title or tech..."
-            className="w-full pl-9 pr-4 py-2 bg-card/25 dark:bg-card/30 backdrop-blur-md border border-border rounded-full text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:border-sky-500/50 transition-colors shadow-sm"
-          />
+          {/* Search Input */}
+          <div className="relative w-full md:w-80">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground/60" size={15} />
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search by title or tech..."
+              className="w-full pl-9 pr-4 py-2 bg-card/25 dark:bg-card/30 backdrop-blur-md border border-border rounded-full text-xs text-foreground placeholder-muted-foreground focus:outline-none focus:border-sky-500/50 transition-colors shadow-sm"
+            />
+          </div>
         </div>
       </div>
 
@@ -81,11 +83,11 @@ export default function ProjectsList({ initialProjects }: ProjectsListProps) {
           <p className="text-sm">No portfolio items found matching your filters.</p>
         </div>
       ) : (
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        <div className="flex md:grid md:grid-cols-3 overflow-x-auto md:overflow-visible gap-6 md:gap-8 pb-6 md:pb-0 -mx-6 px-6 md:mx-0 md:px-0 snap-x snap-mandatory scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {filteredProjects.map((project) => (
             <div
               key={project.id}
-              className="group bg-card/25 dark:bg-card/30 backdrop-blur-md border border-border/50 hover:border-sky-500/40 rounded-2xl overflow-hidden flex flex-col justify-between transition-all shadow-md hover:shadow-xl hover:-translate-y-0.5 duration-300"
+              className="w-[82vw] sm:w-[50vw] md:w-auto shrink-0 snap-center group bg-card/25 dark:bg-card/30 backdrop-blur-md border border-border/50 hover:border-sky-500/40 rounded-2xl overflow-hidden flex flex-col justify-between transition-all shadow-md hover:shadow-xl hover:-translate-y-0.5 duration-300"
             >
               {/* Cover Image */}
               <div className="relative aspect-video bg-secondary/30 overflow-hidden border-b border-border/40">

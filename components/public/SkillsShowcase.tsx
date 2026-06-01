@@ -24,7 +24,7 @@ function getTechIcon(name: string) {
 
   if (cleanName.includes('react')) {
     return (
-      <svg className="w-8 h-8 text-sky-400" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="2">
+      <svg className="w-6 h-6 sm:w-8 sm:h-8 text-sky-400" viewBox="0 0 32 32" fill="none" stroke="currentColor" strokeWidth="2">
         <circle cx="16" cy="16" r="2" fill="currentColor" />
         <ellipse cx="16" cy="16" rx="5" ry="13" transform="rotate(30 16 16)" />
         <ellipse cx="16" cy="16" rx="5" ry="13" transform="rotate(90 16 16)" />
@@ -34,14 +34,14 @@ function getTechIcon(name: string) {
   }
   if (cleanName.includes('next.js') || cleanName.includes('nextjs')) {
     return (
-      <svg className="w-8 h-8 text-foreground" viewBox="0 0 32 32" fill="currentColor">
+      <svg className="w-6 h-6 sm:w-8 sm:h-8 text-foreground" viewBox="0 0 32 32" fill="currentColor">
         <path d="M16 0C7.16 0 0 7.16 0 16s7.16 16 16 16 16-7.16 16-16S24.84 0 16 0zm-3 23V9h2.38l6.3 8.35V9h2.32v14h-2.12l-6.56-8.7V23H13z" />
       </svg>
     )
   }
   if (cleanName.includes('typescript') || cleanName.includes('ts')) {
     return (
-      <svg className="w-8 h-8 text-blue-500" viewBox="0 0 32 32" fill="currentColor">
+      <svg className="w-6 h-6 sm:w-8 sm:h-8 text-blue-500" viewBox="0 0 32 32" fill="currentColor">
         <path d="M2 2h28v28H2V2z" fill="#3178c6" />
         <path d="M22.5 13.5v2.2h-2.9v8.4h-2.6v-8.4h-2.8v-2.2h8.3zm6.3 5.3c-.2-1.1-.8-1.9-1.8-2.3-1-.4-2-.2-2.7.3-.6.5-.9 1.2-.9 2.1 0 .7.3 1.3.8 1.7.5.4 1.4.7 2.6 1 1.7.4 2.8 1 3.3 1.7.6.7.8 1.6.8 2.7 0 1.5-.6 2.7-1.7 3.5-1.1.8-2.6 1.1-4.5 1-1.8-.2-3.1-1-3.8-2.4l2.1-1.4c.5.9 1.1 1.4 1.9 1.6.8.2 1.6.1 2.2-.2.5-.3.8-.8.8-1.4 0-.5-.2-.9-.6-1.2s-1.2-.6-2.3-.9c-1.7-.4-2.8-1-3.3-1.6-.6-.7-.8-1.5-.8-2.5 0-1.4.6-2.5 1.7-3.2 1.1-.7 2.5-1 4.1-.9 1.5.1 2.7.7 3.4 1.7l-1.9 1.5z" fill="white" />
       </svg>
@@ -49,7 +49,7 @@ function getTechIcon(name: string) {
   }
   if (cleanName.includes('vue')) {
     return (
-      <svg className="w-8 h-8" viewBox="0 0 32 32" fill="none">
+      <svg className="w-6 h-6 sm:w-8 sm:h-8" viewBox="0 0 32 32" fill="none">
         <path d="M16 27L4 6h5.5L16 16.5 22.5 6H28L16 27z" fill="#41B883" />
         <path d="M16 21L7.5 6h4L16 13.5 20.5 6h4L16 21z" fill="#35495E" />
       </svg>
@@ -57,21 +57,21 @@ function getTechIcon(name: string) {
   }
   if (cleanName.includes('tailwind')) {
     return (
-      <svg className="w-8 h-8 text-cyan-400" viewBox="0 0 32 32" fill="currentColor">
+      <svg className="w-6 h-6 sm:w-8 sm:h-8 text-cyan-400" viewBox="0 0 32 32" fill="currentColor">
         <path d="M16 11.5c-3 0-4.5 1.5-4.5 4.5 0 3 1.5 4.5 4.5 4.5 3 0 4.5-1.5 4.5-4.5 0-3-1.5-4.5-4.5-4.5zM7 7c-3 0-4.5 1.5-4.5 4.5 0 3 1.5 4.5 4.5 4.5 3 0 4.5-1.5 4.5-4.5C11.5 8.5 10 7 7 7zm18 9c-3 0-4.5 1.5-4.5 4.5 0 3 1.5 4.5 4.5 4.5 3 0 4.5-1.5 4.5-4.5 0-3-1.5-4.5-4.5-4.5z" />
       </svg>
     )
   }
   if (cleanName.includes('django')) {
     return (
-      <svg className="w-8 h-8 text-emerald-700" viewBox="0 0 32 32" fill="currentColor">
+      <svg className="w-6 h-6 sm:w-8 sm:h-8 text-emerald-700" viewBox="0 0 32 32" fill="currentColor">
         <path d="M18.8 8.6h2.2v10.4c0 3.3-2 5.1-5.1 5.1-2.9 0-4.7-1.4-5.1-3.6h2.3c.3 1 1.2 1.6 2.8 1.6 1.8 0 2.9-1 2.9-3.2V8.6zm-8.2 4.9c1 0 1.8.8 1.8 1.8s-.8 1.8-1.8 1.8-1.8-.8-1.8-1.8.8-1.8 1.8-1.8z" />
       </svg>
     )
   }
   if (cleanName.includes('node')) {
     return (
-      <svg className="w-8 h-8 text-green-500" viewBox="0 0 32 32" fill="currentColor">
+      <svg className="w-6 h-6 sm:w-8 sm:h-8 text-green-500" viewBox="0 0 32 32" fill="currentColor">
         <path d="M16 3L5.3 9.2v12.4L16 27.8l10.7-6.2V9.2L16 3zm8.9 17.3l-8.9 5.1-8.9-5.1V9.9l8.9-5.1 8.9 5.1v10.4z" />
         <path d="M16 11.2l-5.3 3.1v3.4L16 14.6l5.3 3.1v-3.4L16 11.2z" />
       </svg>
@@ -79,14 +79,14 @@ function getTechIcon(name: string) {
   }
   if (cleanName.includes('postgres')) {
     return (
-      <svg className="w-8 h-8 text-blue-400" viewBox="0 0 32 32" fill="currentColor">
+      <svg className="w-6 h-6 sm:w-8 sm:h-8 text-blue-400" viewBox="0 0 32 32" fill="currentColor">
         <path d="M16 2a14 14 0 100 28 14 14 0 000-28zm0 4.2c2 0 3.6 1.6 3.6 3.6s-1.6 3.6-3.6 3.6-3.6-1.6-3.6-3.6 1.6-3.6 3.6-3.6zm0 19.6c-4.4 0-8.2-2.8-9.4-6.8h18.8c-1.2 4-5 6.8-9.4 6.8z" />
       </svg>
     )
   }
   if (cleanName.includes('python')) {
     return (
-      <svg className="w-8 h-8" viewBox="0 0 32 32" fill="currentColor">
+      <svg className="w-6 h-6 sm:w-8 sm:h-8" viewBox="0 0 32 32" fill="currentColor">
         <path d="M15.9 2c-3.9 0-3.7 1.7-3.7 1.7l.1 1.6H16c2.4 0 4.3 1.9 4.3 4.3v3.7h3.7s1.7-.2 1.7 3.7c0 3.9-1.7 3.7-1.7 3.7h-1.6v-3.8c0-2.4-1.9-4.3-4.3-4.3h-3.7V9c0-3.9 3.7-3.7 3.7-3.7h3.8V3.7c0-1.7-1.6-1.7-1.6-1.7H15.9z" fill="#387EB8" />
         <path d="M16.1 30c3.9 0 3.7-1.7 3.7-1.7l-.1-1.6H16c-2.4 0-4.3-1.9-4.3-4.3v-3.7H8s-1.7.2-1.7-3.7c0-3.9 1.7-3.7 1.7-3.7h1.6v3.8c0 2.4 1.9 4.3 4.3 4.3h3.7V23c0 3.9-3.7 3.7-3.7 3.7H10.1v1.6c0 1.7 1.6 1.7 1.6 1.7h4.4z" fill="#FFE052" />
       </svg>
@@ -94,21 +94,21 @@ function getTechIcon(name: string) {
   }
   if (cleanName.includes('redis')) {
     return (
-      <svg className="w-8 h-8 text-red-500" viewBox="0 0 32 32" fill="currentColor">
+      <svg className="w-6 h-6 sm:w-8 sm:h-8 text-red-500" viewBox="0 0 32 32" fill="currentColor">
         <path d="M16 2L3 8.5v15L16 30l13-6.5v-15L16 2zm0 4.4L24.8 10 16 14.4 7.2 10 16 6.4zm-8.8 8.8l8.8 4.4v8.5l-8.8-4.4v-8.5zm17.6 8.5l-8.8 4.4v-8.5l8.8-4.4v8.5z" />
       </svg>
     )
   }
   if (cleanName.includes('docker')) {
     return (
-      <svg className="w-8 h-8 text-sky-500" viewBox="0 0 32 32" fill="currentColor">
+      <svg className="w-6 h-6 sm:w-8 sm:h-8 text-sky-500" viewBox="0 0 32 32" fill="currentColor">
         <path d="M6 14.5h3v-3H6v3zm4.5 0h3v-3h-3v3zm-4.5-4h3v-3H6v3zm4.5 0h3v-3h-3v3zm4.5 4h3v-3h-3v3zm4.5 0h3v-3h-3v3zm-4.5-4h3v-3h-3v3zm4.5 0h3v-3h-3v3zm4.5 4h3v-3h-3v3zm6-5c-.5-1.5-1.8-2.5-3.3-2.5H23v3.5h3c.8 0 1.5.5 1.5 1.2 0 1.2-1 2.2-2.2 2.2H2.2c-.7 0-1.2.5-1.2 1.2v3.6c0 .7.5 1.2 1.2 1.2h27.6c1.8 0 3.2-1.5 3.2-3.2v-2.3c0-2-1-3.6-2.5-4.4z" />
       </svg>
     )
   }
   if (cleanName.includes('git')) {
     return (
-      <svg className="w-8 h-8 text-orange-500" viewBox="0 0 32 32" fill="currentColor">
+      <svg className="w-6 h-6 sm:w-8 sm:h-8 text-orange-500" viewBox="0 0 32 32" fill="currentColor">
         <path d="M30.2 14.8L17.2 1.8c-.8-.8-2-.8-2.8 0L12.2 4c-.2-.1-.5-.2-.8-.2C9.5 3.8 8 5.3 8 7.2c0 1 .5 1.9 1.1 2.5L4 14.8c-.8.8-.8 2 0 2.8l13 13c.8.8 2 .8 2.8 0l10.4-10.4c.8-.8.8-2 0-2.8zM19.4 25.8c-.5.5-1.4.5-2 0L8 16.4c-.5-.5-.5-1.4 0-2l9.4-9.4c.5-.5 1.4-.5 2 0l9.4 9.4c.5.5.5 1.4 0 2l-9.4 9.4zm-1.4-15c1 0 1.8-.8 1.8-1.8s-.8-1.8-1.8-1.8-1.8.8-1.8 1.8.8 1.8 1.8 1.8zm-4.2 8.4c-1 0-1.8.8-1.8 1.8s.8 1.8 1.8 1.8 1.8-.8 1.8-1.8-.8-1.8-1.8-1.8zm8.4 0c-1 0-1.8.8-1.8 1.8s.8 1.8 1.8 1.8 1.8-.8 1.8-1.8-.8-1.8-1.8-1.8zm-4.2-4.2c-1 0-1.8.8-1.8 1.8s.8 1.8 1.8 1.8 1.8-.8 1.8-1.8-.8-1.8-1.8-1.8z" />
       </svg>
     )
@@ -116,7 +116,7 @@ function getTechIcon(name: string) {
 
   // Fallback generic code logo
   return (
-    <svg className="w-8 h-8 text-sky-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
+    <svg className="w-6 h-6 sm:w-8 sm:h-8 text-sky-500" fill="none" stroke="currentColor" strokeWidth="2" viewBox="0 0 24 24">
       <path strokeLinecap="round" strokeLinejoin="round" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4" />
     </svg>
   )
@@ -237,7 +237,7 @@ export default function SkillsShowcase({ initialSkills }: SkillsShowcaseProps) {
         </div>
 
         {/* Categories Tab selectors */}
-        <div className="flex flex-wrap gap-2 justify-start items-center">
+        <div className="flex overflow-x-auto gap-2 w-full justify-start items-center pb-2 -mx-4 px-4 md:mx-0 md:px-0 scrollbar-none snap-x whitespace-nowrap [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
           {CATEGORIES.map((category) => (
             <button
               key={category}
@@ -245,7 +245,7 @@ export default function SkillsShowcase({ initialSkills }: SkillsShowcaseProps) {
                 setActiveCategory(category)
                 setHoveredSkill(null)
               }}
-              className={`px-4.5 py-2 rounded-full text-xs font-bold border transition-all cursor-pointer ${
+              className={`px-4.5 py-2 rounded-full text-xs font-bold border transition-all cursor-pointer shrink-0 snap-center ${
                 activeCategory === category
                   ? 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/30 shadow-sm'
                   : 'bg-card text-muted-foreground border-border/60 hover:border-foreground/20 hover:text-foreground'
@@ -258,34 +258,34 @@ export default function SkillsShowcase({ initialSkills }: SkillsShowcaseProps) {
 
         {/* View Mode: Interactive Grid list of 3D Cards */}
         {viewMode === 'grid' && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6 animate-in fade-in duration-300">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4 sm:gap-6 animate-in fade-in duration-300">
             {filteredSkills.map((skill) => (
               <div
                 key={skill.id}
-                className="group relative p-6 bg-card border border-border/60 rounded-2xl flex flex-col justify-between space-y-5 transition-all duration-300 hover:border-sky-500/40 hover:-translate-y-1 hover:shadow-lg"
+                className="group relative p-4 sm:p-6 bg-card border border-border/60 rounded-2xl flex flex-col justify-between space-y-3 sm:space-y-5 transition-all duration-300 hover:border-sky-500/40 hover:-translate-y-1 hover:shadow-lg"
               >
                 {/* Custom radial hover background glow */}
                 <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_0%,rgba(14,165,233,0.06),transparent_65%)] opacity-0 group-hover:opacity-100 transition-opacity duration-300 rounded-2xl" />
 
                 <div className="flex items-start justify-between relative z-10">
                   {/* Styled Icon */}
-                  <div className="p-3 bg-secondary rounded-xl border border-border/40 group-hover:bg-sky-500/5 group-hover:border-sky-500/20 transition-all">
+                  <div className="p-2 sm:p-3 bg-secondary rounded-xl border border-border/40 group-hover:bg-sky-500/5 group-hover:border-sky-500/20 transition-all">
                     {getTechIcon(skill.name)}
                   </div>
                   {/* Category badge */}
-                  <span className="text-[9px] font-bold text-muted-foreground/60 uppercase bg-secondary/80 border border-border/30 px-2 py-0.5 rounded">
+                  <span className="text-[8px] sm:text-[9px] font-bold text-muted-foreground/60 uppercase bg-secondary/80 border border-border/30 px-1.5 sm:px-2 py-0.5 rounded">
                     {skill.category}
                   </span>
                 </div>
 
-                <div className="space-y-3.5 relative z-10">
-                  <h3 className="text-sm font-extrabold text-foreground tracking-tight group-hover:text-sky-500 transition-colors">
+                <div className="space-y-2 sm:space-y-3.5 relative z-10">
+                  <h3 className="text-xs sm:text-sm font-extrabold text-foreground tracking-tight group-hover:text-sky-500 transition-colors">
                     {skill.name}
                   </h3>
                   
                   {/* Custom loader ring representation */}
                   <div className="space-y-1">
-                    <div className="flex justify-between items-center text-[10px] font-bold text-muted-foreground">
+                    <div className="flex justify-between items-center text-[9px] sm:text-[10px] font-bold text-muted-foreground">
                       <span>Proficiency</span>
                       <span className="text-foreground">{skill.proficiency}%</span>
                     </div>
