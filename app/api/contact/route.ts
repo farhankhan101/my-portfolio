@@ -3,6 +3,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import { db } from '@/lib/db'
 import { sendContactEmail } from '@/lib/resend'
 import { contactSchema } from '@/lib/validations'
+import { uploadAsset } from '@/lib/cloudinary'
 
 // In-memory rate limiter (stores IP: { count, resetTime })
 const rateLimitMap = new Map<string, { count: number; resetTime: number }>()
@@ -58,13 +59,31 @@ export async function POST(req: NextRequest) {
 
     const { name, email, subject, message, phone, attachmentName, attachmentData } = result.data
 
+    // Upload attachment to Cloudinary or local fallback if provided
+    let attachmentUrl = null
+    if (attachmentName && attachmentData) {
+      try {
+        const fileBuffer = Buffer.from(attachmentData, 'base64')
+        const ext = attachmentName.split('.').pop() || 'png'
+        const mimeType = `application/${ext}`
+        const uploaded = await uploadAsset(fileBuffer, attachmentName, mimeType)
+        attachmentUrl = uploaded.url
+      } catch (err) {
+        console.error('❌ Failed to upload attachment:', err)
+      }
+    }
+
     // 4. Save to DB (append phone & file details in message text to avoid changing DB schema)
     let formattedMessage = message
     if (phone) {
       formattedMessage += `\n\n[Contact Number: ${phone}]`
     }
     if (attachmentName) {
-      formattedMessage += `\n[Attached File: ${attachmentName}]`
+      if (attachmentUrl) {
+        formattedMessage += `\n[Attachment: ${attachmentName}](${attachmentUrl})`
+      } else {
+        formattedMessage += `\n[Attached File: ${attachmentName}]`
+      }
     }
 
     const contactMessage = await db.contactMessage.create({

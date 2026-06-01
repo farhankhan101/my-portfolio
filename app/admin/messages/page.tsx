@@ -3,7 +3,21 @@
 
 import { useState, useEffect } from 'react'
 import DataTable, { Column } from '@/components/admin/DataTable'
-import { Mail, Check, MessageSquare, Trash2, ArrowUpRight, Inbox } from 'lucide-react'
+import { Mail, Check, MessageSquare, Trash2, ArrowUpRight, Inbox, Paperclip, Download } from 'lucide-react'
+
+const parseMessage = (rawMessage: string) => {
+  const attachmentRegex = /\n\[Attachment:\s*([^\]]+)\]\(([^)]+)\)/
+  const match = rawMessage.match(attachmentRegex)
+  
+  if (match) {
+    const name = match[1]
+    const url = match[2]
+    const cleanMessage = rawMessage.replace(attachmentRegex, '')
+    return { cleanMessage, attachment: { name, url } }
+  }
+  
+  return { cleanMessage: rawMessage, attachment: null }
+}
 
 interface Message {
   id: string
@@ -167,6 +181,10 @@ export default function AdminMessages() {
     },
   ]
 
+  const { cleanMessage, attachment } = selectedMessage
+    ? parseMessage(selectedMessage.message)
+    : { cleanMessage: '', attachment: null }
+
   return (
     <div className="space-y-6">
       {/* Header */}
@@ -221,9 +239,33 @@ export default function AdminMessages() {
               <div className="space-y-1.5">
                 <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">Message Details</span>
                 <p className="text-sm text-foreground bg-secondary/20 border border-border p-4 rounded-xl leading-relaxed whitespace-pre-wrap font-medium break-words">
-                  {selectedMessage.message}
+                  {cleanMessage}
                 </p>
               </div>
+
+              {/* Attachment Section */}
+              {attachment && (
+                <div className="space-y-1.5">
+                  <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">Attachment</span>
+                  <div className="flex items-center justify-between p-3 bg-sky-500/5 border border-sky-500/10 rounded-xl">
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      <Paperclip size={16} className="text-sky-600 dark:text-sky-400 shrink-0" />
+                      <div className="min-w-0 font-medium">
+                        <span className="block text-xs font-bold text-foreground truncate">{attachment.name}</span>
+                      </div>
+                    </div>
+                    <a
+                      href={attachment.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white text-[10px] font-bold uppercase tracking-wider rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
+                    >
+                      <span>View / Download</span>
+                      <Download size={12} />
+                    </a>
+                  </div>
+                </div>
+              )}
             </div>
 
             {/* Footer Actions */}
@@ -249,7 +291,7 @@ export default function AdminMessages() {
               <a
                 href={`mailto:${selectedMessage.email}?subject=Re: ${selectedMessage.subject}`}
                 onClick={() => handleUpdateStatus(selectedMessage.id, 'REPLIED')}
-                className="flex items-center gap-1.5 px-4 py-2 bg-sky-655 hover:bg-sky-600 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer"
+                className="flex items-center gap-1.5 px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer"
               >
                 Send Email <ArrowUpRight size={14} />
               </a>
