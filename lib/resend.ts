@@ -178,3 +178,78 @@ export async function sendVerificationCodeEmail({ email, code }: SendVerificatio
     return { success: true, sandbox: true, error: error.message }
   }
 }
+
+interface SendReviewConfirmationParams {
+  name: string
+  email: string
+}
+
+export async function sendReviewConfirmationEmail({ name, email }: SendReviewConfirmationParams) {
+  const subject = `Thank you for sharing your feedback! — Farhan Ahmed`
+  const html = `
+    <div style="font-family: 'Inter', Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 24px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
+      <h2 style="color: #0284c7; margin-top: 0; font-size: 20px; font-weight: 700; border-bottom: 1px solid #f1f5f9; padding-bottom: 16px;">Hi ${name},</h2>
+      <p style="font-size: 15px; color: #334155; line-height: 1.6; margin-top: 16px;">
+        Thank you so much for leaving a review on my software engineering portfolio website! I truly appreciate you taking the time to share your feedback and experience.
+      </p>
+      <p style="font-size: 15px; color: #334155; line-height: 1.6;">
+        Your review has been successfully submitted and is currently pending administrator approval. It will appear live on the site's testimonials feed once verified.
+      </p>
+      <div style="margin: 24px 0; padding: 18px; background-color: #f0f9ff; border-radius: 8px; border-left: 4px solid #0284c7;">
+        <p style="margin: 0; font-size: 14px; color: #0369a1; font-weight: 600;">
+          Did you know?
+        </p>
+        <p style="margin: 6px 0 0 0; font-size: 14px; color: #334155; line-height: 1.5;">
+          I'm always open to new freelance projects, remote collaborations, and technical discussions. If you ever need help building robust web applications, AI integrations, or custom tools, don't hesitate to reach out!
+        </p>
+      </div>
+      <p style="font-size: 15px; color: #334155; line-height: 1.6; margin-bottom: 24px;">
+        Thanks again for your support!
+      </p>
+      <table style="width: 100%; border-top: 1px solid #f1f5f9; padding-top: 16px;">
+        <tr>
+          <td style="vertical-align: top;">
+            <p style="margin: 0; font-weight: 700; color: #0f172a; font-size: 15px;">Farhan Ahmed</p>
+            <p style="margin: 2px 0 0 0; color: #64748b; font-size: 13px;">Full Stack Software Engineer</p>
+            <p style="margin: 6px 0 0 0; font-size: 13px;">
+              <a href="https://farhan.dev" style="color: #0284c7; text-decoration: none; font-weight: 600; margin-right: 12px;">Portfolio</a>
+              <a href="https://github.com/farhankhan101" style="color: #0284c7; text-decoration: none; font-weight: 600; margin-right: 12px;">GitHub</a>
+              <a href="https://www.linkedin.com/in/muhammad-farhan-khan-0202b31b6/" style="color: #0284c7; text-decoration: none; font-weight: 600;">LinkedIn</a>
+            </p>
+          </td>
+        </tr>
+      </table>
+      <hr style="border: 0; border-top: 1px solid #e2e8f0; margin: 30px 0 15px 0;" />
+      <p style="font-size: 11px; color: #94a3b8; text-align: center; margin: 0;">
+        You are receiving this automated email because you submitted a testimonial review for farhan.dev using this email address.
+      </p>
+    </div>
+  `
+
+  if (!resend) {
+    console.warn('⚠️ [Resend SDK Sandbox] Resend API key is missing or dummy. Logging review confirmation email to console:')
+    console.log(`[To: ${email}] [Subject: ${subject}]`)
+    return { success: true, sandbox: true }
+  }
+
+  try {
+    const result = await resend.emails.send({
+      from: fromEmail,
+      to: email,
+      subject: subject,
+      html: html,
+    })
+
+    if (result.error) {
+      console.warn('⚠️ Resend review confirmation delivery failed (sandbox or domain verification error). Falling back to console logger:')
+      console.log(`[LOCAL DEV CONFIRMATION LOGGER] Review thank-you sent to ${email} for user ${name}`)
+      return { success: true, sandbox: true, error: result.error.message }
+    }
+
+    return { success: true, messageId: result.data?.id }
+  } catch (error: any) {
+    console.warn('⚠️ Resend review confirmation delivery failed. Falling back to console logger:')
+    console.log(`[LOCAL DEV CONFIRMATION LOGGER] Review thank-you sent to ${email} for user ${name}`)
+    return { success: true, sandbox: true, error: error.message }
+  }
+}

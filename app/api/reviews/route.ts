@@ -4,6 +4,7 @@ import { NextRequest, NextResponse } from 'next/server'
 export const dynamic = 'force-dynamic'
 import { db } from '@/lib/db'
 import { reviewSchema } from '@/lib/validations'
+import { sendReviewConfirmationEmail } from '@/lib/resend'
 
 // In-memory rate limiter for review submissions (IP: { count, resetTime })
 const reviewRateLimitMap = new Map<string, { count: number; resetTime: number }>()
@@ -125,6 +126,13 @@ export async function POST(req: NextRequest) {
     await db.reviewVerification.delete({
       where: { id: verification.id },
     })
+
+    // Send automated thank you email to reviewer
+    try {
+      await sendReviewConfirmationEmail({ name, email })
+    } catch (emailErr) {
+      console.error('❌ Failed to send review thank-you email:', emailErr)
+    }
 
     return NextResponse.json(
       {
