@@ -329,7 +329,7 @@ export default function HomepageReviews({ initialReviews }: HomepageReviewsProps
 
                   {/* Comment Body */}
                   {(() => {
-                    const { text: truncatedText, isTruncated } = truncateComment(review.comment, 145);
+                    const { text: truncatedText, isTruncated } = truncateComment(review.comment, 220);
                     const formatted = renderFormattedComment(truncatedText);
                     return (
                       <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed font-semibold italic pl-3 border-l-2 border-sky-500/40 relative z-10 my-4 flex-1">
