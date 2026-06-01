@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react'
 import DataTable, { Column } from '@/components/admin/DataTable'
 import { Star, Check, X, Trash2, ShieldCheck, ShieldAlert, Award, Loader2 } from 'lucide-react'
+import { renderFormattedComment } from '@/lib/format'
 
 interface Review {
   id: string
@@ -206,7 +207,7 @@ export default function AdminReviews() {
         return (
           <div className="max-w-md">
             <p className={`text-xs text-muted-foreground leading-normal font-semibold ${isExpanded ? '' : 'line-clamp-2'}`}>
-              {item.comment}
+              {renderFormattedComment(item.comment)}
             </p>
             {isLong && (
               <button

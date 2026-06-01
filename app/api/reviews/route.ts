@@ -1,5 +1,7 @@
 // app/api/reviews/route.ts
 import { NextRequest, NextResponse } from 'next/server'
+
+export const dynamic = 'force-dynamic'
 import { db } from '@/lib/db'
 import { reviewSchema } from '@/lib/validations'
 
@@ -38,7 +40,14 @@ export async function GET() {
       orderBy: { createdAt: 'desc' },
     })
 
-    return NextResponse.json(reviews, { status: 200 })
+    return NextResponse.json(reviews, { 
+      status: 200,
+      headers: {
+        'Cache-Control': 'no-store, no-cache, must-revalidate, proxy-revalidate',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+      }
+    })
   } catch (error: any) {
     console.error('❌ GET reviews API error:', error)
     return NextResponse.json(

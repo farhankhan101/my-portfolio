@@ -7,6 +7,7 @@ import { motion, AnimatePresence } from 'framer-motion'
 import { Star, MessageSquare, ShieldCheck, Mail, Send, Award, ArrowRight, Loader2, Sparkles, Quote } from 'lucide-react'
 import Projects3DGrid from '@/components/public/Projects3DGrid'
 import Interactive3DShape from '@/components/public/Interactive3DShape'
+import { renderFormattedComment } from '@/lib/format'
 
 interface Review {
   id: string
@@ -57,7 +58,7 @@ function ReviewsPageContent() {
   const fetchReviews = async () => {
     setLoading(true)
     try {
-      const res = await fetch('/api/reviews')
+      const res = await fetch('/api/reviews', { cache: 'no-store' })
       if (res.ok) {
         const data = await res.json()
         setReviews(data)
@@ -72,6 +73,22 @@ function ReviewsPageContent() {
   useEffect(() => {
     fetchReviews()
   }, [])
+
+  // Scroll to highlighted review once reviews are loaded
+  useEffect(() => {
+    if (!loading && reviews.length > 0) {
+      const highlightId = searchParams.get('highlight');
+      if (highlightId) {
+        const timer = setTimeout(() => {
+          const element = document.getElementById(`review-${highlightId}`);
+          if (element) {
+            element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }
+        }, 150);
+        return () => clearTimeout(timer);
+      }
+    }
+  }, [loading, reviews, searchParams]);
 
   // Auto-open form if ?leave=true or ?write=true is in URL
   useEffect(() => {
@@ -485,67 +502,82 @@ function ReviewsPageContent() {
               </div>
             ) : (
               <div className="space-y-6">
-                {reviews.map((review, idx) => (
-                  <motion.div
-                    key={review.id}
-                    initial={{ opacity: 0, y: 15 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ delay: idx * 0.05 }}
-                    className="p-6 bg-card/25 dark:bg-card/30 backdrop-blur-md border border-border/50 hover:border-sky-500/50 hover:shadow-lg rounded-2xl shadow-sm space-y-4 flex flex-col justify-between transition-all relative overflow-hidden group hover:shadow-sky-500/5 min-h-[150px]"
-                  >
-                    {/* Interactive 3D Canvas */}
-                    <div className="absolute right-3 top-3 w-14 h-14 opacity-15 group-hover:opacity-40 pointer-events-none transition-all duration-300">
-                      <Interactive3DShape shape={getShapeForIndex(idx)} />
-                    </div>
+                {reviews.map((review, idx) => {
+                  const isHighlighted = searchParams.get('highlight') === review.id;
+                  return (
+                    <motion.div
+                      key={review.id}
+                      id={`review-${review.id}`}
+                      initial={{ opacity: 0, y: 15 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ delay: idx * 0.05 }}
+                      className={`p-6 bg-card/25 dark:bg-card/30 backdrop-blur-md border ${
+                        isHighlighted 
+                          ? 'border-sky-500 ring-2 ring-sky-500/20 shadow-xl dark:shadow-sky-500/10' 
+                          : 'border-border/50 hover:border-sky-500/50 hover:shadow-lg hover:shadow-sky-500/5'
+                      } rounded-2xl shadow-sm space-y-4 flex flex-col justify-between transition-all relative overflow-hidden group min-h-[150px]`}
+                    >
+                      {/* Highlight Badge */}
+                      {isHighlighted && (
+                        <span className="inline-flex items-center gap-1 px-2.5 py-0.5 bg-sky-500/15 text-sky-600 dark:text-sky-400 border border-sky-500/20 rounded-full text-[9px] font-extrabold tracking-wider animate-pulse absolute top-3 left-1/2 -translate-x-1/2 z-20">
+                          SELECTED TESTIMONIAL
+                        </span>
+                      )}
 
-                    {/* Decorative Quote mark */}
-                    <Quote className="absolute right-4 bottom-4 text-sky-500/10 dark:text-sky-500/5 w-10 h-10 rotate-180 pointer-events-none" />
+                      {/* Interactive 3D Canvas */}
+                      <div className="absolute right-3 top-3 w-14 h-14 opacity-15 group-hover:opacity-40 pointer-events-none transition-all duration-300">
+                        <Interactive3DShape shape={getShapeForIndex(idx)} />
+                      </div>
 
-                    <div className="flex items-start justify-between gap-4 relative z-10">
-                      <div className="flex items-center gap-3">
-                        <div className="w-9 h-9 rounded-full bg-sky-500/10 border border-sky-500/25 flex items-center justify-center text-xs font-extrabold text-sky-600 dark:text-sky-400">
-                          {review.name.slice(0, 2).toUpperCase()}
+                      {/* Decorative Quote mark */}
+                      <Quote className="absolute right-4 bottom-4 text-sky-500/10 dark:text-sky-500/5 w-10 h-10 rotate-180 pointer-events-none" />
+
+                      <div className="flex items-start justify-between gap-4 relative z-10">
+                        <div className="flex items-center gap-3">
+                          <div className="w-9 h-9 rounded-full bg-sky-500/10 border border-sky-500/25 flex items-center justify-center text-xs font-extrabold text-sky-600 dark:text-sky-400">
+                            {review.name.slice(0, 2).toUpperCase()}
+                          </div>
+                          <div>
+                            <h4 className="text-sm font-bold text-foreground flex items-center gap-1.5">
+                              <span>{review.name}</span>
+                              <span title="Verified email owner">
+                                <ShieldCheck size={14} className="text-sky-500 dark:text-sky-400 shrink-0" />
+                              </span>
+                            </h4>
+                            {(review.designation || review.company) && (
+                              <span className="text-[10px] text-sky-600 dark:text-sky-400 font-bold block mt-0.5">
+                                {review.designation}
+                                {review.designation && review.company && ' at '}
+                                {review.company}
+                              </span>
+                            )}
+                            <span className="text-[9px] text-muted-foreground/50 block mt-0.5">
+                              {new Date(review.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                            </span>
+                          </div>
                         </div>
-                        <div>
-                          <h4 className="text-sm font-bold text-foreground flex items-center gap-1.5">
-                            <span>{review.name}</span>
-                            <span title="Verified email owner">
-                              <ShieldCheck size={14} className="text-sky-500 dark:text-sky-400 shrink-0" />
-                            </span>
-                          </h4>
-                          {(review.designation || review.company) && (
-                            <span className="text-[10px] text-sky-600 dark:text-sky-400 font-bold block mt-0.5">
-                              {review.designation}
-                              {review.designation && review.company && ' at '}
-                              {review.company}
-                            </span>
-                          )}
-                          <span className="text-[9px] text-muted-foreground/50 block mt-0.5">
-                            {new Date(review.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
-                          </span>
+
+                        <div className="flex items-center gap-0.5">
+                          {[...Array(5)].map((_, i) => (
+                            <Star
+                              key={i}
+                              size={12}
+                              className={
+                                i < review.rating
+                                  ? 'fill-amber-400 text-amber-400'
+                                  : 'text-muted-foreground/30'
+                              }
+                            />
+                          ))}
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-0.5">
-                        {[...Array(5)].map((_, i) => (
-                          <Star
-                            key={i}
-                            size={12}
-                            className={
-                              i < review.rating
-                                ? 'fill-amber-400 text-amber-400'
-                                : 'text-muted-foreground/30'
-                            }
-                          />
-                        ))}
-                      </div>
-                    </div>
-
-                    <p className="text-xs sm:text-sm text-foreground/80 leading-relaxed font-semibold italic pl-2 border-l-2 border-sky-500/30 relative z-10">
-                      "{review.comment}"
-                    </p>
-                  </motion.div>
-                ))}
+                      <p className="text-xs sm:text-sm text-foreground/80 leading-relaxed font-semibold italic pl-2 border-l-2 border-sky-500/30 relative z-10">
+                        "{renderFormattedComment(review.comment)}"
+                      </p>
+                    </motion.div>
+                  );
+                })}
               </div>
             )}
           </div>

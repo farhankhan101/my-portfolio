@@ -6,6 +6,7 @@ import Link from 'next/link'
 import { Star, MessageSquare, ShieldCheck, ArrowRight, Award, Quote, ChevronLeft, ChevronRight } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import Interactive3DShape from '@/components/public/Interactive3DShape'
+import { renderFormattedComment, truncateComment } from '@/lib/format'
 
 interface Review {
   id: string
@@ -44,10 +45,10 @@ export default function HomepageReviews({ initialReviews }: HomepageReviewsProps
   useEffect(() => {
     const loadLatestReviews = async () => {
       try {
-        const res = await fetch('/api/reviews')
+        const res = await fetch('/api/reviews', { cache: 'no-store' })
         if (res.ok) {
           const data = await res.json()
-          if (data && data.length > 0) {
+          if (Array.isArray(data)) {
             setReviews(data)
           }
         }
@@ -327,9 +328,26 @@ export default function HomepageReviews({ initialReviews }: HomepageReviewsProps
                   </div>
 
                   {/* Comment Body */}
-                  <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed font-semibold italic pl-3 border-l-2 border-sky-500/40 relative z-10 my-4 flex-1">
-                    "{review.comment}"
-                  </p>
+                  {(() => {
+                    const { text: truncatedText, isTruncated } = truncateComment(review.comment, 145);
+                    const formatted = renderFormattedComment(truncatedText);
+                    return (
+                      <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed font-semibold italic pl-3 border-l-2 border-sky-500/40 relative z-10 my-4 flex-1">
+                        "{formatted}"
+                        {isTruncated && (
+                          <Link 
+                            href={`/reviews?highlight=${review.id}#review-${review.id}`}
+                            onClick={(e) => {
+                              e.stopPropagation();
+                            }}
+                            className="ml-1.5 text-sky-500 dark:text-sky-400 hover:underline font-bold not-italic inline-block text-[11px] select-none"
+                          >
+                            See more
+                          </Link>
+                        )}
+                      </p>
+                    );
+                  })()}
                 </motion.div>
               )
             })}
