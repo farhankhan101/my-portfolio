@@ -1,7 +1,7 @@
 // components/public/ProjectsList.tsx
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { Search, Sparkles, ArrowRight } from 'lucide-react'
@@ -26,6 +26,15 @@ const CATEGORIES = ['All', 'SaaS', 'Web Applications', 'Chatbots', 'AI Agents', 
 export default function ProjectsList({ initialProjects }: ProjectsListProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [activeCategory, setActiveCategory] = useState('All')
+  const [visibleCount, setVisibleCount] = useState(4)
+
+  useEffect(() => {
+    setVisibleCount(4)
+  }, [activeCategory, searchQuery])
+
+  const handleLoadMore = () => {
+    setVisibleCount((prev) => prev + 2)
+  }
 
   const filteredProjects = initialProjects.filter((project) => {
     const matchesSearch =
@@ -83,63 +92,77 @@ export default function ProjectsList({ initialProjects }: ProjectsListProps) {
           <p className="text-sm">No portfolio items found matching your filters.</p>
         </div>
       ) : (
-        <div className="flex md:grid md:grid-cols-3 overflow-x-auto md:overflow-visible gap-6 md:gap-8 pb-6 md:pb-0 -mx-6 px-6 md:mx-0 md:px-0 snap-x snap-mandatory scrollbar-none [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-          {filteredProjects.map((project) => (
-            <div
-              key={project.id}
-              className="w-[82vw] sm:w-[50vw] md:w-auto shrink-0 snap-center group bg-card/25 dark:bg-card/30 backdrop-blur-md border border-border/50 hover:border-sky-500/40 rounded-2xl overflow-hidden flex flex-col justify-between transition-all shadow-md hover:shadow-xl hover:-translate-y-0.5 duration-300"
-            >
-              {/* Cover Image */}
-              <div className="relative aspect-video bg-secondary/30 overflow-hidden border-b border-border/40">
-                <Image
-                  src={project.coverImage}
-                  alt={project.title}
-                  fill
-                  className="object-cover transition-transform duration-300 group-hover:scale-105"
-                  sizes="(max-width: 640px) 100vw, 30vw"
-                  unoptimized={project.coverImage.startsWith('/uploads/')}
-                />
-                {project.featured && (
-                  <div className="absolute top-3 right-3 px-2 py-0.5 rounded bg-sky-600 text-[9px] font-extrabold text-white uppercase tracking-wider shadow-md">
-                    Featured
+        <>
+          <div className="flex flex-col md:grid md:grid-cols-3 gap-6 md:gap-8">
+            {filteredProjects.slice(0, visibleCount).map((project) => (
+              <div
+                key={project.id}
+                className="w-full group bg-card/25 dark:bg-card/30 backdrop-blur-md border border-border/50 hover:border-sky-500/40 rounded-2xl overflow-hidden flex flex-col justify-between transition-all shadow-md hover:shadow-xl hover:-translate-y-0.5 duration-300"
+              >
+                {/* Cover Image */}
+                <div className="relative aspect-video bg-secondary/30 overflow-hidden border-b border-border/40">
+                  <Image
+                    src={project.coverImage}
+                    alt={project.title}
+                    fill
+                    className="object-cover transition-transform duration-300 group-hover:scale-105"
+                    sizes="(max-width: 640px) 100vw, 30vw"
+                    unoptimized={project.coverImage.startsWith('/uploads/')}
+                  />
+                  {project.featured && (
+                    <div className="absolute top-3 right-3 px-2 py-0.5 rounded bg-sky-600 text-[9px] font-extrabold text-white uppercase tracking-wider shadow-md">
+                      Featured
+                    </div>
+                  )}
+                  <div className="absolute top-3 left-3 px-2 py-0.5 rounded bg-background/95 border border-border/40 text-[10px] font-bold text-sky-500 dark:text-sky-400">
+                    {project.category}
                   </div>
-                )}
-                <div className="absolute top-3 left-3 px-2 py-0.5 rounded bg-background/95 border border-border/40 text-[10px] font-bold text-sky-500 dark:text-sky-400">
-                  {project.category}
-                </div>
-              </div>
-
-              {/* Core Details */}
-              <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                <div className="space-y-2">
-                  <h3 className="text-sm font-bold text-foreground group-hover:text-sky-500 dark:group-hover:text-sky-400 transition-colors">
-                    {project.title}
-                  </h3>
-                  <p className="text-xs text-muted-foreground leading-normal line-clamp-2 font-medium">
-                    {project.tagline}
-                  </p>
                 </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-border/40 mt-auto">
-                  <div className="flex gap-1.5 flex-wrap">
-                    {project.techStack.slice(0, 3).map((t) => (
-                      <span key={t} className="px-2 py-0.5 bg-card/45 border border-border/40 rounded text-[9px] font-bold text-muted-foreground">
-                        {t}
-                      </span>
-                    ))}
+                {/* Core Details */}
+                <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
+                  <div className="space-y-2">
+                    <h3 className="text-sm font-bold text-foreground group-hover:text-sky-500 dark:group-hover:text-sky-400 transition-colors">
+                      {project.title}
+                    </h3>
+                    <p className="text-xs text-muted-foreground leading-normal line-clamp-2 font-medium">
+                      {project.tagline}
+                    </p>
                   </div>
-                  <Link
-                    href={`/projects/${project.slug}`}
-                    className="p-1.5 text-muted-foreground hover:text-foreground transition-colors"
-                    title="Read Case Study"
-                  >
-                    <ArrowRight size={16} />
-                  </Link>
+
+                  <div className="flex items-center justify-between pt-4 border-t border-border/40 mt-auto">
+                    <div className="flex gap-1.5 flex-wrap">
+                      {project.techStack.slice(0, 3).map((t) => (
+                        <span key={t} className="px-2 py-0.5 bg-card/45 border border-border/40 rounded text-[9px] font-bold text-muted-foreground">
+                          {t}
+                        </span>
+                      ))}
+                    </div>
+                    <Link
+                      href={`/projects/${project.slug}`}
+                      className="p-1.5 text-muted-foreground hover:text-foreground transition-colors"
+                      title="Read Case Study"
+                    >
+                      <ArrowRight size={16} />
+                    </Link>
+                  </div>
                 </div>
               </div>
+            ))}
+          </div>
+
+          {filteredProjects.length > visibleCount && (
+            <div className="flex justify-center pt-6">
+              <button
+                onClick={handleLoadMore}
+                className="px-6 py-2.5 rounded-full text-xs font-bold bg-sky-600 hover:bg-sky-500 dark:bg-sky-500 dark:hover:bg-sky-400 text-white border border-transparent shadow-md hover:shadow-sky-500/20 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer flex items-center gap-2"
+              >
+                <span>Load More Projects</span>
+                <ArrowRight size={14} className="rotate-90 text-white" />
+              </button>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </div>
   )
