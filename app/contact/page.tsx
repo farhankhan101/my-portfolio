@@ -130,8 +130,8 @@ export default function ContactPage() {
       return
     }
 
-    if (attachment && attachment.size > 2 * 1024 * 1024) {
-      setError('Attachment size must be under 2MB.')
+    if (attachment && attachment.size > 10 * 1024 * 1024) {
+      setError('Attachment size must be under 10MB.')
       setLoading(false)
       return
     }
@@ -177,7 +177,7 @@ export default function ContactPage() {
           errorMessage = errorData.error || errorMessage
         } catch (_) {
           if (res.status === 413) {
-            errorMessage = 'Payload too large. The attached file is too big to upload. Please upload a smaller file under 2MB.'
+            errorMessage = 'Payload too large. The attached file is too big to upload. Please upload a smaller file under 10MB.'
           } else {
             errorMessage = `Server Error (${res.status}): ${errorText.substring(0, 100)}`
           }
@@ -329,8 +329,8 @@ export default function ContactPage() {
                     onChange={(e) => {
                       if (e.target.files && e.target.files[0]) {
                         const file = e.target.files[0]
-                        if (file.size > 2 * 1024 * 1024) {
-                          setError('Attachment size must be under 2MB.')
+                        if (file.size > 10 * 1024 * 1024) {
+                          setError('Attachment size must be under 10MB.')
                           setAttachment(null)
                         } else {
                           setError(null)
