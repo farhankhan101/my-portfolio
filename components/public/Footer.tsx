@@ -112,7 +112,7 @@ export default function Footer() {
               </svg>
             </a>
             <a
-              href="https://www.linkedin.com/mynetwork/grow/"
+              href="https://www.linkedin.com/in/muhammad-farhan-khan-0202b31b6/"
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 bg-secondary border border-border hover:border-foreground/20 hover:text-foreground rounded-lg text-muted-foreground transition-all flex items-center justify-center shadow-sm"

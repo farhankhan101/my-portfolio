@@ -1,5 +1,4 @@
 const { PrismaClient } = require('@prisma/client')
-
 const prisma = new PrismaClient()
 
 async function main() {
@@ -15,7 +14,7 @@ async function main() {
         }
       }
     })
-    console.log('✅ Updated config:', result)
+    console.log('✅ Updated config successfully:', result)
   } catch (error) {
     console.error('❌ Failed to update config:', error)
   }

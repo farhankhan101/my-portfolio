@@ -67,7 +67,7 @@ export async function sendContactEmail({ name, email, subject, message, phone, a
             <p style="margin: 2px 0 0 0; color: #64748b; font-size: 14px;">Full Stack Developer</p>
             <p style="margin: 6px 0 0 0; font-size: 14px;">
               <a href="https://github.com/farhankhan101" style="color: #0369a1; text-decoration: none; margin-right: 12px;">GitHub</a>
-              <a href="https://www.linkedin.com/mynetwork/grow/" style="color: #0369a1; text-decoration: none;">LinkedIn</a>
+              <a href="https://www.linkedin.com/in/muhammad-farhan-khan-0202b31b6/" style="color: #0369a1; text-decoration: none;">LinkedIn</a>
             </p>
           </td>
         </tr>
