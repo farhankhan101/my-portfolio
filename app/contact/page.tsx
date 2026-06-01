@@ -193,7 +193,7 @@ export default function ContactPage() {
   }
 
   return (
-    <div className="relative w-full pt-32 pb-0 px-6">
+    <div className="relative w-full pt-32 pb-0 px-6 overflow-x-hidden">
       {/* Interactive 3D Grid Wave Background */}
       <div className="absolute inset-0 h-[480px] opacity-75 dark:opacity-50 pointer-events-none z-0">
         <Projects3DGrid />
@@ -477,9 +477,9 @@ export default function ContactPage() {
         {/* Full-width interactive AI chatbot panel stuck above the footer */}
         <div className="w-full bg-gradient-to-b from-card/25 via-card/30 to-card/45 dark:from-card/30 dark:via-card/35 dark:to-card/50 backdrop-blur-md p-6 sm:p-8 rounded-t-2xl rounded-b-none border border-border/50 border-b-0 shadow-none relative overflow-hidden group mb-0">
           {/* Volumetric mountain-like blurry glow rising from the footer boundary */}
-          <div className="absolute -bottom-20 left-1/2 -translate-x-1/2 w-[140%] h-44 bg-gradient-to-t from-sky-500/8 via-sky-500/2 to-transparent dark:from-sky-500/20 dark:via-sky-500/5 to-transparent blur-[65px] rounded-t-[100%] pointer-events-none z-0 animate-pulse" />
+          <div className="absolute -bottom-20 left-0 w-full h-44 bg-gradient-to-t from-sky-500/8 via-sky-500/2 to-transparent dark:from-sky-500/20 dark:via-sky-500/5 to-transparent blur-[65px] rounded-t-[100%] pointer-events-none z-0 animate-pulse" />
           {/* Core volumetric glow highlight at the center footer boundary */}
-          <div className="absolute -bottom-10 left-1/2 -translate-x-1/2 w-[70%] h-24 bg-sky-400/6 dark:bg-sky-400/15 blur-[40px] rounded-t-full pointer-events-none z-0" />
+          <div className="absolute -bottom-10 left-0 w-full h-24 bg-sky-400/6 dark:bg-sky-400/15 blur-[40px] rounded-t-full pointer-events-none z-0" />
           
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 pb-4 border-b border-border/40 relative z-10">
             <div className="flex items-center gap-3">
@@ -512,7 +512,7 @@ export default function ContactPage() {
                   <div className={`w-6 h-6 rounded-full text-[10px] shrink-0 flex items-center justify-center ${isBot ? 'bg-sky-500/15 border border-sky-500/30 text-sky-600 dark:text-sky-400' : 'bg-secondary border border-border text-foreground'}`}>
                     {isBot ? <Bot size={12} /> : 'U'}
                   </div>
-                  <div className={`p-3 rounded-2xl text-xs leading-relaxed font-semibold ${isBot ? 'bg-sky-500/5 border border-sky-500/10 text-muted-foreground rounded-tl-none' : 'bg-sky-600 text-white rounded-tr-none'}`}>
+                  <div className={`p-3 rounded-2xl text-xs leading-relaxed font-semibold break-words ${isBot ? 'bg-sky-500/5 border border-sky-500/10 text-muted-foreground rounded-tl-none' : 'bg-sky-600 text-white rounded-tr-none'}`}>
                     {msg.content}
                   </div>
                 </div>
