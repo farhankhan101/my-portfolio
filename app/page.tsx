@@ -30,6 +30,7 @@ import FloatingParticles from '@/components/public/FloatingParticles'
 import Interactive3DShape from '@/components/public/Interactive3DShape'
 import Projects3DGrid from '@/components/public/Projects3DGrid'
 import HomepageReviews from '@/components/public/HomepageReviews'
+import ServicesExplorer from '@/components/public/ServicesExplorer'
 
 export const revalidate = 60 // Cache for 60 seconds
 
@@ -99,7 +100,7 @@ export default async function HomePage() {
           {/* Avatar (left) */}
           {about?.avatarUrl && (
             <div className="col-span-1 md:col-span-5 flex justify-center">
-              <div className="relative shrink-0 group">
+              <div className="relative shrink-0 group animate-float">
                 {/* Outer soft shadow border */}
                 <div className="absolute -inset-1.5 rounded-[2.2rem] bg-gradient-to-tr from-sky-500 to-indigo-500 opacity-40 blur-md group-hover:opacity-60 transition duration-300 animate-pulse" />
                 <div className="relative w-56 h-56 sm:w-64 sm:h-64 md:w-72 md:h-72 rounded-[2.2rem] overflow-hidden border border-border bg-card shadow-2xl">
@@ -136,7 +137,7 @@ export default async function HomePage() {
               </div>
 
               {/* Headline & Title */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-foreground leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-sky-450 via-indigo-400 to-sky-500 leading-tight">
                 {about?.headline || 'Full Stack Developer'}
               </h1>
             </div>
@@ -186,29 +187,67 @@ export default async function HomePage() {
       </section>
 
       {/* 2. STATS SECTION */}
-      <section className="relative border-y border-border/60 bg-secondary/35 py-10 px-6 z-10">
-        <div className="max-w-5xl mx-auto grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-          <div className="space-y-1">
-            <h4 className="text-3xl font-extrabold text-sky-500 dark:text-sky-400">
-              <CounterAnimation to={yearsExp} suffix="+" duration={1600} />
-            </h4>
-            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Years Experience</p>
-          </div>
-          <div className="space-y-1">
-            <h4 className="text-3xl font-extrabold text-sky-500 dark:text-sky-400">
-              <CounterAnimation to={projectsCount} suffix="+" duration={1800} />
-            </h4>
-            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Projects Completed</p>
-          </div>
-          <div className="space-y-1">
-            <h4 className="text-3xl font-extrabold text-sky-500 dark:text-sky-400">
-              <CounterAnimation to={100} suffix="%" duration={1400} />
-            </h4>
-            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Client Satisfaction</p>
-          </div>
-          <div className="space-y-1">
-            <h4 className="text-3xl font-extrabold text-sky-500 dark:text-sky-400">{linesOfCode}</h4>
-            <p className="text-xs font-bold uppercase tracking-wider text-muted-foreground">Lines of Clean Code</p>
+      <section className="relative py-12 px-6 z-10">
+        <div className="max-w-5xl mx-auto backdrop-blur-md bg-card/25 dark:bg-card/15 border border-border/55 p-6 sm:p-8 rounded-2xl shadow-[0_8px_32px_rgba(0,0,0,0.06)] relative overflow-hidden group hover:border-sky-500/20 transition-all duration-300">
+          {/* Subtle radial inner glow */}
+          <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_120%,rgba(14,165,233,0.03),transparent_70%)] pointer-events-none" />
+          
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-8 text-center relative z-10">
+            {/* Stat 1 */}
+            <div className="space-y-1 bg-card/20 dark:bg-transparent p-4 rounded-xl border border-border/40 md:border-none md:p-0">
+              <div className="flex items-center gap-1.5 justify-center">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-sky-500"></span>
+                </span>
+                <h4 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-indigo-400">
+                  <CounterAnimation to={yearsExp} suffix="+" duration={1600} />
+                </h4>
+              </div>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Years Experience</p>
+            </div>
+            
+            {/* Stat 2 */}
+            <div className="space-y-1 bg-card/20 dark:bg-transparent p-4 rounded-xl border border-border/40 md:border-none md:p-0">
+              <div className="flex items-center gap-1.5 justify-center">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-sky-500"></span>
+                </span>
+                <h4 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-indigo-400">
+                  <CounterAnimation to={projectsCount} suffix="+" duration={1800} />
+                </h4>
+              </div>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Projects Completed</p>
+            </div>
+            
+            {/* Stat 3 */}
+            <div className="space-y-1 bg-card/20 dark:bg-transparent p-4 rounded-xl border border-border/40 md:border-none md:p-0">
+              <div className="flex items-center gap-1.5 justify-center">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-sky-500"></span>
+                </span>
+                <h4 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-indigo-400">
+                  <CounterAnimation to={100} suffix="%" duration={1400} />
+                </h4>
+              </div>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Client Satisfaction</p>
+            </div>
+            
+            {/* Stat 4 */}
+            <div className="space-y-1 bg-card/20 dark:bg-transparent p-4 rounded-xl border border-border/40 md:border-none md:p-0">
+              <div className="flex items-center gap-1.5 justify-center">
+                <span className="relative flex h-1.5 w-1.5">
+                  <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-sky-400 opacity-75"></span>
+                  <span className="relative inline-flex rounded-full h-1.5 w-1.5 bg-sky-500"></span>
+                </span>
+                <h4 className="text-2xl sm:text-3xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-sky-400 to-indigo-400">
+                  {linesOfCode}
+                </h4>
+              </div>
+              <p className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">Clean Code Lines</p>
+            </div>
           </div>
         </div>
       </section>
@@ -234,91 +273,7 @@ export default async function HomePage() {
           </div>
 
           {/* Grid of expertise */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="bg-card border border-border/60 hover:border-sky-500/50 hover:shadow-lg rounded-2xl p-6 transition-all space-y-4 relative overflow-hidden group">
-              {/* Interactive 3D Cube Canvas */}
-              <div className="absolute right-3 top-3 w-16 h-16 opacity-30 group-hover:opacity-55 pointer-events-none transition-all duration-300">
-                <Interactive3DShape shape="cube" />
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-500 relative z-10">
-                <Server size={20} />
-              </div>
-              <h3 className="text-base font-bold text-foreground relative z-10">Cloud & SaaS Architecture</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed font-semibold relative z-10">
-                Designing PostgreSQL databases, Redis layers, and high-performance server APIs using Node.js and Python. Focusing on speed, uptime, and strict data security.
-              </p>
-            </div>
-            
-            <div className="bg-card border border-border/60 hover:border-sky-500/50 hover:shadow-lg rounded-2xl p-6 transition-all space-y-4 relative overflow-hidden group">
-              {/* Interactive 3D Octahedron Crystal Canvas */}
-              <div className="absolute right-3 top-3 w-16 h-16 opacity-30 group-hover:opacity-55 pointer-events-none transition-all duration-300">
-                <Interactive3DShape shape="pyramid" />
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-500 relative z-10">
-                <Globe size={20} />
-              </div>
-              <h3 className="text-base font-bold text-foreground relative z-10">Frontend Engineering</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed font-semibold relative z-10">
-                Creating responsive, fluid, and custom-styled web apps using Next.js/React. Focused on excellent UX transitions, performance audits, and high search accessibility.
-              </p>
-            </div>
-
-            <div className="bg-card border border-border/60 hover:border-sky-500/50 hover:shadow-lg rounded-2xl p-6 transition-all space-y-4 relative overflow-hidden group">
-              {/* Interactive 3D Concentric Orbiting Rings Canvas */}
-              <div className="absolute right-3 top-3 w-16 h-16 opacity-30 group-hover:opacity-55 pointer-events-none transition-all duration-300">
-                <Interactive3DShape shape="torus" />
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-500 relative z-10">
-                <TrendingUp size={20} />
-              </div>
-              <h3 className="text-base font-bold text-foreground relative z-10">Systems Advisory</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed font-semibold relative z-10">
-                Guiding architecture audits, Docker deployments, automated CI/CD pipelines, and configuring cloud server security parameters.
-              </p>
-            </div>
-
-            <div className="bg-card border border-border/60 hover:border-sky-500/50 hover:shadow-lg rounded-2xl p-6 transition-all space-y-4 relative overflow-hidden group">
-              {/* Interactive 3D Neural Node Connections Canvas */}
-              <div className="absolute right-3 top-3 w-16 h-16 opacity-30 group-hover:opacity-55 pointer-events-none transition-all duration-300">
-                <Interactive3DShape shape="network" />
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-500 relative z-10">
-                <Cpu size={20} />
-              </div>
-              <h3 className="text-base font-bold text-foreground relative z-10">AI & RAG Solutions</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed font-semibold relative z-10">
-                Building custom RAG workflows, vector database embeddings, chatbot integrations, and hooking LLM pipelines into core software models.
-              </p>
-            </div>
-
-            <div className="bg-card border border-border/60 hover:border-sky-500/50 hover:shadow-lg rounded-2xl p-6 transition-all space-y-4 relative overflow-hidden group">
-              {/* Interactive 3D Cylinder Struts Canvas */}
-              <div className="absolute right-3 top-3 w-16 h-16 opacity-30 group-hover:opacity-55 pointer-events-none transition-all duration-300">
-                <Interactive3DShape shape="cylinder" />
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-500 relative z-10">
-                <Database size={20} />
-              </div>
-              <h3 className="text-base font-bold text-foreground relative z-10">Database & API Tuning</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed font-semibold relative z-10">
-                Designing highly optimized SQL schemas, query scaling, custom RESTful/GraphQL interfaces, and iron-clad user authentication flows.
-              </p>
-            </div>
-
-            <div className="bg-card border border-border/60 hover:border-sky-500/50 hover:shadow-lg rounded-2xl p-6 transition-all space-y-4 relative overflow-hidden group">
-              {/* Interactive 3D Sphere Points Grid Canvas */}
-              <div className="absolute right-3 top-3 w-16 h-16 opacity-30 group-hover:opacity-55 pointer-events-none transition-all duration-300">
-                <Interactive3DShape shape="sphere" />
-              </div>
-              <div className="w-10 h-10 rounded-lg bg-sky-500/10 flex items-center justify-center text-sky-500 relative z-10">
-                <Palette size={20} />
-              </div>
-              <h3 className="text-base font-bold text-foreground relative z-10">Premium Interface Design</h3>
-              <p className="text-xs text-muted-foreground leading-relaxed font-semibold relative z-10">
-                Fusing modern layouts, color harmony systems, interactive micro-animations, and custom graphics to create top-tier user experiences.
-              </p>
-            </div>
-          </div>
+          <ServicesExplorer />
         </div>
       </section>
 
@@ -436,11 +391,13 @@ export default async function HomePage() {
           </div>
 
           {/* Timeline teaser */}
-          <div className="relative border-l border-border/60 ml-4 space-y-8">
+          <div className="relative ml-4 space-y-8 before:absolute before:left-0 before:top-2 before:bottom-2 before:w-[2px] before:bg-gradient-to-b before:from-sky-500 before:via-indigo-500 before:to-transparent">
             {experiences.map((exp) => (
               <div key={exp.id} className="relative pl-8 group">
                 {/* Timeline node */}
-                <div className="absolute -left-1.5 top-1.5 w-3 h-3 rounded-full bg-background border-2 border-border/80 group-hover:border-sky-500 group-hover:shadow-[0_0_8px_rgba(56,189,248,0.5)] transition-all" />
+                <div className="absolute -left-[4px] top-1.5 w-2.5 h-2.5 rounded-full bg-background border-2 border-sky-500 group-hover:bg-sky-500 group-hover:shadow-[0_0_12px_rgba(14,165,233,0.85)] transition-all duration-300 z-10">
+                  <span className="absolute -inset-1 rounded-full bg-sky-500/20 animate-ping opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                </div>
                 
                 <div className="space-y-2">
                   <div className="flex flex-col sm:flex-row sm:items-center gap-x-2 gap-y-1.5">
