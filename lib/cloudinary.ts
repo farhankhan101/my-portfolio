@@ -45,6 +45,10 @@ export async function uploadAsset(
   const sanitizedBaseName = path.basename(safeFileName, fileExtension).replace(/[^a-zA-Z0-9]/g, '_') || 'uploaded_image'
   const newFileName = `${sanitizedBaseName}_${Date.now()}${fileExtension}`
 
+  const isImage = mimeType?.startsWith('image/') || 
+                  ['.png', '.jpg', '.jpeg', '.webp', '.gif', '.svg', '.bmp', '.ico', '.tiff', '.heic'].includes(fileExtension.toLowerCase())
+  const resourceType = isImage ? 'image' : 'raw'
+
   if (isCloudinaryConfigured) {
     try {
       return new Promise((resolve, reject) => {
@@ -54,7 +58,7 @@ export async function uploadAsset(
             filename_override: sanitizedBaseName,
             use_filename: true,
             unique_filename: true,
-            resource_type: 'auto',
+            resource_type: resourceType,
           },
           (error, result) => {
             if (error || !result) {
