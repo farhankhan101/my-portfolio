@@ -415,12 +415,12 @@ export default function ContactPage() {
                   <div>
                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Professional Networking</span>
                     <a
-                      href="https://www.linkedin.com/in/muhammad-farhan-khan-0202b31b6/"
+                      href="https://www.linkedin.com/mynetwork/grow/"
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-sm font-extrabold text-foreground hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
                     >
-                      linkedin.com/in/muhammad-farhan-khan
+                      linkedin.com/mynetwork/grow
                     </a>
                   </div>
                 </div>

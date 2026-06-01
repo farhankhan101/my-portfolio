@@ -100,7 +100,7 @@ export default function Footer() {
           {/* Social Icons row */}
           <div className="flex gap-2.5 pt-2">
             <a
-              href="https://github.com/farhan-ahmed"
+              href="https://github.com/farhankhan101"
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 bg-secondary border border-border hover:border-foreground/20 hover:text-foreground rounded-lg text-muted-foreground transition-all flex items-center justify-center shadow-sm"
@@ -112,7 +112,7 @@ export default function Footer() {
               </svg>
             </a>
             <a
-              href="https://www.linkedin.com/in/muhammad-farhan-khan-0202b31b6/"
+              href="https://www.linkedin.com/mynetwork/grow/"
               target="_blank"
               rel="noopener noreferrer"
               className="p-2 bg-secondary border border-border hover:border-foreground/20 hover:text-foreground rounded-lg text-muted-foreground transition-all flex items-center justify-center shadow-sm"

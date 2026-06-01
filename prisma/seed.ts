@@ -441,8 +441,8 @@ async function main() {
     seoTitle: 'Farhan Ahmed — Full Stack Developer',
     seoDescription: 'Full Stack Developer in Karachi. React, Next.js, Django, PostgreSQL. Available for freelance.',
     socialLinks: {
-      github: 'https://github.com/farhan-ahmed',
-      linkedin: 'https://www.linkedin.com/in/muhammad-farhan-khan-0202b31b6/',
+      github: 'https://github.com/farhankhan101',
+      linkedin: 'https://www.linkedin.com/mynetwork/grow/',
       whatsapp: 'https://wa.me/923079971295',
     },
     contactEmail: 'farhan@silquetech.com',
