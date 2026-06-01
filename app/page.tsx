@@ -122,7 +122,7 @@ export default async function HomePage() {
           <div className="col-span-1 md:col-span-7 space-y-4 text-center md:text-left">
             {/* Availability Badge */}
             {about?.availableFor && about.availableFor.length > 0 && (
-              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-sky-500/10 dark:bg-sky-500/20 border border-sky-500/20 dark:border-sky-400/20 text-sky-600 dark:text-sky-450 text-xs font-bold uppercase tracking-wider">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-sky-500/10 dark:bg-sky-500/20 border border-sky-500/20 dark:border-sky-400/20 text-sky-600 dark:text-sky-400 text-xs font-bold uppercase tracking-wider">
                 <span className="w-1.5 h-1.5 rounded-full bg-sky-500 dark:bg-sky-400 animate-pulse" />
                 <span>
                   {about.availableFor[0] === 'Freelance' ? 'Software Engineer' : about.availableFor[0]}
@@ -137,7 +137,7 @@ export default async function HomePage() {
               </div>
 
               {/* Headline & Title */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-sky-450 via-indigo-400 to-sky-500 leading-tight">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl font-extrabold tracking-tight bg-clip-text text-transparent bg-gradient-to-r from-sky-400 via-indigo-400 to-sky-500 leading-tight">
                 {about?.headline || 'Full Stack Developer'}
               </h1>
             </div>
