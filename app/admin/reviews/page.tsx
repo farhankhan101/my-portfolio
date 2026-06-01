@@ -276,7 +276,7 @@ export default function AdminReviews() {
         const isLong = item.comment.length > 80
         return (
           <div className="max-w-md">
-            <p className={`text-xs text-muted-foreground leading-normal font-semibold ${isExpanded ? '' : 'line-clamp-2'}`}>
+            <p className={`text-xs text-muted-foreground leading-normal font-semibold break-words ${isExpanded ? '' : 'line-clamp-2'}`}>
               {renderFormattedComment(item.comment)}
             </p>
             {isLong && (

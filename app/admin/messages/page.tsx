@@ -220,7 +220,7 @@ export default function AdminMessages() {
               {/* Message Content */}
               <div className="space-y-1.5">
                 <span className="text-xs font-semibold text-muted-foreground uppercase tracking-wider block">Message Details</span>
-                <p className="text-sm text-foreground bg-secondary/20 border border-border p-4 rounded-xl leading-relaxed whitespace-pre-wrap font-medium">
+                <p className="text-sm text-foreground bg-secondary/20 border border-border p-4 rounded-xl leading-relaxed whitespace-pre-wrap font-medium break-words">
                   {selectedMessage.message}
                 </p>
               </div>

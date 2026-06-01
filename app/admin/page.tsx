@@ -123,13 +123,13 @@ export default async function AdminDashboard() {
               ) : (
                 recentMessages.map((msg) => (
                   <div key={msg.id} className="py-4 first:pt-0 last:pb-0 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                    <div>
-                      <div className="flex items-center gap-2">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-sm font-semibold text-foreground">{msg.name}</span>
-                        <span className="text-[10px] text-muted-foreground">({msg.email})</span>
+                        <span className="text-[10px] text-muted-foreground break-all">({msg.email})</span>
                       </div>
-                      <p className="text-xs font-medium text-sky-600 dark:text-sky-400 mt-0.5">{msg.subject}</p>
-                      <p className="text-xs text-muted-foreground mt-1 line-clamp-1 italic">"{msg.message}"</p>
+                      <p className="text-xs font-medium text-sky-600 dark:text-sky-400 mt-0.5 break-words">{msg.subject}</p>
+                      <p className="text-xs text-muted-foreground mt-1 line-clamp-1 italic break-words">"{msg.message}"</p>
                     </div>
                     <div className="flex items-center gap-3">
                       <span className={`px-2 py-0.5 rounded text-[10px] font-bold tracking-wider ${
