@@ -81,15 +81,33 @@ export default async function ProjectCaseStudyPage({ params }: PageProps) {
                   : 'Ongoing'}
               </span>
             </div>
-            {project.liveUrl && (
-              <a
-                href={project.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-sky-600 hover:bg-sky-500 text-white font-bold text-[10px] uppercase tracking-wider transition-colors shadow-sm cursor-pointer"
-              >
-                <Globe size={11} /> <span>Live Demo</span>
-              </a>
+            {(project.liveUrl || project.githubUrl) && (
+              <div className="flex items-center gap-2">
+                {project.liveUrl && (
+                  <a
+                    href={project.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-sky-600 hover:bg-sky-500 text-white font-bold text-[10px] uppercase tracking-wider transition-colors shadow-sm cursor-pointer"
+                  >
+                    <Globe size={11} /> <span>Live Demo</span>
+                  </a>
+                )}
+                {project.githubUrl && (
+                  <a
+                    href={project.githubUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded bg-secondary border border-border hover:border-foreground/20 text-muted-foreground hover:text-foreground font-bold text-[10px] uppercase tracking-wider transition-colors shadow-sm cursor-pointer"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                      <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
+                      <path d="M9 18c-4.51 2-5-2-7-2" />
+                    </svg>
+                    <span>Repository</span>
+                  </a>
+                )}
+              </div>
             )}
           </div>
 
@@ -101,24 +119,6 @@ export default async function ProjectCaseStudyPage({ params }: PageProps) {
               {project.tagline}
             </p>
           </div>
-
-          {/* Action buttons (GitHub Repository if configured) */}
-          {project.githubUrl && (
-            <div className="flex flex-wrap gap-4 pt-2">
-              <a
-                href={project.githubUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 px-5 py-2.5 bg-secondary border border-border hover:border-foreground/20 text-muted-foreground hover:text-foreground font-bold rounded-lg text-xs transition-colors shadow-sm"
-              >
-                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M15 22v-4a4.8 4.8 0 0 0-1-3.5c3 0 6-2 6-5.5.08-1.25-.27-2.48-1-3.5.28-1.15.28-2.35 0-3.5 0 0-1 0-3 1.5-2.64-.5-5.36-.5-8 0C6 2 5 2 5 2c-.3 1.15-.3 2.35 0 3.5A5.403 5.403 0 0 0 4 9c0 3.5 3 5.5 6 5.5-.39.49-.68 1.05-.85 1.65-.17.6-.22 1.23-.15 1.85v4" />
-                  <path d="M9 18c-4.51 2-5-2-7-2" />
-                </svg>
-                <span>Source Repository</span>
-              </a>
-            </div>
-          )}
         </div>
 
         {/* Hero Cover Image */}
@@ -231,38 +231,49 @@ export default async function ProjectCaseStudyPage({ params }: PageProps) {
         )}
 
         {/* 4. RESULTS / METRICS */}
-        {Array.isArray(project.metrics) && project.metrics.length > 0 && (
-          <div className="border-t border-border/60 pt-12 space-y-6">
-            <div className="space-y-1">
-              <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400 text-xs font-bold uppercase tracking-wider">
-                <Zap size={14} /> Performance
-              </span>
-              <h2 className="text-xl md:text-2xl font-bold tracking-tight text-foreground">
-                Measurable Impact & Wins
-              </h2>
-            </div>
+        {Array.isArray(project.metrics) && project.metrics.length > 0 && (() => {
+          const metrics = project.metrics as unknown as { label: string; value: string }[];
+          const count = metrics.length;
+          
+          let gridColsClass = "grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4";
+          if (count === 1) gridColsClass = "grid-cols-1 max-w-md mx-auto";
+          else if (count === 2) gridColsClass = "grid-cols-1 sm:grid-cols-2 max-w-2xl mx-auto";
+          else if (count === 3) gridColsClass = "grid-cols-1 sm:grid-cols-3";
+          else if (count === 4) gridColsClass = "grid-cols-1 sm:grid-cols-2 md:grid-cols-4";
 
-            {/* Metrics cards grid */}
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              {(project.metrics as unknown as { label: string; value: string }[]).map((metric, idx) => (
-                <div
-                  key={idx}
-                  className="p-6 bg-card border border-border/60 hover:border-sky-550/30 rounded-2xl space-y-2 flex flex-col justify-center transition-all shadow-sm"
-                >
-                  <Award className="text-sky-500 dark:text-sky-400 mb-1" size={20} />
-                  <div className="space-y-0.5">
-                    <span className="block text-2xl font-extrabold text-foreground tracking-tight">
-                      {metric.value}
-                    </span>
-                    <span className="block text-xs text-muted-foreground font-semibold leading-relaxed">
-                      {metric.label}
-                    </span>
+          return (
+            <div className="border-t border-border/60 pt-12 space-y-6">
+              <div className="space-y-1">
+                <span className="flex items-center gap-1.5 text-sky-600 dark:text-sky-400 text-xs font-bold uppercase tracking-wider">
+                  <Zap size={14} /> Performance
+                </span>
+                <h2 className="text-xl md:text-2xl font-bold tracking-tight text-foreground">
+                  Measurable Impact & Wins
+                </h2>
+              </div>
+
+              {/* Metrics cards grid */}
+              <div className={`grid gap-6 ${gridColsClass}`}>
+                {metrics.map((metric, idx) => (
+                  <div
+                    key={idx}
+                    className="p-6 bg-card border border-border/60 hover:border-sky-500/40 rounded-2xl space-y-3 flex flex-col justify-between transition-all duration-300 shadow-sm hover:-translate-y-1 hover:shadow-md hover:shadow-sky-500/5"
+                  >
+                    <Award className="text-sky-500 dark:text-sky-400 mb-1" size={20} />
+                    <div className="space-y-1 flex-grow">
+                      <span className="block text-2xl font-extrabold text-foreground tracking-tight">
+                        {metric.value}
+                      </span>
+                      <span className="block text-xs text-muted-foreground font-semibold leading-relaxed">
+                        {metric.label}
+                      </span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
-          </div>
-        )}
+          );
+        })()}
 
         {/* Footer CTA */}
         <div className="border-t border-border/60 pt-12 text-center">

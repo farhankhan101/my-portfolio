@@ -391,20 +391,20 @@ export default function ContactPage() {
 
               <div className="space-y-6 relative z-10">
                 {/* Direct Mail */}
-                <div className="flex gap-4 items-start">
+                <div className="flex gap-4 items-start min-w-0">
                   <div className="p-2.5 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 mt-1 shrink-0">
                     <Mail size={18} />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Email Directory</span>
-                    <a href="mailto:farhan@silquetech.com" className="text-sm font-extrabold text-foreground hover:text-sky-600 dark:hover:text-sky-400 transition-colors">
+                    <a href="mailto:farhan@silquetech.com" className="text-sm font-extrabold text-foreground hover:text-sky-600 dark:hover:text-sky-400 transition-colors break-all">
                       farhan@silquetech.com
                     </a>
                   </div>
                 </div>
 
                 {/* LinkedIn */}
-                <div className="flex gap-4 items-start">
+                <div className="flex gap-4 items-start min-w-0">
                   <div className="p-2.5 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 mt-1 shrink-0 flex items-center justify-center">
                     <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                       <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
@@ -412,13 +412,13 @@ export default function ContactPage() {
                       <circle cx="4" cy="4" r="2" />
                     </svg>
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Professional Networking</span>
                     <a
                       href="https://www.linkedin.com/in/muhammad-farhan-khan-0202b31b6/"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm font-extrabold text-foreground hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
+                      className="text-sm font-extrabold text-foreground hover:text-sky-600 dark:hover:text-sky-400 transition-colors break-all"
                     >
                       linkedin.com/in/muhammad-farhan-khan-0202b31b6
                     </a>
@@ -426,17 +426,17 @@ export default function ContactPage() {
                 </div>
 
                 {/* WhatsApp */}
-                <div className="flex gap-4 items-start">
+                <div className="flex gap-4 items-start min-w-0">
                   <div className="p-2.5 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 mt-1 shrink-0">
                     <MessageCircle size={18} />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Instant Chat</span>
                     <a
                       href="https://wa.me/923079971295"
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-sm font-extrabold text-foreground hover:text-sky-600 dark:hover:text-sky-400 transition-colors"
+                      className="text-sm font-extrabold text-foreground hover:text-sky-600 dark:hover:text-sky-400 transition-colors break-all"
                     >
                       +92 307 9971295
                     </a>
@@ -444,13 +444,13 @@ export default function ContactPage() {
                 </div>
 
                 {/* Location */}
-                <div className="flex gap-4 items-start">
+                <div className="flex gap-4 items-start min-w-0">
                   <div className="p-2.5 rounded-lg bg-sky-500/10 text-sky-600 dark:text-sky-400 mt-1 shrink-0">
                     <MapPin size={18} />
                   </div>
-                  <div>
+                  <div className="min-w-0">
                     <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider block">Office Location</span>
-                    <span className="text-sm font-extrabold text-foreground">
+                    <span className="text-sm font-extrabold text-foreground break-all">
                       Karachi, Pakistan (GMT+5)
                     </span>
                   </div>
@@ -534,10 +534,10 @@ export default function ContactPage() {
             <button
               type="submit"
               disabled={!chatInput.trim() || chatLoading}
-              className="px-5 bg-sky-600 hover:bg-sky-500 disabled:opacity-40 disabled:pointer-events-none text-white rounded-xl transition-colors cursor-pointer flex items-center justify-center gap-2 shrink-0 h-10 text-xs font-bold shadow-lg"
+              className="px-4 sm:px-5 bg-sky-600 hover:bg-sky-500 disabled:opacity-40 disabled:pointer-events-none text-white rounded-xl transition-colors cursor-pointer flex items-center justify-center gap-2 shrink-0 h-10 text-xs font-bold shadow-lg"
             >
               {chatLoading ? <Loader2 className="animate-spin" size={14} /> : <Send size={14} />}
-              <span>Send Message</span>
+              <span className="hidden sm:inline">Send Message</span>
             </button>
           </form>
         </div>

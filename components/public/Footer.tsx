@@ -61,8 +61,8 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Middle Navigation (3 cols) - horizontal row on mobile */}
-        <div className="md:col-span-3 space-y-3.5 text-center md:text-left flex flex-col items-center md:items-start">
+        {/* Middle Navigation (3 cols) - hidden on mobile, visible on desktop */}
+        <div className="hidden md:flex md:col-span-3 space-y-3.5 text-center md:text-left flex-col items-center md:items-start">
           <h4 className="text-[10px] font-extrabold text-muted-foreground uppercase tracking-wider border-b border-border/50 pb-2 w-full md:w-fit">
             Navigation
           </h4>
