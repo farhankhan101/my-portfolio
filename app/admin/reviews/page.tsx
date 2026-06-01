@@ -3,7 +3,7 @@
 
 import { useState, useEffect } from 'react'
 import DataTable, { Column } from '@/components/admin/DataTable'
-import { Star, Check, X, Trash2, ShieldCheck, ShieldAlert, Award, Loader2 } from 'lucide-react'
+import { Star, Check, X, Trash2, ShieldCheck, ShieldAlert, Award, Loader2, Pencil } from 'lucide-react'
 import { renderFormattedComment } from '@/lib/format'
 
 interface Review {
@@ -35,6 +35,30 @@ export default function AdminReviews() {
   const [addIsApproved, setAddIsApproved] = useState(true)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [addError, setAddError] = useState<string | null>(null)
+
+  // Edit Review Modal State
+  const [showEditModal, setShowEditModal] = useState(false)
+  const [editingReview, setEditingReview] = useState<Review | null>(null)
+  const [editName, setEditName] = useState('')
+  const [editEmail, setEditEmail] = useState('')
+  const [editDesignation, setEditDesignation] = useState('')
+  const [editCompany, setEditCompany] = useState('')
+  const [editRating, setEditRating] = useState(5)
+  const [editComment, setEditComment] = useState('')
+  const [isEditSubmitting, setIsEditSubmitting] = useState(false)
+  const [editError, setEditError] = useState<string | null>(null)
+
+  const handleEditClick = (review: Review) => {
+    setEditingReview(review)
+    setEditName(review.name)
+    setEditEmail(review.email)
+    setEditDesignation(review.designation || '')
+    setEditCompany(review.company || '')
+    setEditRating(review.rating)
+    setEditComment(review.comment)
+    setEditError(null)
+    setShowEditModal(true)
+  }
 
   const fetchReviews = async () => {
     setLoading(true)
@@ -138,6 +162,52 @@ export default function AdminReviews() {
       setAddError('An unexpected error occurred.')
     } finally {
       setIsSubmitting(false)
+    }
+  }
+
+  const handleEditSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!editingReview) return
+
+    if (!editName || !editEmail || !editComment) {
+      setEditError('Name, email, and comment are required.')
+      return
+    }
+    if (editComment.length < 10) {
+      setEditError('Comment must be at least 10 characters long.')
+      return
+    }
+
+    setIsEditSubmitting(true)
+    setEditError(null)
+
+    try {
+      const res = await fetch(`/api/admin/reviews/${editingReview.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          name: editName,
+          email: editEmail,
+          designation: editDesignation || null,
+          company: editCompany || null,
+          rating: editRating,
+          comment: editComment,
+        }),
+      })
+
+      if (res.ok) {
+        const updated = await res.json()
+        setReviews((prev) => prev.map((item) => (item.id === updated.id ? updated : item)))
+        setShowEditModal(false)
+        setEditingReview(null)
+      } else {
+        const data = await res.json()
+        setEditError(data.error || 'Failed to update review.')
+      }
+    } catch (error) {
+      setEditError('An unexpected error occurred.')
+    } finally {
+      setIsEditSubmitting(false)
     }
   }
 
@@ -268,6 +338,13 @@ export default function AdminReviews() {
             title={item.isApproved ? 'Unapprove and Hide Review' : 'Approve and Publish Review'}
           >
             {item.isApproved ? <X size={14} /> : <Check size={14} />}
+          </button>
+          <button
+            onClick={() => handleEditClick(item)}
+            className="flex items-center justify-center p-1.5 bg-secondary hover:bg-sky-500/10 text-muted-foreground hover:text-sky-500 rounded border border-border transition-all cursor-pointer"
+            title="Edit Review"
+          >
+            <Pencil size={14} />
           </button>
           <button
             onClick={() => handleDelete(item.id)}
@@ -541,6 +618,161 @@ export default function AdminReviews() {
                     </>
                   ) : (
                     <span>Add Review</span>
+                  )}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Edit Review Modal */}
+      {showEditModal && editingReview && (
+        <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
+          <div className="w-full max-w-md bg-card border border-border rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            {/* Header */}
+            <div className="px-6 py-4 border-b border-border flex items-center justify-between">
+              <div>
+                <h3 className="text-sm font-bold text-foreground">Edit Review</h3>
+                <p className="text-[10px] text-muted-foreground mt-0.5">Modify reviewer details and comment content</p>
+              </div>
+              <button
+                onClick={() => {
+                  setShowEditModal(false)
+                  setEditingReview(null)
+                }}
+                className="text-muted-foreground hover:text-foreground p-1 transition-colors cursor-pointer"
+              >
+                <X size={16} />
+              </button>
+            </div>
+
+            {/* Form */}
+            <form onSubmit={handleEditSubmit} className="p-6 space-y-4">
+              {editError && (
+                <div className="p-3 bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-xs font-semibold rounded-lg">
+                  {editError}
+                </div>
+              )}
+
+              {/* Name */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider">Reviewer Name</label>
+                <input
+                  type="text"
+                  value={editName}
+                  onChange={(e) => setEditName(e.target.value)}
+                  placeholder="e.g. John Doe"
+                  required
+                  disabled={isEditSubmitting}
+                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500 text-xs font-semibold transition-all"
+                />
+              </div>
+
+              {/* Email */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider">Reviewer Email</label>
+                <input
+                  type="email"
+                  value={editEmail}
+                  onChange={(e) => setEditEmail(e.target.value)}
+                  placeholder="e.g. john@example.com"
+                  required
+                  disabled={isEditSubmitting}
+                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500 text-xs font-semibold transition-all"
+                />
+              </div>
+
+              {/* Designation & Company */}
+              <div className="grid grid-cols-2 gap-3">
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider">Designation</label>
+                  <input
+                    type="text"
+                    value={editDesignation}
+                    onChange={(e) => setEditDesignation(e.target.value)}
+                    placeholder="e.g. CEO"
+                    disabled={isEditSubmitting}
+                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500 text-xs font-semibold transition-all"
+                  />
+                </div>
+                <div className="space-y-1.5">
+                  <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider">Company</label>
+                  <input
+                    type="text"
+                    value={editCompany}
+                    onChange={(e) => setEditCompany(e.target.value)}
+                    placeholder="e.g. Google"
+                    disabled={isEditSubmitting}
+                    className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500 text-xs font-semibold transition-all"
+                  />
+                </div>
+              </div>
+
+              {/* Rating */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider">Rating</label>
+                <div className="flex items-center gap-1">
+                  {[1, 2, 3, 4, 5].map((stars) => (
+                    <button
+                      key={stars}
+                      type="button"
+                      onClick={() => setEditRating(stars)}
+                      disabled={isEditSubmitting}
+                      className="p-1 hover:scale-110 transition-transform cursor-pointer"
+                    >
+                      <Star
+                        size={20}
+                        className={
+                          stars <= editRating
+                            ? 'fill-amber-400 text-amber-400'
+                            : 'text-muted-foreground/30'
+                        }
+                      />
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Comment */}
+              <div className="space-y-1.5">
+                <label className="block text-xs font-bold text-muted-foreground uppercase tracking-wider">Comment</label>
+                <textarea
+                  value={editComment}
+                  onChange={(e) => setEditComment(e.target.value)}
+                  placeholder="Write the review message content..."
+                  required
+                  disabled={isEditSubmitting}
+                  rows={4}
+                  className="w-full px-3 py-2 bg-background border border-border rounded-lg text-foreground focus:outline-none focus:ring-2 focus:ring-sky-500/30 focus:border-sky-500 text-xs font-semibold transition-all resize-none"
+                />
+              </div>
+
+              {/* Action Buttons */}
+              <div className="pt-2 border-t border-border flex justify-end gap-3">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setShowEditModal(false)
+                    setEditingReview(null)
+                  }}
+                  disabled={isEditSubmitting}
+                  className="px-4 py-2 bg-secondary hover:bg-secondary/80 text-foreground border border-border text-xs font-bold rounded-lg transition-colors cursor-pointer"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isEditSubmitting}
+                  className="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold rounded-lg transition-colors cursor-pointer flex items-center gap-1.5"
+                >
+                  {isEditSubmitting ? (
+                    <>
+                      <Loader2 className="animate-spin animate-duration-1000" size={13} />
+                      <span>Saving...</span>
+                    </>
+                  ) : (
+                    <span>Save Changes</span>
                   )}
                 </button>
               </div>

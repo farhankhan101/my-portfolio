@@ -6,24 +6,56 @@ interface Context {
   params: Promise<{ id: string }>
 }
 
+import { z } from 'zod'
+
+const updateReviewSchema = z.object({
+  name: z.string().min(1, 'Name is required').optional(),
+  email: z.string().email('Please enter a valid email address').optional(),
+  designation: z.string().nullable().optional(),
+  company: z.string().nullable().optional(),
+  rating: z.number().min(1).max(5).optional(),
+  comment: z.string().min(10, 'Comment must be at least 10 characters long').optional(),
+  isApproved: z.boolean().optional(),
+})
+
 export async function PUT(req: NextRequest, context: Context) {
   try {
     const { id } = await context.params
-    const { isApproved } = await req.json()
+    const body = await req.json()
 
-    if (typeof isApproved !== 'boolean') {
-      return NextResponse.json({ error: 'isApproved field must be a boolean.' }, { status: 400 })
+    const result = updateReviewSchema.safeParse(body)
+    if (!result.success) {
+      return NextResponse.json(
+        { error: 'Validation failed', details: result.error.flatten().fieldErrors },
+        { status: 400 }
+      )
+    }
+
+    // Check email uniqueness if email is changed
+    if (result.data.email) {
+      const existingReview = await db.review.findFirst({
+        where: {
+          email: result.data.email,
+          NOT: { id }
+        }
+      })
+      if (existingReview) {
+        return NextResponse.json(
+          { error: 'A review with this email address already exists.' },
+          { status: 400 }
+        )
+      }
     }
 
     const updatedReview = await db.review.update({
       where: { id },
-      data: { isApproved },
+      data: result.data,
     })
 
     return NextResponse.json(updatedReview)
   } catch (error: any) {
     console.error('❌ PUT admin/reviews/[id] error:', error)
-    return NextResponse.json({ error: 'Failed to update review status.' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to update review.' }, { status: 500 })
   }
 }
 
