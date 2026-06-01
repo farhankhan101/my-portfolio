@@ -54,6 +54,7 @@ export async function uploadAsset(
             filename_override: sanitizedBaseName,
             use_filename: true,
             unique_filename: true,
+            resource_type: 'auto',
           },
           (error, result) => {
             if (error || !result) {
